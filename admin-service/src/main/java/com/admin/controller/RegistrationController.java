@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.admin.bean.LoginBean;
 import com.admin.bean.RegistrationBean;
+import com.admin.entity.RegistrationForm;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.RegistrationService;
 
@@ -88,16 +90,15 @@ public class RegistrationController {
 		
 	}
 	    @PostMapping("/login")
-	    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
-	        String email = credentials.get("email");
-	        String password = credentials.get("password");
+	    public ResponseEntity<RegistrationForm> login(@RequestBody LoginBean loginBean) {
 
-	        boolean loginSuccessful = registrationService.validateLogin(email, password);
+	    	RegistrationForm user = registrationService.validateLogin(loginBean);
 
-	        if (loginSuccessful) {
-	            return ResponseEntity.ok("Login Successfully");
+	        if (user!=null) {
+	        	System.out.println(user+"login successfull");
+	            return ResponseEntity.ok(user);
 	        } else {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	        }
 	    }
 	}
