@@ -2,50 +2,57 @@ package com.admin.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.admin.bean.RegistrationBean;
 import com.admin.entity.RegistrationForm;
+import com.admin.exception.EmailNotFoundException;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.RegistrationRepository;
 import com.admin.service.RegistrationService;
 
 @Service
-public class RegistrationServiceImpl implements RegistrationService{
+public class RegistrationServiceImpl implements RegistrationService {
 
 	@Autowired
 	RegistrationRepository registrationRepository;
+
 	@Override
 	public RegistrationBean save(RegistrationBean registrationBean) {
-		
-		RegistrationForm registrationEntity=new RegistrationForm();
-		beanToEntity(registrationBean,registrationEntity);
+
+		RegistrationForm registrationEntity = new RegistrationForm();
+		beanToEntity(registrationBean, registrationEntity);
 		registrationRepository.save(registrationEntity);
 		return registrationBean;
-		
-		
+
 	}
+
 	private void beanToEntity(RegistrationBean registrationBean, RegistrationForm registrationEntity) {
-		
+
 		registrationEntity.setId(registrationBean.getId());
 		registrationEntity.setFirstName(registrationBean.getFirstName());
 		registrationEntity.setLastName(registrationBean.getLastName());
 		registrationEntity.setEmail(registrationBean.getEmail());
 		registrationEntity.setGender(registrationBean.getGender());
 		registrationEntity.setBirthDay(registrationBean.getBirthDay());
+		registrationEntity.setPassword(registrationBean.getPassword());
 		registrationEntity.setServiceType(registrationBean.getServiceType());
 		registrationEntity.setPhoneNumber(registrationBean.getPhoneNumber());
-	
+
 	}
+
 	@Override
 	public RegistrationBean getById(int id) {
-		RegistrationForm registrationEntity=registrationRepository.findById(id).orElseThrow(()->new RecordNotFoundException("No Record Found with given id"));
-		RegistrationBean registrationBean=new RegistrationBean();
-		entityToBean(registrationEntity,registrationBean);
+		RegistrationForm registrationEntity = registrationRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+		RegistrationBean registrationBean = new RegistrationBean();
+		entityToBean(registrationEntity, registrationBean);
 		return registrationBean;
 	}
+
 	private void entityToBean(RegistrationForm registrationEntity, RegistrationBean registrationBean) {
 		registrationBean.setId(registrationEntity.getId());
 		registrationBean.setFirstName(registrationEntity.getFirstName());
@@ -53,38 +60,95 @@ public class RegistrationServiceImpl implements RegistrationService{
 		registrationBean.setEmail(registrationEntity.getEmail());
 		registrationBean.setGender(registrationEntity.getGender());
 		registrationBean.setBirthDay(registrationEntity.getBirthDay());
+		registrationBean.setPassword(registrationEntity.getPassword());
 		registrationBean.setPhoneNumber(registrationEntity.getPhoneNumber());
 		registrationBean.setServiceType(registrationEntity.getServiceType());
 		System.out.println(registrationBean.getPhoneNumber());
-		
+
 	}
+
 	@Override
 	public List<RegistrationBean> getAll() {
-		List<RegistrationForm> entityList=registrationRepository.findAll();
-		List<RegistrationBean> beanList=new ArrayList<>();
-		entityToBean(entityList,beanList);
+		List<RegistrationForm> entityList = registrationRepository.findAll();
+		List<RegistrationBean> beanList = new ArrayList<>();
+		entityToBean(entityList, beanList);
 		return beanList;
 	}
+
 	private void entityToBean(List<RegistrationForm> entityList, List<RegistrationBean> beanList) {
-         for(RegistrationForm registrationEntity:entityList)
-         {
-        	 RegistrationBean registrationBean=new  RegistrationBean();
-        	 entityToBean(registrationEntity,registrationBean);
-        	 beanList.add(registrationBean);
-        	 
-         }
-		
+		for (RegistrationForm registrationEntity : entityList) {
+			RegistrationBean registrationBean = new RegistrationBean();
+			entityToBean(registrationEntity, registrationBean);
+			beanList.add(registrationBean);
+
+		}
+
 	}
+
 	@Override
 	public void delete(int id) {
-		RegistrationForm RegistrationForm=registrationRepository.findById(id).orElseThrow(()->new RecordNotFoundException("No Record Found with given id"));
+		RegistrationForm RegistrationForm = registrationRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
 		registrationRepository.delete(RegistrationForm);
 	}
+
 	@Override
 	public void update(RegistrationBean registration) {
-		RegistrationForm RegistrationForm=registrationRepository.findById(registration.getId()).orElseThrow(()->new RecordNotFoundException("No Record Found with given id"));
-		beanToEntity(registration,RegistrationForm);
+		RegistrationForm RegistrationForm = registrationRepository.findById(registration.getId())
+				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+		beanToEntity(registration, RegistrationForm);
 		registrationRepository.save(RegistrationForm);
 	}
 
-}
+	@Override
+	public boolean validateLogin(String email, String password) {
+	    RegistrationForm user = registrationRepository.findByEmail(email);
+
+	    if (user != null) {
+	        RegistrationBean registrationBean = new RegistrationBean();
+	       // beanToEntity(registrationBean, user);
+
+	        if (user.getPassword().equals(password)) {
+	            return true;
+	        } else {
+	            try {
+	                throw new PasswordMismatchException("password is worng");
+	            } catch (Exception e) {
+	                System.out.println(e.getMessage());
+	            }
+	    	    return false;
+
+	        }
+	    } 
+	    else {
+	        try {
+	            throw new EmailNotFoundException();
+	        } catch (Exception e) {
+	            System.out.println(e.getMessage());
+	            
+	        }
+	       
+	    }
+		return false;
+	}
+    }
+//		RegistrationForm registrationEntity=new RegistrationForm();
+//		RegistrationBean bean=new RegistrationBean();
+//		Optional<RegistrationForm> details = registrationRepository.findByEmailAndPassword(email, password);
+//		String mail=details.get().getEmail();
+//		String pass=details.get().getPassword();
+//		entityToBean(registrationEntity, bean);
+//		String mailId=bean.getEmail();
+//		String password1=bean.getPassword();
+//		if(mail.equalsIgnoreCase(mailId)&&pass.equalsIgnoreCase(password1))
+//		{
+//			System.out.println("Login Sucessfully");
+//		}
+//		else
+//		{
+//			System.out.println("login faild");
+//		}
+
+	
+
+

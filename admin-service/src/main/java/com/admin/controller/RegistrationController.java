@@ -1,6 +1,7 @@
 package com.admin.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class RegistrationController {
 	RegistrationService registrationService;
 	private static Logger log = LoggerFactory.getLogger(RegistrationController.class.getSimpleName());
 	
-	@PostMapping()
+	@PostMapping("/save")
 	public ResponseEntity<RegistrationBean> save(@RequestBody RegistrationBean registrationBean) {
 		log.info("Saving Registration entity");
 		try {
@@ -86,4 +87,47 @@ public class RegistrationController {
 			return responseEntity;
 		
 	}
-}
+	    @PostMapping("/login")
+	    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
+	        String email = credentials.get("email");
+	        String password = credentials.get("password");
+
+	        boolean loginSuccessful = registrationService.validateLogin(email, password);
+
+	        if (loginSuccessful) {
+	            return ResponseEntity.ok("Login Successfully");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+	        }
+	    }
+	}
+
+
+	
+//	@PostMapping("/getdetails")
+//	public ResponseEntity<String>getDetails(@RequestBody String email,String password)
+//	{
+//		boolean validateLogin = registrationService.validateLogin(email, password);
+//		return new ResponseEntity<String>("Login successfull",HttpStatus.OK);
+//		
+//	}
+//	
+	
+//	@GetMapping("/getDetails")
+//	public ResponseEntity<String> getDetails(@RequestBody String email ,@RequestBody String password){
+//
+////		log.info("Updating Department");
+////		registrationService.getDetails(email, password);
+////			ResponseEntity<String> responseEntity = new ResponseEntity<>("Login Successfully", HttpStatus.OK);
+////			log.info("Updating Department is done");
+////			return responseEntity;
+//		boolean loginSuccessful = registrationService.getDetails(email, password);
+//
+//        if (loginSuccessful) {
+//            return ResponseEntity.ok("Login Successfully");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+//        }
+//    }
+		
+	

@@ -11,9 +11,23 @@ public class RegistrationBean {
 	private String gender;
 	private long phoneNumber;
 	private String serviceType;
+	private String password;
 	
+	
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
 	public RegistrationBean(int id, String firstName, String lastName, Date birthDay, String email, String gender,
-			long phoneNumber, String serviceType) {
+			long phoneNumber, String serviceType, String password) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -23,6 +37,7 @@ public class RegistrationBean {
 		this.gender = gender;
 		this.phoneNumber = phoneNumber;
 		this.serviceType = serviceType;
+		this.password = password;
 	}
 
 

@@ -10,4 +10,6 @@ public interface RegistrationService {
       List<RegistrationBean> getAll();
       void delete(int id);
       void update(RegistrationBean registration);
+      //boolean getDetails(String email);
+	boolean validateLogin(String email, String password);
 }

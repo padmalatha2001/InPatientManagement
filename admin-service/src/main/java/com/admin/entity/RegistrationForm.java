@@ -14,31 +14,32 @@ import jakarta.persistence.Table;
 public class RegistrationForm {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	@Column(name = "id")
 	private int id;
-	@Column(name="firstName")
+	@Column(name = "firstName")
 	private String firstName;
-	@Column(name="lastName")
+	@Column(name = "lastName")
 	private String lastName;
-	@Column(name="birthDay")
+	@Column(name = "birthDay")
 	private Date birthDay;
-	@Column(name="email")
+	@Column(name = "email")
 	private String email;
-	@Column(name="gender")
+	@Column(name = "gender")
 	private String gender;
-	@Column(name="phoneNumber")
+	@Column(name = "password")
+	private String password;
+	@Column(name = "phoneNumber")
 	private long phoneNumber;
-	@Column(name="serviceType")
+	@Column(name = "serviceType")
 	private String serviceType;
-	
+
 	public RegistrationForm() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-    
 	public RegistrationForm(int id, String firstName, String lastName, Date birthDay, String email, String gender,
-			long phoneNumber, String serviceType) {
+			String password, long phoneNumber, String serviceType) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -46,23 +47,26 @@ public class RegistrationForm {
 		this.birthDay = birthDay;
 		this.email = email;
 		this.gender = gender;
+		this.password = password;
 		this.phoneNumber = phoneNumber;
 		this.serviceType = serviceType;
 	}
 
+	public String getPassword() {
+		return password;
+	}
 
-
-
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public int getId() {
 		return id;
 	}
 
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 
 	public String getFirstName() {
 		return firstName;
@@ -95,15 +99,14 @@ public class RegistrationForm {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	public String getGender() {
 		return gender;
 	}
 
-
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
 
 	public long getPhoneNumber() {
 		return phoneNumber;
@@ -121,7 +124,6 @@ public class RegistrationForm {
 		this.serviceType = serviceType;
 	}
 
-
 	@Override
 	public String toString() {
 		return "RegistrationForm [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay="
@@ -129,5 +131,4 @@ public class RegistrationForm {
 				+ ", serviceType=" + serviceType + "]";
 	}
 
-	
 }
