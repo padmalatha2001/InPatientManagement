@@ -235,6 +235,7 @@ public class BedAllocationServiceImpl implements BedAllocationService{
 		RoomEntity roomEntity=bedEntity.getRoomId();
 		RoomBean roomBean=new RoomBean();
 		entityToBean(roomEntity,roomBean);
+		bedBean.setRoomId(roomBean);
 		bedBean.setStatus(bedEntity.getStatus());
 	}
 public void entityToBean(RoomEntity roomEntity, RoomBean roomBean) {

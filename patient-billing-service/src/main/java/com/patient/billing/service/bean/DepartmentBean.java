@@ -1,18 +1,19 @@
 package com.patient.billing.service.bean;
-public class RoomTypeBean {
 
-	long id;
-    String name;
+public class DepartmentBean {
+
+	private long id;
+	private String name;
 	
-    public RoomTypeBean(long id, String name) {
+	public DepartmentBean() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public DepartmentBean(long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
-	}
-
-	public RoomTypeBean() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public long getId() {
@@ -33,7 +34,9 @@ public class RoomTypeBean {
 
 	@Override
 	public String toString() {
-		return "RoomTypeBean [id=" + id + ", name=" + name + "]";
-	}   
+		return "DepartmentBean [id=" + id + ", name=" + name + "]";
+	}
+	
+	
 	
 }
