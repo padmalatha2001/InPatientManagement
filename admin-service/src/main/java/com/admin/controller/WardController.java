@@ -43,7 +43,7 @@ public class WardController {
 			return new ResponseEntity<WardBean>(wardBean1,HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("exception handled");
+			log.error(e.getMessage());
 			return new ResponseEntity<WardBean>(HttpStatus.NOT_FOUND);
 
 		}
@@ -97,16 +97,18 @@ public class WardController {
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity<String> delete(@PathVariable Long id) {
+	public ResponseEntity delete(@PathVariable Long id) {
 		log.info("Start WardController:delete()");
 		try {
-			wardService.getById(id);
+		   //	WardBean ward=wardService.getById(id);
 			wardService.delete(id);
-			return new ResponseEntity<String>("deleted successfully" + id, HttpStatus.OK);
+			log.info("deleted successfully");
+			return new ResponseEntity<String>( HttpStatus.OK);
+			
 		} catch (RecordNotFoundException e) {
 			log.error("exception handled");
 
-			return new ResponseEntity<String>(e.getMessage() + id, HttpStatus.NOT_FOUND);
+			return new ResponseEntity( HttpStatus.NOT_FOUND);
 		}
 
 	}

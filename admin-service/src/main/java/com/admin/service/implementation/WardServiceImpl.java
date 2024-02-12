@@ -23,10 +23,13 @@ public class WardServiceImpl implements WardService {
 
 	@Override
 	public WardBean save(WardBean wardBean) {
-
-		Ward ward = new Ward();
-		beanToEntity(ward, wardBean);
-        wardRepository.save(ward);
+	   Ward ward1=	wardRepository.getByNameAndDepartmentId_Name(wardBean.getName(),wardBean.getDepartmentId().getName());
+		if(ward1==null)
+		{
+	      Ward ward = new Ward();
+	      beanToEntity(ward, wardBean);
+          wardRepository.save(ward);
+		}
         return wardBean;
 
 	}

@@ -12,4 +12,5 @@ import com.admin.entity.Ward;
 
 public interface WardRepository  extends JpaRepository<Ward,Long> {
 	List<Ward> findByDepartmentId_Id(Long departmentId);
+	Ward getByNameAndDepartmentId_Name(String name,String dname);
 }

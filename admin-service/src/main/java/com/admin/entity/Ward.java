@@ -1,7 +1,6 @@
 package com.admin.entity;
 
-import java.util.Objects;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +16,7 @@ import jakarta.persistence.Table;
 public class Ward {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "wardId")
 	private long id;
 	@Column(name = "wardName")
@@ -26,7 +25,8 @@ public class Ward {
 	private int capacity;
 	@Column(name = "availability")
 	private int availability;
-	@ManyToOne
+	
+	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "departmentId",referencedColumnName = "dept_id")
 	private Department departmentId;
 
