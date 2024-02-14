@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.admin.bean.LoginBean;
 import com.admin.bean.RegistrationBean;
 import com.admin.entity.RegistrationForm;
 import com.admin.exception.EmailNotFoundException;
@@ -101,35 +102,38 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public boolean validateLogin(String email, String password) {
-	    RegistrationForm user = registrationRepository.findByEmail(email);
+	public RegistrationForm validateLogin(LoginBean loginBean) {
+	    RegistrationForm user = registrationRepository.findByEmail(loginBean.getEmail());
+	    System.out.println(user);
 
 	    if (user != null) {
 	        RegistrationBean registrationBean = new RegistrationBean();
 	       // beanToEntity(registrationBean, user);
 
-	        if (user.getPassword().equals(password)) {
-	            return true;
+	        if (user.getPassword().equals(loginBean.getPassword())) {
+	        	System.out.println(user.getPassword());
+	        	System.out.println(loginBean.getPassword());
+	            return user;
 	        } else {
 	            try {
-	                throw new PasswordMismatchException("password is worng");
+	                throw new PasswordMismatchException("password is wrong");
 	            } catch (Exception e) {
 	                System.out.println(e.getMessage());
 	            }
-	    	    return false;
+	    	    return user;
 
 	        }
 	    } 
 	    else {
 	        try {
-	            throw new EmailNotFoundException();
+	            throw new EmailNotFoundException("incorrect EmailId");
 	        } catch (Exception e) {
 	            System.out.println(e.getMessage());
 	            
 	        }
 	       
 	    }
-		return false;
+		return user;
 	}
     }
 //		RegistrationForm registrationEntity=new RegistrationForm();
