@@ -43,9 +43,9 @@ public class RoomTypeController {
 		return new ResponseEntity<RoomTypeBean>(roombyid,HttpStatus.OK);	
 	}
 	@DeleteMapping(path = "/delete/{id}")
-	public ResponseEntity<RoomType> delete(@PathVariable Long id){
+	public ResponseEntity delete(@PathVariable Long id){
 		roomTypeService.delete(id);
-		return new ResponseEntity<RoomType>(HttpStatus.OK);
+		return new ResponseEntity(HttpStatus.OK);
 		
 	}
 

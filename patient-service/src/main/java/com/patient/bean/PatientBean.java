@@ -9,15 +9,14 @@ public class PatientBean {
 	private int patientAge;
 	private long patientContactNo;
 	private long patientAlternteContactNo;
-	
+	private DoctorBean doctorBean;
 	
 	public PatientBean() {
 		super();
 	}
 
-
 	public PatientBean(int patientId, String firstName, String lastName, char patientGender, int patientAge,
-			long patientContactNo, long patientAlternteContactNo) {
+			long patientContactNo, long patientAlternteContactNo, DoctorBean doctorBean) {
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -26,8 +25,8 @@ public class PatientBean {
 		this.patientAge = patientAge;
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
+		this.doctorBean = doctorBean;
 	}
-
 
 	public int getPatientId() {
 		return patientId;
@@ -98,14 +97,25 @@ public class PatientBean {
 		this.patientAlternteContactNo = patientAlternteContactNo;
 	}
 
+	
+
+	public DoctorBean getDoctorBean() {
+		return doctorBean;
+	}
+
+
+	public void setDoctorBean(DoctorBean doctorBean) {
+		this.doctorBean = doctorBean;
+	}
+
 
 	@Override
 	public String toString() {
 		return "PatientBean [patientId=" + patientId + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", patientGender=" + patientGender + ", patientAge=" + patientAge + ", patientContactNo="
-				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + "]";
+				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + ", doctorBean="
+				+ doctorBean + "]";
 	}
-
 	
 	
 }

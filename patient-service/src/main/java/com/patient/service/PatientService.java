@@ -21,7 +21,9 @@ public interface PatientService {
 
     void update(PatientBean patientRegistration);
 
-
+    List<Object[]> getPatientDetailsByDoctor(String doctorName);
+    
+    List<Object[]> getPatientDetailsByFullName(String fullName);
 
 }
 
