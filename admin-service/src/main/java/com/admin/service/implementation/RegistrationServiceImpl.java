@@ -255,14 +255,15 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 
 		// Clear the OTP after successful verification (optional)
-		otpRepository.delete(otpEntity);
+		//otpRepository.delete(otpEntity);
 
 		return true;
 	}
 
-	@Scheduled(fixedRate = 300000) // 5 minutes in milliseconds
+	@Scheduled(fixedRate = 30000) // 5 minutes in milliseconds
 	public void cleanupExpiredOtps() {
 		try {
+			System.out.println("scheduled start");
 			LocalDateTime currentTime = LocalDateTime.now();
 			otpRepository.deleteExpiredOtps(currentTime);
 			// logger.info("Expired OTPs cleaned up successfully.");
