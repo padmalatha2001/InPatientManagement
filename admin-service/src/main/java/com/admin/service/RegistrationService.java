@@ -1,5 +1,6 @@
 package com.admin.service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface RegistrationService {
 	 RegistrationForm forgetPassword(String email);
     void sendOtpEmail(String toEmail, String otp);
 	String generateOtp();
-		void saveOtp(String email, String otp, LocalDateTime expirationTime);
+		void saveOtp(String email, String otp, Timestamp expirationTime);
 	boolean verifyOtp(String email, String enteredOtp);
 }

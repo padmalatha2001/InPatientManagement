@@ -1,6 +1,10 @@
 package com.admin.service.implementation;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -210,8 +214,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 		if (user != null) {
 			String otp = generateOtp();
-			LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // Set expiration time (5 minutes in this
+			//LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // Set expiration time (5 minutes in this
 																				// example)
+			Timestamp expirationTime = Timestamp.from(Instant.now());//.plus(Duration.ofMinutes(2)));
 
 			sendOtpEmail(email, otp);
 			saveOtp(email, otp, expirationTime);
@@ -224,7 +229,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public void saveOtp(String email, String otp, LocalDateTime expirationTime) {
+	public void saveOtp(String email, String otp, Timestamp expirationTime) {
 		Optional<OTPEntity> existingOtp = otpRepository.findByEmail(email);
 
 		if (existingOtp.isPresent()) {
@@ -240,33 +245,63 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 	}
 
+//	@Override
+//	public boolean verifyOtp(String email, String enteredOtp) {
+//		OTPEntity otpEntity = otpRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("OTP not found"));
+//
+//		if (otpEntity.getExpirationTime().isBefore(LocalDateTime.now())) {
+//			throw new RuntimeException("OTP has expired");
+//		}
+//
+//		// Check if the entered OTP matches the one stored in the database
+//		if (!enteredOtp.equals(otpEntity.getOtp())) {
+//			throw new InvalidOtpException("Invalid OTP");
+//		}
+//
+//		// Clear the OTP after successful verification (optional)
+//		//otpRepository.delete(otpEntity);
+//
+//		return true;
+//	}
 	@Override
 	public boolean verifyOtp(String email, String enteredOtp) {
-		OTPEntity otpEntity = otpRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("OTP not found"));
+		
+	    OTPEntity otpEntity = otpRepository.findByEmail(email)
+	            .orElseThrow(() -> new RuntimeException("OTP not found"));
 
-		// Check if the OTP is still valid based on expirationTime
-		if (otpEntity.getExpirationTime().isBefore(LocalDateTime.now())) {
-			throw new RuntimeException("OTP has expired");
-		}
+	    // Get the expiration time as a Timestamp
+	    Timestamp expirationTime = otpEntity.getExpirationTime();
 
-		// Check if the entered OTP matches the one stored in the database
-		if (!enteredOtp.equals(otpEntity.getOtp())) {
-			throw new InvalidOtpException("Invalid OTP");
-		}
+	    // Convert the Timestamp to Instant and then to LocalDateTime
+	    LocalDateTime expirationLocalDateTime = expirationTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-		// Clear the OTP after successful verification (optional)
-		//otpRepository.delete(otpEntity);
+	    if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
+	        throw new RuntimeException("OTP has expired");
+	    }
 
-		return true;
+	    // Check if the entered OTP matches the one stored in the database
+	    else if (!enteredOtp.equals(otpEntity.getOtp())) {
+	        throw new InvalidOtpException("Invalid OTP");
+	    }
+	    else
+	    {
+	    	return true;
+	    }
 	}
 
-	@Scheduled(fixedRate = 30000) // 5 minutes in milliseconds
+	    // Clear the OTP after successful verification (optional)
+	    //otpRepository.delete(otpEntity);
+
+	    //return true;
+
+	@Scheduled(fixedRate = 100000) // 5 minutes in milliseconds
 	public void cleanupExpiredOtps() {
 		try {
 			System.out.println("scheduled start");
 			LocalDateTime currentTime = LocalDateTime.now();
-			otpRepository.deleteExpiredOtps(currentTime);
+			otpRepository.deleteExpiredOtps();
 			// logger.info("Expired OTPs cleaned up successfully.");
+			System.out.println("scheduled end");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			// logger.error("Error cleaning up expired OTPs: " + e.getMessage(), e);

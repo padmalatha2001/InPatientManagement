@@ -16,10 +16,14 @@ import jakarta.transaction.Transactional;
 public interface OtpRepository  extends JpaRepository<OTPEntity, Integer>
 {
 	Optional<OTPEntity> findByEmail(String email);
-	@Transactional
+//	@Transactional
+//	@Modifying
+//    @Query("DELETE FROM OTPEntity o WHERE o.expirationTime <= :currentTime")
+//    void deleteExpiredOtps(@Param("currentTime") LocalDateTime currentTime);
+////}
 	@Modifying
-    @Query("DELETE FROM OTPEntity o WHERE o.expirationTime <= :currentTime")
-    void deleteExpiredOtps(@Param("currentTime") LocalDateTime currentTime);
-}
+    @Transactional
+    @Query("DELETE FROM OTPEntity o WHERE TIMESTAMPDIFF(MINUTE, o.expirationTime, CURRENT_TIMESTAMP()) <> 2 AND o.id > 0")
+    void deleteExpiredOtps();    }
 
 

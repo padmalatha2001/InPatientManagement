@@ -1,5 +1,6 @@
 package com.admin.service.implementation;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class OTPServiceImplentation implements OTPService
 	private OtpRepository otpRepository;
 
 	@Override
-	public void saveOtp(String email, String otp, LocalDateTime expirationTime) {
+	public void saveOtp(String email, String otp, Timestamp expirationTime) {
 		Optional<OTPEntity> OtpEntity=otpRepository.findByEmail(email);	
 		if(OtpEntity.get().getEmail()!=null)
 		{

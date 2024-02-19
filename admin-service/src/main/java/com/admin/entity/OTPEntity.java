@@ -1,5 +1,6 @@
 package com.admin.entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.annotation.Generated;
@@ -21,8 +22,8 @@ public class OTPEntity {
 	@Column(name="otp")
 	private String otp;
 	@Column(name="date_time")
-    private LocalDateTime expirationTime;
-	public OTPEntity(int id, String email, String otp, LocalDateTime expirationTime) {
+    private Timestamp expirationTime;
+	public OTPEntity(int id, String email, String otp, Timestamp expirationTime) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -50,10 +51,10 @@ public class OTPEntity {
 	public void setOtp(String otp) {
 		this.otp = otp;
 	}
-	public LocalDateTime getExpirationTime() {
+	public Timestamp getExpirationTime() {
 		return expirationTime;
 	}
-	public void setExpirationTime(LocalDateTime expirationTime) {
+	public void setExpirationTime(Timestamp expirationTime) {
 		this.expirationTime = expirationTime;
 	}
     
