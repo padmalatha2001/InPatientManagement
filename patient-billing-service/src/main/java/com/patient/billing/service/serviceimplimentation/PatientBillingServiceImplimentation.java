@@ -22,7 +22,8 @@ import com.patient.billing.service.bean.BedBean;
 import com.patient.billing.service.bean.PatientBean;
 import com.patient.billing.service.bean.PatientBillingBean;
 import com.patient.billing.service.bean.RoomBean;
-import com.patient.billing.service.bean.RoomTypeBean;
+import com.patient.billing.service.dto.PatientBillingDTO;
+import com.patient.billing.service.entity.CustomMonth;
 import com.patient.billing.service.entity.PatientBillingEntity;
 import com.patient.billing.service.exception.BillingDetailsNotFoundException;
 import com.patient.billing.service.exception.BillingIdNotFoundException;
@@ -35,6 +36,8 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	private PatientBillingRepository patientBillingRepository;
 	@Autowired
 	private RestTemplate restTemplate;
+	//private List<PatientBillingEntity> PatientBillingEntity  result;
+	private List<PatientBillingEntity> findByBillingDateBetween;
 
 
 	@Override
@@ -232,31 +235,56 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	}
 
 	@Override
-	public List<Map<String,Object>> getAllDetails() {
-		List<Object[]> resultList=patientBillingRepository.getBillingResults();
-		 List<Map<String, Object>> mappedResults = new ArrayList<>();
-		 for (Object[] result : resultList) {
-			 System.out.println(resultList);
-			 System.out.println("result:"+result);
-	            Map<String, Object> map = new HashMap<>();
-	            map.put("billingId", result[0]);
-	           map.put("bedId", result[1]);
-	           map.put("billingDate", result[2]);
-	           map.put("discount", result[3]);
-	           map.put("paidAmount", result[4]);
-	           map.put("totalAmount", result[6]);
-	           map.put("paymentStatus", result[5]);
-	           map.put("bedAllocationId", result[7]);
-	           map.put("noOfDays", result[9]);
-	           map.put("patientid", result[10]);
-	           map.put("fistName", result[15]);
-	           map.put("lastName",result[16]);
-	           
+	public List<PatientBillingDTO> getAllDetails() {
+List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
+    	
+    	System.out.println("filterde data"+data);
+    	return data;
+		
+		
+	}
+	public static int convertMonthNameToNumber(String monthName) {
+	    CustomMonth month;
 
-	            mappedResults.add(map);
-	        }
-		 System.out.println(mappedResults);
-		return mappedResults;
+	    if (monthName.length() <= 3) {
+	        
+	        month = CustomMonth.monthName(monthName);
+	    } else {
+	        	        month = CustomMonth.fullMonthName(monthName);
+	    }
+
+	    return month.getValue();
+	}
+
+    
+//    public List<PatientBillingEntity> getDataByMonth(String monthName) {
+//        int monthNumber = convertMonthNameToNumber(monthName.toUpperCase());
+//        System.out.println("Month Number: " + monthNumber);
+//
+//        List<PatientBillingEntity> result = patientBillingRepository.findByMonth(monthNumber);
+//        
+//        // Process the result or return it based on your requirements
+//        return result;
+//    }
+    @Override
+    public List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate) {
+    	List<PatientBillingDTO> data = patientBillingRepository.findByBillingDateBetween(startDate, endDate);
+    	
+    	System.out.println("filterde data"+data);
+    	return data;
+    }
+
+	@Override
+	public List<PatientBillingEntity> filterByDateRange(LocalDate startDate, Optional<LocalDate> endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PatientBillingEntity> getDataByMonth(String monthName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	}
 
 	
@@ -282,4 +310,4 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 //	}
 	
 
-}
+
