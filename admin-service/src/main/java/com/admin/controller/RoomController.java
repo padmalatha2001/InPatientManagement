@@ -2,6 +2,8 @@ package com.admin.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,62 +17,98 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.bean.RoomBean;
-import com.admin.bean.RoomTypeBean;
 import com.admin.entity.RoomEntity;
+import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.RoomRepository;
 import com.admin.service.RoomService;
+
 @RestController
 @RequestMapping("/room")
 public class RoomController {
+
+	private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
+
 	@Autowired
 	RoomService roomService;
+
 	@Autowired
 	RoomRepository roomRepository;
-	
+
 	@PostMapping(path = "/save")
-	public ResponseEntity<RoomBean> save(@RequestBody RoomBean roomBean){
-		roomService.save(roomBean);
-		ResponseEntity<RoomBean> entity=new ResponseEntity<>(roomBean,HttpStatus.CREATED);
-		System.out.println("inserted");
-		return entity;
-		
-		
+	public ResponseEntity<RoomBean> save(@RequestBody RoomBean roomBean) {
+		try {
+			roomService.save(roomBean);
+			logger.info("Room saved successfully");
+			return new ResponseEntity<>(roomBean, HttpStatus.CREATED);
+		} catch (Exception e) {
+			logger.error("Error occurred while saving room", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	@GetMapping(path ="/getAll")
-	public ResponseEntity<List<RoomBean>> getAll(){
-		List<RoomBean> list=roomService.getAll();
-		return new ResponseEntity<List<RoomBean>>(list,HttpStatus.OK);
+
+	@GetMapping(path = "/getAll")
+	public ResponseEntity<List<RoomBean>> getAll() {
+		try {
+			List<RoomBean> list = roomService.getAll();
+			logger.info("Retrieved all rooms successfully");
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("Error occurred while retrieving all rooms", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	@GetMapping(path ="/getByWardId/{id}")
-	public ResponseEntity<List<RoomEntity>> getAllByWard(@PathVariable long id){
-		List<RoomEntity> list=roomService.findByWardId(id);
-		return new ResponseEntity<List<RoomEntity>>(list,HttpStatus.OK);
+
+	@GetMapping(path = "/getByWardId/{id}")
+	public ResponseEntity<List<RoomEntity>> getAllByWard(@PathVariable long id) {
+		try {
+			List<RoomEntity> list = roomService.findByWardId(id);
+			logger.info("Retrieved rooms by ward ID successfully");
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("Error occurred while retrieving rooms by ward ID", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	@GetMapping(path = "/getById/{id}")
-	public ResponseEntity<RoomBean> getById(@PathVariable Long id){
-		RoomBean roombyid = roomService.getById(id);
-		return new ResponseEntity<RoomBean>(roombyid,HttpStatus.OK);	
+
+	@GetMapping(path = "/getByRoomId/{id}")
+	public ResponseEntity<RoomBean> getById(@PathVariable Long id) {
+		try {
+			RoomBean roombyid = roomService.getById(id);
+			logger.info("Retrieved room by ID successfully");
+			return new ResponseEntity<>(roombyid, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("Error occurred while retrieving room by ID", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
+
 	@DeleteMapping(path = "/delete/{id}")
-	public ResponseEntity<RoomEntity> delete(@PathVariable Long id){
-		roomService.delete(id);
-		return new ResponseEntity<RoomEntity>(HttpStatus.OK);
-		
+	public ResponseEntity<String> delete(@PathVariable Long id) {
+		try {
+			roomService.delete(id);
+			logger.info("Deleted room successfully");
+			return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
+		} catch (RecordNotFoundException e) {
+			logger.error("Room deletion failed: " + e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			logger.error("Error occurred while deleting room", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping(path = "/update")
-	public ResponseEntity<RoomBean> put(@RequestBody RoomBean roomBean) throws Exception {
-
-		RoomBean roomBean1 = roomService.getById(roomBean.getId());
-		if (roomBean1 != null) {
-			roomBean1.setRoomSharing(roomBean.getRoomSharing());
-			roomBean1.setRoomPrice(roomBean.getRoomPrice());
-			roomBean1.setRoomNo(roomBean.getRoomNo());
-			roomBean1.setWardId(roomBean.getWardId());
-			roomBean1.setRoomTypeId(roomBean.getRoomTypeId());
-			roomService.save(roomBean1);
+	public ResponseEntity<String> put(@RequestBody RoomBean roomBean) {
+		try {
+			roomService.update(roomBean.getId());
+			logger.info("Room updated successfully");
+			return new ResponseEntity<>("Room updated successfully", HttpStatus.OK);
+		} catch (RecordNotFoundException e) {
+			logger.error("Room update failed: " + e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			logger.error("Error occurred while updating room", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		ResponseEntity<RoomBean> responseEntity = new ResponseEntity<>(roomBean, HttpStatus.OK);
-		return responseEntity;
 	}
 }

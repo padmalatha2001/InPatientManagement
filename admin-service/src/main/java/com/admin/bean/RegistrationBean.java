@@ -6,7 +6,7 @@ public class RegistrationBean {
 	private int id;
 	private String firstName;
 	private String lastName;
-	private Date birthDay;
+	private Date dateOfBirth;
 	private String email;
 	private String gender;
 	private long phoneNumber;
@@ -26,13 +26,16 @@ public class RegistrationBean {
 	}
 
 
-	public RegistrationBean(int id, String firstName, String lastName, Date birthDay, String email, String gender,
+	
+
+
+	public RegistrationBean(int id, String firstName, String lastName, Date dateOfBirth, String email, String gender,
 			long phoneNumber, String serviceType, String password) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.birthDay = birthDay;
+		this.dateOfBirth = dateOfBirth;
 		this.email = email;
 		this.gender = gender;
 		this.phoneNumber = phoneNumber;
@@ -72,13 +75,17 @@ public class RegistrationBean {
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDay() {
-		return birthDay;
+	
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public void setBirthDay(Date birthDay) {
-		this.birthDay = birthDay;
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
+
 
 	public String getEmail() {
 		return email;
@@ -114,10 +121,13 @@ public class RegistrationBean {
 
 	@Override
 	public String toString() {
-		return "RegistrationBean [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay="
-				+ birthDay + ", email=" + email + ", gender=" + gender + ", phoneNumber=" + phoneNumber
-				+ ", serviceType=" + serviceType + "]";
+		return "RegistrationBean [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", dateOfBirth="
+				+ dateOfBirth + ", email=" + email + ", gender=" + gender + ", phoneNumber=" + phoneNumber
+				+ ", serviceType=" + serviceType + ", password=" + password + "]";
 	}
+
+
+	
 	
 
 }

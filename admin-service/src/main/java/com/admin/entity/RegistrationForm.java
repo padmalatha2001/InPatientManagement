@@ -20,8 +20,8 @@ public class RegistrationForm {
 	private String firstName;
 	@Column(name = "lastName")
 	private String lastName;
-	@Column(name = "birthDay")
-	private Date birthDay;
+	@Column(name = "dateOfBirth")
+	private Date dateOfBirth;
 	@Column(name = "email")
 	private String email;
 	@Column(name = "gender")
@@ -36,28 +36,6 @@ public class RegistrationForm {
 	public RegistrationForm() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-
-	public RegistrationForm(int id, String firstName, String lastName, Date birthDay, String email, String gender,
-			String password, long phoneNumber, String serviceType) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.birthDay = birthDay;
-		this.email = email;
-		this.gender = gender;
-		this.password = password;
-		this.phoneNumber = phoneNumber;
-		this.serviceType = serviceType;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public int getId() {
@@ -84,12 +62,12 @@ public class RegistrationForm {
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDay() {
-		return birthDay;
+	public Date getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public void setBirthDay(Date birthDay) {
-		this.birthDay = birthDay;
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public String getEmail() {
@@ -108,6 +86,14 @@ public class RegistrationForm {
 		this.gender = gender;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public long getPhoneNumber() {
 		return phoneNumber;
 	}
@@ -124,11 +110,27 @@ public class RegistrationForm {
 		this.serviceType = serviceType;
 	}
 
+	public RegistrationForm(int id, String firstName, String lastName, Date dateOfBirth, String email, String gender,
+			String password, long phoneNumber, String serviceType) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dateOfBirth = dateOfBirth;
+		this.email = email;
+		this.gender = gender;
+		this.password = password;
+		this.phoneNumber = phoneNumber;
+		this.serviceType = serviceType;
+	}
+
 	@Override
 	public String toString() {
-		return "RegistrationForm [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay="
-				+ birthDay + ", email=" + email + ", gender=" + gender + ", phoneNumber=" + phoneNumber
-				+ ", serviceType=" + serviceType + "]";
+		return "RegistrationForm [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", dateOfBirth="
+				+ dateOfBirth + ", email=" + email + ", gender=" + gender + ", password=" + password + ", phoneNumber="
+				+ phoneNumber + ", serviceType=" + serviceType + "]";
 	}
+
+	
 
 }

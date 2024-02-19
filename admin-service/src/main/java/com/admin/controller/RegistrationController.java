@@ -1,7 +1,6 @@
 package com.admin.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.admin.bean.LoginBean;
 import com.admin.bean.RegistrationBean;
+import com.admin.entity.RegistrationForm;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.RegistrationService;
 
@@ -28,13 +29,14 @@ public class RegistrationController {
 	@Autowired
 	RegistrationService registrationService;
 	private static Logger log = LoggerFactory.getLogger(RegistrationController.class.getSimpleName());
-	
+
 	@PostMapping("/save")
 	public ResponseEntity<RegistrationBean> save(@RequestBody RegistrationBean registrationBean) {
 		log.info("Saving Registration entity");
 		try {
 			registrationService.save(registrationBean);
-			ResponseEntity<RegistrationBean> responseEntity = new ResponseEntity<>(registrationBean, HttpStatus.CREATED);
+			ResponseEntity<RegistrationBean> responseEntity = new ResponseEntity<>(registrationBean,
+					HttpStatus.CREATED);
 			log.info("Saving Registration entity is done");
 			return responseEntity;
 		} catch (Exception e) {
@@ -42,68 +44,66 @@ public class RegistrationController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<RegistrationBean> getById(@PathVariable int id) {
 		log.info("Fetching Department by Id");
-		
+
 		RegistrationBean registrationBean = registrationService.getById(id);
-			log.info("Fetching Department by Id is done");
-			return ResponseEntity.status(HttpStatus.OK).body(registrationBean);
-		
+		log.info("Fetching Department by Id is done");
+		return ResponseEntity.status(HttpStatus.OK).body(registrationBean);
+
 	}
-	
+
 	@GetMapping("/getAll")
 	public ResponseEntity<List<RegistrationBean>> getAll() {
 		log.info("Fetching All Department details");
-	
-			List<RegistrationBean> list = registrationService.getAll();
-			ResponseEntity<List<RegistrationBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-			log.info("Fetching All Department details is done");
-			return responseEntity;
-		
+
+		List<RegistrationBean> list = registrationService.getAll();
+		ResponseEntity<List<RegistrationBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
+		log.info("Fetching All Department details is done");
+		return responseEntity;
+
 	}
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteById(@PathVariable int id) {
 		log.info("Deleting Department by ID");
 		try {
 			registrationService.delete(id);
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Deleted successfully",HttpStatus.OK);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
 			log.info("Deleting Registration by ID is done");
 			return responseEntity;
 		} catch (RecordNotFoundException e) {
 			log.error("error handled");
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@PutMapping()
-	public ResponseEntity<String> update(@RequestBody RegistrationBean registrationBean){
+	public ResponseEntity<String> update(@RequestBody RegistrationBean registrationBean) {
 
 		log.info("Updating Department");
 		registrationService.update(registrationBean);
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated Successfully", HttpStatus.OK);
-			log.info("Updating Department is done");
-			return responseEntity;
-		
-	}
-	    @PostMapping("/login")
-	    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
-	        String email = credentials.get("email");
-	        String password = credentials.get("password");
+		ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated Successfully", HttpStatus.OK);
+		log.info("Updating Department is done");
+		return responseEntity;
 
-	        boolean loginSuccessful = registrationService.validateLogin(email, password);
-
-	        if (loginSuccessful) {
-	            return ResponseEntity.ok("Login Successfully");
-	        } else {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
-	        }
-	    }
 	}
 
+	@PostMapping("/login")
+    public ResponseEntity<RegistrationForm> login(@RequestBody LoginBean loginBean) {
 
-	
+    	RegistrationForm user = registrationService.validateLogin(loginBean);
+
+        if (user!=null) {
+        	System.out.println(user+"login successfull");
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);}
+}
+}
+
 //	@PostMapping("/getdetails")
 //	public ResponseEntity<String>getDetails(@RequestBody String email,String password)
 //	{
@@ -112,7 +112,7 @@ public class RegistrationController {
 //		
 //	}
 //	
-	
+
 //	@GetMapping("/getDetails")
 //	public ResponseEntity<String> getDetails(@RequestBody String email ,@RequestBody String password){
 //
@@ -129,5 +129,3 @@ public class RegistrationController {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
 //        }
 //    }
-		
-	

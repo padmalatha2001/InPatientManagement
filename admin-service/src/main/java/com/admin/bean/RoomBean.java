@@ -1,15 +1,5 @@
 package com.admin.bean;
 
-import com.admin.entity.RoomType;
-import com.admin.entity.Ward;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 public class RoomBean {
 	
 	private long id;
