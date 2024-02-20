@@ -174,16 +174,22 @@ private void entityToBean(RoomType roomType, RoomTypeBean roomTypeBean) {
 	}
 
 	@Override
-	public void update(long bedId) {
+	public void update(long bedId,BedBean updatedBed) {
 		// TODO Auto-generated method stub
 		BedEntity bedEntity = bedEntityRepository.findById(bedId)
 				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
 		if (bedEntity != null) {
-			if (bedEntity.getStatus().equalsIgnoreCase("active")) {
-				bedEntity.setStatus("InActive");
-			} else {
-				bedEntity.setStatus("Active");
-			}
+			bedEntity.setBedNo(updatedBed.getBedNo());
+			RoomBean room=updatedBed.getRoomId();
+			RoomEntity roomEntity=new RoomEntity();
+			beanToEntity(roomEntity,room);
+			bedEntity.setRoomId(roomEntity);
+			bedEntity.setStatus(updatedBed.getStatus());
+//			if (bedEntity.getStatus().equalsIgnoreCase("Active")) {
+//				bedEntity.setStatus("InActive");
+//			} else {
+//				bedEntity.setStatus("Active");
+//			}
 		}
 		bedEntityRepository.save(bedEntity);
 		

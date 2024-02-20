@@ -74,11 +74,11 @@ public class BedEntityController {
 	}
 
 	@PutMapping("/update/{bedId}")
-	public ResponseEntity<String> put(@PathVariable Long bedId) {
+	public ResponseEntity<String> put(@PathVariable Long bedId,@RequestBody BedBean bed) {
 
 		log.info("Updating BedStaus");
 		try {
-			     bedService.update(bedId);
+			     bedService.update(bedId,bed);
 			     ResponseEntity<String> responseEntity = new ResponseEntity<>("Bed Status updated Successfully", HttpStatus.OK);
 					log.info("Updating Bed is done");
 					return responseEntity;
