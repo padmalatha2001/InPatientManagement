@@ -33,7 +33,7 @@ public class PatientBillingEntity {
 	@Column(name = "paid_amount")
 	private double paidAmount;
 	@Column(name = "discount")
-	private double discount;
+	private double discount;  
 	@Column(name = "total_amount")
 	private double totalAmount;
 	@Column(name = "payment_status")
@@ -107,6 +107,13 @@ public class PatientBillingEntity {
 	}
 	public PatientBillingEntity() {
 		super();
+	}
+
+	@Override
+	public String toString() {
+		return "PatientBillingEntity [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
+				+ bedAllocationId + ", paidAmount=" + paidAmount + ", discount=" + discount + ", totalAmount="
+				+ totalAmount + ", paymentStatus=" + paymentStatus + "]";
 	}
 
 }
