@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,13 +28,16 @@ public class PatientEntity {
 	private long patientContactNo;
 	@Column(name="patient_alternte_contact_no")
 	private long patientAlternteContactNo;
+	@ManyToOne
+	@JoinColumn(name = "doctor", referencedColumnName = "doctor_id")
+	private DoctorEntity doctor;
 	
 	public PatientEntity() {
 		
 	}
 	
-	public PatientEntity(int patientId, String firstName, String lastName, char patientGender,
-			int patientAge, long patientContactNo, long patientAlternteContactNo) {
+	public PatientEntity(int patientId, String firstName, String lastName, char patientGender, int patientAge,
+			long patientContactNo, long patientAlternteContactNo, DoctorEntity doctor) {
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -41,7 +46,10 @@ public class PatientEntity {
 		this.patientAge = patientAge;
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
+		this.doctor = doctor;
 	}
+
+
 	public int getPatientId() {
 		return patientId;
 	}
@@ -85,12 +93,24 @@ public class PatientEntity {
 		this.patientAlternteContactNo = patientAlternteContactNo;
 	}
 
+	
+	public DoctorEntity getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(DoctorEntity doctor) {
+		this.doctor = doctor;
+	}
+
 	@Override
 	public String toString() {
 		return "PatientEntity [patientId=" + patientId + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", patientGender=" + patientGender + ", patientAge=" + patientAge + ", patientContactNo="
-				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + "]";
+				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + ", doctor=" + doctor
+				+ "]";
 	}
+
+	
 
 	
 }

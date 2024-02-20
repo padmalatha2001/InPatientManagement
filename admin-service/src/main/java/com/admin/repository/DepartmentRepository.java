@@ -10,5 +10,5 @@ import com.admin.entity.Department;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department,Long>{
-	
+	Department getByName(String name);
 }

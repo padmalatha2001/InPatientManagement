@@ -88,21 +88,20 @@ public class RegistrationController {
 		ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated Successfully", HttpStatus.OK);
 		log.info("Updating Department is done");
 		return responseEntity;
-
 	}
+	    @PostMapping("/login")
+	    public ResponseEntity<RegistrationForm> login(@RequestBody LoginBean loginBean) {
 
-	@PostMapping("/login")
-    public ResponseEntity<RegistrationForm> login(@RequestBody LoginBean loginBean) {
+	    	RegistrationForm user = registrationService.validateLogin(loginBean);
 
-    	RegistrationForm user = registrationService.validateLogin(loginBean);
-
-        if (user!=null) {
-        	System.out.println(user+"login successfull");
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);}
-}
-}
+	        if (user!=null) {
+	        	System.out.println(user+"login successfull");
+	            return ResponseEntity.ok(user);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+	        }
+	    }
+	}
 
 //	@PostMapping("/getdetails")
 //	public ResponseEntity<String>getDetails(@RequestBody String email,String password)

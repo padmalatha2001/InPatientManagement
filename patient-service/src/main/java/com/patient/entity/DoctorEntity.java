@@ -1,6 +1,4 @@
-package com.admin.entity;
-
-import java.util.Objects;
+package com.patient.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,28 +8,30 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="department")
-public class Department {
+@Table(name="doctor")
+public class DoctorEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="dept_id")
+	@Column(name="doctor_id")
 	private long id;
-	@Column(name="departmentName")
+	@Column(name="doctor_name")
 	private String name;
+	@Column(name="department_id")
+	private long departmentId;
 	
-	public Department() {
+	public DoctorEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Department(long id, String name) {
+	public DoctorEntity(long id, String name, long departmentId) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.departmentId = departmentId;
 	}
-	
-	
+
 	public long getId() {
 		return id;
 	}
@@ -48,12 +48,19 @@ public class Department {
 		this.name = name;
 	}
 
+	public long getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(long departmentId) {
+		this.departmentId = departmentId;
+	}
+
 	@Override
 	public String toString() {
-		return "Department [id=" + id + ", name=" + name + "]";
+		return "DoctorEntity [id=" + id + ", name=" + name + ", departmentId=" + departmentId + "]";
 	}
 	
 	
-    
 	
 }

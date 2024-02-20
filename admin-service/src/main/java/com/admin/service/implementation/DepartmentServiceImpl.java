@@ -22,8 +22,13 @@ public class DepartmentServiceImpl implements DepartmentService{
 	
 		// TODO Auto-generated method stub
 		Department department=new Department();
-		beanToEntity(departmentBean,department); 
-		 departmentRepository.save(department);
+		 Department dept=departmentRepository.getByName(departmentBean.getName());
+		 if(dept==null)
+		 {
+			 beanToEntity(departmentBean,department); 
+			 departmentRepository.save(department);
+		 }
+		
 		 return departmentBean;
 	}
 	@Override

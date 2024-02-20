@@ -9,6 +9,10 @@ public class DepartmentBean {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	 public DepartmentBean(String name) {
+	        this.name = name;
+	    }
+
 
 	public DepartmentBean(long id, String name) {
 		super();

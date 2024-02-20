@@ -66,11 +66,11 @@ public class DepartmentController {
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity<String> deleteById(@PathVariable long id) {
+	public ResponseEntity deleteById(@PathVariable long id) {
 		log.info("Deleting Department by ID");
 		try {
 			departmentService.delete(id);
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Deleted successfully",HttpStatus.OK);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
 			log.info("Deleting Department by ID is done");
 			return responseEntity;
 		} catch (RecordNotFoundException e) {
@@ -80,7 +80,7 @@ public class DepartmentController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<String> put(@RequestBody Department department,@PathVariable long id) throws Exception {
+	public ResponseEntity<DepartmentBean> put(@RequestBody Department department,@PathVariable long id) throws Exception {
 
 		log.info("Updating Department");
 		try {
@@ -89,12 +89,12 @@ public class DepartmentController {
 				department1.setName(department.getName());
 				departmentService.save(department1);
 			}
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated Successfully", HttpStatus.OK);
+			ResponseEntity<DepartmentBean> responseEntity = new ResponseEntity<>(department1, HttpStatus.OK);
 			log.info("Updating Department is done");
 			return responseEntity;
 		} catch (RecordNotFoundException e) {
 			log.error("error handled");
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 }

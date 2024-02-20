@@ -34,10 +34,10 @@ private PatientService patientService;
 }
 
 @GetMapping
-public List<PatientBean> getAll() {
+public ResponseEntity<List<PatientBean>> getAll() {
 	
 	 List<PatientBean> patientBean=patientService.getAll();
-     return (List<PatientBean>) new ResponseEntity<List<PatientBean>>(patientBean,HttpStatus.OK) ;
+     return new ResponseEntity<List<PatientBean>>(patientBean,HttpStatus.OK) ;
      
 	}
 
@@ -56,6 +56,19 @@ public ResponseEntity<Void> deletePatient(@PathVariable Integer id) {
     return ResponseEntity.noContent().build();
 }
 
+@GetMapping("/getByDoctor/{name}")
+public ResponseEntity getPatients(@PathVariable String name)
+{
+	List<Object[]> result=patientService.getPatientDetailsByDoctor(name);
+	return new ResponseEntity(result,HttpStatus.OK);
+}
+
+@GetMapping("/getByFullName/{name}")
+public ResponseEntity getPatientsByName(@PathVariable String name)
+{
+	List<Object[]> result=patientService.getPatientDetailsByFullName(name);
+	return new ResponseEntity(result,HttpStatus.OK);
+}
 
 }
 
