@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import com.admin.service.RegistrationService;
 
 @RestController
 @RequestMapping("register")
+@CrossOrigin(origins = "http://localhost:4200")
 public class RegistrationController {
 
 	@Autowired
@@ -130,17 +132,37 @@ public class RegistrationController {
 	}
 
 	@PostMapping("/verify")
-	public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String enteredOtp) {
+	public ResponseEntity verifyOtp(@RequestParam String email, @RequestParam String enteredOtp) {
 		try {
 			if (registrationService.verifyOtp(email, enteredOtp)) {
+				String jsonString = "{\"message\":\"Verified Successfully\"}";
 
-				return ResponseEntity.ok("OTP verification successful");
+		        // Set Content-Type header to application/json
+		        return ResponseEntity.status(HttpStatus.OK)
+		                .header("Content-Type", "application/json")
+		                .body(jsonString);
+             // System.out.println("successfull");
+				//return  new ResponseEntity(HttpStatus.OK);
 			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
+				String jsonString = "{\"message\":\"Invalid OTP\"}";
+
+		        // Set Content-Type header to application/json
+		        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+		                .header("Content-Type", "application/json")
+		                .body(jsonString);
+				//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
 			}
 		} catch (RuntimeException e) {
 			// Handle exceptions thrown during OTP verification
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			//System.out.println("error occured");
+			//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			String jsonString = "{\"message\":\"error occured\"}";
+
+	        // Set Content-Type header to application/json
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .header("Content-Type", "application/json")
+	                .body(jsonString);
+
 		}
 	}
 }
