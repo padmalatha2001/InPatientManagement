@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +15,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.bean.LoginBean;
+import com.admin.bean.OtpBean;
 import com.admin.bean.RegistrationBean;
 import com.admin.entity.RegistrationForm;
+import com.admin.exception.EmailAlreadyExistsException;
+import com.admin.exception.EmailNotFoundException;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.RegistrationService;
 
@@ -39,9 +44,10 @@ public class RegistrationController {
 					HttpStatus.CREATED);
 			log.info("Saving Registration entity is done");
 			return responseEntity;
-		} catch (Exception e) {
+		} catch (EmailAlreadyExistsException e) {
 			log.error("error handled");
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -89,20 +95,52 @@ public class RegistrationController {
 		log.info("Updating Department is done");
 		return responseEntity;
 	}
-	    @PostMapping("/login")
-	    public ResponseEntity<RegistrationForm> login(@RequestBody LoginBean loginBean) {
+	@PostMapping("/login")
+	public ResponseEntity<RegistrationForm> login(@RequestBody LoginBean loginBean) {
 
-	    	RegistrationForm user = registrationService.validateLogin(loginBean);
+		RegistrationForm user = registrationService.validateLogin(loginBean);
 
-	        if (user!=null) {
-	        	System.out.println(user+"login successfull");
-	            return ResponseEntity.ok(user);
-	        } else {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-	        }
-	    }
+		if (user != null) {
+			System.out.println(user + "login successfull");
+			return ResponseEntity.ok(user);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
 	}
 
+	@GetMapping("/generateOtp")
+	public ResponseEntity<RegistrationForm> generateOtpAndSendEmail(@RequestParam("email") String email) {
+
+		try {
+			RegistrationForm user = registrationService.forgetPassword(email);
+			if (user != null) {
+
+				return new ResponseEntity<RegistrationForm>(user, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<RegistrationForm>(HttpStatus.UNAUTHORIZED);
+			}
+		} catch (EmailNotFoundException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<RegistrationForm>(HttpStatus.NOT_FOUND);
+
+		}
+	}
+
+	@PostMapping("/verify")
+	public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String enteredOtp) {
+		try {
+			if (registrationService.verifyOtp(email, enteredOtp)) {
+
+				return ResponseEntity.ok("OTP verification successful");
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
+			}
+		} catch (RuntimeException e) {
+			// Handle exceptions thrown during OTP verification
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+}
 //	@PostMapping("/getdetails")
 //	public ResponseEntity<String>getDetails(@RequestBody String email,String password)
 //	{

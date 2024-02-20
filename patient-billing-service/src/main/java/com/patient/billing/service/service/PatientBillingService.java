@@ -1,11 +1,16 @@
 package com.patient.billing.service.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.patient.billing.service.bean.BedAllocationBean;
 import com.patient.billing.service.bean.PatientBean;
 import com.patient.billing.service.bean.PatientBillingBean;
+import com.patient.billing.service.dto.PatientBillingDTO;
+import com.patient.billing.service.entity.PatientBillingEntity;
+
 
 
 public interface PatientBillingService {
@@ -17,6 +22,13 @@ public interface PatientBillingService {
   PatientBean getPatitentDetails(int patitentId);
 void update(PatientBillingBean patitentBean);
  // BillingDetailsBean getBillingDetails(int patientId,Integer patientBillingId);
-List<Map<String, Object>> getAllDetails();
+List<PatientBillingDTO> getAllDetails();
+//List<PatientBillingEntity> getDataByMonth(String date);
+List<PatientBillingEntity> getDataByMonth(String monthName);
+//List<PatientBillingEntity> filterByDateRange(LocalDate startDate, LocalDate endDate);
+//List<PatientBillingEntity> filterByDateRange(Date startDate, Date endDate);
+//List<PatientBillingEntity> filterByDateRange(LocalDate startDate, LocalDate endDate);
+List<PatientBillingEntity> filterByDateRange(LocalDate startDate, Optional<LocalDate> endDate);
+List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate);
 	
 }
