@@ -55,6 +55,7 @@ public class WardBean {
 	public void setDepartmentId(DepartmentBean departmentId) {
 		this.departmentId = departmentId;
 	}
+	
 	@Override
 	public String toString() {
 		return "WardBean [id=" + id + ", name=" + name + ", capacity=" + capacity + ", availability=" + availability

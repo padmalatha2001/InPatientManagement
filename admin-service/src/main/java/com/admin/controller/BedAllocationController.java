@@ -1,6 +1,7 @@
 package com.admin.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,8 @@ public class BedAllocationController {
 		    return responseEntity;
 		
 	}
+	
+	
 
 	@DeleteMapping("/deleteById/{id}")
 	public ResponseEntity<String> deleteById(@PathVariable int id) {

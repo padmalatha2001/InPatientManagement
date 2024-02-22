@@ -20,18 +20,28 @@ public class Department {
 	@Column(name="departmentName")
 	private String name;
 	
+	
 	public Department() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	
+//	public Department(long id, String name, String status) {
+//		super();
+//		this.id = id;
+//		this.name = name;
+//		//this.status = status;
+//	}
+
 
 	public Department(long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
-	
-	
+
+
 	public long getId() {
 		return id;
 	}
@@ -47,11 +57,25 @@ public class Department {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
+
+//	public String getStatus() {
+//		return status;
+//	}
+//
+//
+//	public void setStatus(String status) {
+//		this.status = status;
+//	}
+
 
 	@Override
 	public String toString() {
 		return "Department [id=" + id + ", name=" + name + "]";
 	}
+
+
 	
 	
     

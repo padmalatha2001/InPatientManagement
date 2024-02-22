@@ -20,6 +20,8 @@ public class RoomBean {
 	
 	private double roomPrice;
 	
+	private int availability;
+	
 	private RoomTypeBean roomTypeId;
 	
 	private WardBean wardId;
@@ -29,12 +31,14 @@ public class RoomBean {
 		// TODO Auto-generated constructor stub
 	}
 
-	public RoomBean(long id, int roomNo, int roomSharing, double roomPrice, RoomTypeBean roomTypeId, WardBean wardId) {
+	public RoomBean(long id, int roomNo, int roomSharing, double roomPrice, int availability, RoomTypeBean roomTypeId,
+			WardBean wardId) {
 		super();
 		this.id = id;
 		this.roomNo = roomNo;
 		this.roomSharing = roomSharing;
 		this.roomPrice = roomPrice;
+		this.availability = availability;
 		this.roomTypeId = roomTypeId;
 		this.wardId = wardId;
 	}
@@ -71,6 +75,14 @@ public class RoomBean {
 		this.roomPrice = roomPrice;
 	}
 
+	public int getAvailability() {
+		return availability;
+	}
+
+	public void setAvailability(int availability) {
+		this.availability = availability;
+	}
+
 	public RoomTypeBean getRoomTypeId() {
 		return roomTypeId;
 	}
@@ -90,9 +102,10 @@ public class RoomBean {
 	@Override
 	public String toString() {
 		return "RoomBean [id=" + id + ", roomNo=" + roomNo + ", roomSharing=" + roomSharing + ", roomPrice=" + roomPrice
-				+ ", roomTypeId=" + roomTypeId + ", wardId=" + wardId + "]";
+				+ ", availability=" + availability + ", roomTypeId=" + roomTypeId + ", wardId=" + wardId + "]";
 	}
 
+	
 	
 
 }
