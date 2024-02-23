@@ -73,4 +73,11 @@ public class RoomController {
 		ResponseEntity<RoomBean> responseEntity = new ResponseEntity<>(roomBean, HttpStatus.OK);
 		return responseEntity;
 	}
+	
+	@PutMapping("/updateStatus")
+	public void put(@RequestBody RoomEntity roomEntity)
+	{
+		roomService.updateStatus(roomEntity);
+	}
+
 }

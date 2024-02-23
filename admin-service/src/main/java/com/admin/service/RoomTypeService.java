@@ -13,4 +13,5 @@ public interface RoomTypeService {
 	RoomType update(long id);
 
 	public void delete(long id);
+	void updateStatus(RoomType roomEntity);
 }

@@ -11,20 +11,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 public class RoomBean {
-	
+
 	private long id;
-	
+
 	private int roomNo;
-	
+
 	private int roomSharing;
-	
+
 	private double roomPrice;
-	
+
 	private int availability;
-	
+
 	private RoomTypeBean roomTypeId;
-	
+
 	private WardBean wardId;
+	private String status;
 
 	public RoomBean() {
 		super();
@@ -32,7 +33,7 @@ public class RoomBean {
 	}
 
 	public RoomBean(long id, int roomNo, int roomSharing, double roomPrice, int availability, RoomTypeBean roomTypeId,
-			WardBean wardId) {
+			WardBean wardId, String status) {
 		super();
 		this.id = id;
 		this.roomNo = roomNo;
@@ -41,6 +42,7 @@ public class RoomBean {
 		this.availability = availability;
 		this.roomTypeId = roomTypeId;
 		this.wardId = wardId;
+		this.status = status;
 	}
 
 	public long getId() {
@@ -99,13 +101,19 @@ public class RoomBean {
 		this.wardId = wardId;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "RoomBean [id=" + id + ", roomNo=" + roomNo + ", roomSharing=" + roomSharing + ", roomPrice=" + roomPrice
-				+ ", availability=" + availability + ", roomTypeId=" + roomTypeId + ", wardId=" + wardId + "]";
+				+ ", availability=" + availability + ", roomTypeId=" + roomTypeId + ", wardId=" + wardId + ", status="
+				+ status + "]";
 	}
-
-	
-	
 
 }

@@ -33,6 +33,8 @@ public class RoomEntity {
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "wardId", referencedColumnName = "wardId")
 	private Ward wardId;
+	@Column(name="status")
+	private String status;
 
 	public RoomEntity() {
 		super();
@@ -107,12 +109,22 @@ public class RoomEntity {
 		this.wardId = wardId;
 	}
 
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "RoomEntity [id=" + id + ", roomNo=" + roomNo + ", roomSharing=" + roomSharing + ", roomPrice="
 				+ roomPrice + ", availability=" + availability + ", roomTypeId=" + roomTypeId + ", wardId=" + wardId
-				+ "]";
+				+ ", status=" + status + "]";
 	}
+
 	
 	
 	

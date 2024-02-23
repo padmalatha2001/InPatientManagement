@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.patient.bean.DoctorBean;
+import com.patient.entity.DoctorEntity;
 import com.patient.service.DoctorService;
 
 @Controller
@@ -69,5 +70,10 @@ public class DoctorController {
 			log.info("Updating Doctor");
 			doctorService.update(doctorBean);
 			return null;
+		}
+		
+		@PutMapping("/updateStatus")
+		public void updateStatus(@RequestBody DoctorEntity doctor) {
+			doctorService.updateStatus(doctor);
 		}
 }

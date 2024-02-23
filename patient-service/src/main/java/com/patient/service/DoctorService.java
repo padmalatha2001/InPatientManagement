@@ -3,6 +3,7 @@ package com.patient.service;
 import java.util.List;
 
 import com.patient.bean.DoctorBean;
+import com.patient.entity.DoctorEntity;
 
 public interface DoctorService {
 
@@ -15,4 +16,5 @@ DoctorBean save(DoctorBean doctorBean);
 	void delete(Long id);
 
     void update(DoctorBean doctorbean);
+    void updateStatus(DoctorEntity doctor);
 }

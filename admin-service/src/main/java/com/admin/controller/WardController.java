@@ -112,5 +112,13 @@ public class WardController {
 		}
 
 	}
+	
+	
+	@PutMapping("/updateStatus")
+	public void put(@RequestBody Ward ward)
+	{
+		wardService.updateStatus(ward);
+	}
+
 
 }

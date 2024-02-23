@@ -29,6 +29,28 @@ public class Ward {
 	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "departmentId",referencedColumnName = "dept_id")
 	private Department departmentId;
+	@Column(name="status")
+	private String status;
+	
+	
+	
+	public Ward(long id, String name, int capacity, int availability, Department departmentId, String status) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.capacity = capacity;
+		this.availability = availability;
+		this.departmentId = departmentId;
+		this.status = status;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public long getId() {
 		return id;
@@ -54,16 +76,13 @@ public class Ward {
 		this.capacity = capacity;
 	}
 
-	public int getAvailability() {
-		return availability;
-	}
-
 	public void setAvailability(int availability) {
 		this.availability = availability;
 	}
 
-	
-	
+	public int getAvailability() {
+		return availability;
+	}
 
 	public Department getDepartmentId() {
 		return departmentId;
@@ -80,8 +99,10 @@ public class Ward {
 	@Override
 	public String toString() {
 		return "Ward [id=" + id + ", name=" + name + ", capacity=" + capacity + ", availability=" + availability
-				+ ", departmentId=" + departmentId + "]";
+				+ ", departmentId=" + departmentId + ", status=" + status + "]";
 	}
+
+	
 
 	
 	

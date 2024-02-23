@@ -31,13 +31,15 @@ public class PatientEntity {
 	@ManyToOne
 	@JoinColumn(name = "doctor", referencedColumnName = "doctor_id")
 	private DoctorEntity doctor;
+	@Column
+	private String status;
 	
 	public PatientEntity() {
 		
 	}
 	
 	public PatientEntity(int patientId, String firstName, String lastName, char patientGender, int patientAge,
-			long patientContactNo, long patientAlternteContactNo, DoctorEntity doctor) {
+			long patientContactNo, long patientAlternteContactNo, DoctorEntity doctor, String status) {
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -47,7 +49,10 @@ public class PatientEntity {
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
 		this.doctor = doctor;
+		this.status = status;
 	}
+
+
 
 
 	public int getPatientId() {
@@ -102,13 +107,24 @@ public class PatientEntity {
 		this.doctor = doctor;
 	}
 
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "PatientEntity [patientId=" + patientId + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", patientGender=" + patientGender + ", patientAge=" + patientAge + ", patientContactNo="
 				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + ", doctor=" + doctor
-				+ "]";
+				+ ", status=" + status + "]";
 	}
+
+	
 
 	
 

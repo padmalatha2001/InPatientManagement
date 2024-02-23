@@ -27,6 +27,7 @@ public class WardServiceImpl implements WardService {
 		if(ward1==null)
 		{
 	      Ward ward = new Ward();
+	      wardBean.setStatus("Active");
 	      beanToEntity(ward, wardBean);
           wardRepository.save(ward);
 		}
@@ -39,6 +40,7 @@ public class WardServiceImpl implements WardService {
 		ward.setName(wardBean.getName());
 		ward.setCapacity(wardBean.getCapacity());
 		ward.setAvailability(wardBean.getAvailability());
+		ward.setStatus(wardBean.getStatus());
 		DepartmentBean DepartmentBean = wardBean.getDepartmentId();
 		Department Department = new Department();
 		beanToEntity(DepartmentBean, Department);
@@ -51,6 +53,7 @@ public class WardServiceImpl implements WardService {
 		wardBean.setName(ward.getName());
 		wardBean.setCapacity(ward.getCapacity());
 		wardBean.setAvailability(ward.getAvailability());
+		wardBean.setStatus(ward.getStatus());
 		DepartmentBean DepartmentBean = new DepartmentBean();
 		Department Department = ward.getDepartmentId();
 		entityToBean(Department, DepartmentBean);
@@ -92,6 +95,7 @@ public class WardServiceImpl implements WardService {
 			wardBean.setName(ward.getName());
 			wardBean.setCapacity(ward.getCapacity());
 			wardBean.setAvailability(ward.getAvailability());
+			wardBean.setStatus(ward.getStatus());
 			DepartmentBean DepartmentBean = new DepartmentBean();
 			Department Department = ward.getDepartmentId();
 			entityToBean(Department, DepartmentBean);
@@ -110,6 +114,7 @@ public class WardServiceImpl implements WardService {
 			ward.setName(wardBean.getName());
 			ward.setCapacity(wardBean.getCapacity());
 			ward.setAvailability(wardBean.getAvailability());
+			ward.setStatus(wardBean.getStatus());
 			Department Department = ward.getDepartmentId();
 			
 			ward.setDepartmentId(Department);
@@ -124,24 +129,33 @@ public class WardServiceImpl implements WardService {
 
 	}
 
-	public void beanToEntity(DepartmentBean DepartmentBean, Department Department) {
-		Department.setId(DepartmentBean.getId());
-		Department.setName(DepartmentBean.getName());
-
+	public void beanToEntity(DepartmentBean departmentBean,Department department)
+	{
+		department.setId(departmentBean.getId());
+		department.setName(departmentBean.getStatus());
+		department.setName(departmentBean.getName());
+		
 	}
 
-	public void entityToBean(Department department, DepartmentBean departmentBean) {
+	public void entityToBean(Department department,DepartmentBean departmentBean)
+	{
 		departmentBean.setId(department.getId());
+		departmentBean.setStatus(department.getStatus());
 		departmentBean.setName(department.getName());
 	}
-
 	@Override
 	public List<Ward> findByDepartmentId(Long departmentId) {
 		// TODO Auto-generated method stub
 		return wardRepository.findByDepartmentId_Id(departmentId);
 	}
 
-	
+	@Override
+	public void updateStatus(Ward ward) {
+		
+		ward.setStatus("InActive");
+		wardRepository.save(ward);
+			
+	}
 
 
 }

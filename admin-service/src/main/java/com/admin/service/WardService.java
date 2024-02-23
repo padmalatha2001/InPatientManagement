@@ -23,4 +23,6 @@ public interface WardService {
 
 	WardBean save(WardBean wardBean);
 
+	void updateStatus(Ward ward);
+
 }
