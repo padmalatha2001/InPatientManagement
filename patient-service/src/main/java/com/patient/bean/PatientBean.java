@@ -1,21 +1,20 @@
 package com.patient.bean;
 
-
 public class PatientBean {
 	private int patientId;
 	private String firstName;
 	private String lastName;
-	private char patientGender;
+	private String patientGender;
 	private int patientAge;
 	private long patientContactNo;
 	private long patientAlternteContactNo;
 	private DoctorBean doctorBean;
-	
+
 	public PatientBean() {
 		super();
 	}
 
-	public PatientBean(int patientId, String firstName, String lastName, char patientGender, int patientAge,
+	public PatientBean(int patientId, String firstName, String lastName, String patientGender, int patientAge,
 			long patientContactNo, long patientAlternteContactNo, DoctorBean doctorBean) {
 		super();
 		this.patientId = patientId;
@@ -32,82 +31,65 @@ public class PatientBean {
 		return patientId;
 	}
 
-
 	public void setPatientId(int patientId) {
 		this.patientId = patientId;
 	}
-
 
 	public String getFirstName() {
 		return firstName;
 	}
 
-
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-
 
 	public String getLastName() {
 		return lastName;
 	}
 
-
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
-
-	public char getPatientGender() {
+	public String getPatientGender() {
 		return patientGender;
 	}
 
-
-	public void setPatientGender(char patientGender) {
+	public void setPatientGender(String patientGender) {
 		this.patientGender = patientGender;
 	}
-
 
 	public int getPatientAge() {
 		return patientAge;
 	}
 
-
 	public void setPatientAge(int patientAge) {
 		this.patientAge = patientAge;
 	}
-
 
 	public long getPatientContactNo() {
 		return patientContactNo;
 	}
 
-
 	public void setPatientContactNo(long patientContactNo) {
 		this.patientContactNo = patientContactNo;
 	}
-
 
 	public long getPatientAlternteContactNo() {
 		return patientAlternteContactNo;
 	}
 
-
 	public void setPatientAlternteContactNo(long patientAlternteContactNo) {
 		this.patientAlternteContactNo = patientAlternteContactNo;
 	}
-
-	
 
 	public DoctorBean getDoctorBean() {
 		return doctorBean;
 	}
 
-
 	public void setDoctorBean(DoctorBean doctorBean) {
 		this.doctorBean = doctorBean;
 	}
-
 
 	@Override
 	public String toString() {
@@ -116,6 +98,5 @@ public class PatientBean {
 				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + ", doctorBean="
 				+ doctorBean + "]";
 	}
-	
-	
+
 }

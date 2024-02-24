@@ -97,18 +97,18 @@ public class RoomController {
 		}
 	}
 
-	@PutMapping(path = "/update")
-	public ResponseEntity<String> put(@RequestBody RoomBean roomBean) {
-		try {
-			roomService.update(roomBean.getId());
-			logger.info("Room updated successfully");
-			return new ResponseEntity<>("Room updated successfully", HttpStatus.OK);
-		} catch (RecordNotFoundException e) {
-			logger.error("Room update failed: " + e.getMessage());
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		} catch (Exception e) {
-			logger.error("Error occurred while updating room", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+//	 @PutMapping(path = "/update")
+    public ResponseEntity<Object> updateRoom(@RequestBody RoomBean roomBean) {
+        try {
+            roomService.update(roomBean.getId());
+            logger.info("Room updated successfully");
+            return ResponseEntity.ok().body("{\"message\": \"Room updated successfully\"}");
+        } catch (RecordNotFoundException e) {
+            logger.error("Room update failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            logger.error("Error occurred while updating room", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Error occurred while updating room\"}");
+        }
+    }
 }

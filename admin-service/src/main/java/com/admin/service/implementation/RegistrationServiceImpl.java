@@ -216,7 +216,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String otp = generateOtp();
 			//LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // Set expiration time (5 minutes in this
 																				// example)
-			Timestamp expirationTime = Timestamp.from(Instant.now());//.plus(Duration.ofMinutes(2)));
+			Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(10)));
 
 			sendOtpEmail(email, otp);
 			saveOtp(email, otp, expirationTime);
@@ -275,12 +275,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 	    // Convert the Timestamp to Instant and then to LocalDateTime
 	    LocalDateTime expirationLocalDateTime = expirationTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-	    if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
-	        throw new RuntimeException("OTP has expired");
-	    }
+//	    if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
+//	        throw new RuntimeException("OTP has expired");
+//	    }
 
 	    // Check if the entered OTP matches the one stored in the database
-	    else if (!enteredOtp.equals(otpEntity.getOtp())) {
+	     if (!enteredOtp.equals(otpEntity.getOtp())) {
 	        throw new InvalidOtpException("Invalid OTP");
 	    }
 	    else
@@ -294,19 +294,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	    //return true;
 
-	@Scheduled(fixedRate = 100000) // 5 minutes in milliseconds
-	public void cleanupExpiredOtps() {
-		try {
-			System.out.println("scheduled start");
-			LocalDateTime currentTime = LocalDateTime.now();
-			otpRepository.deleteExpiredOtps();
-			// logger.info("Expired OTPs cleaned up successfully.");
-			System.out.println("scheduled end");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			// logger.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
-		}
-	}
+//	@Scheduled(fixedRate = 600000) // 5 minutes in milliseconds
+//	public void cleanupExpiredOtps() {
+//		try {
+//			System.out.println("scheduled start");
+//			LocalDateTime currentTime = LocalDateTime.now();
+//			otpRepository.deleteExpiredOtps();
+//			// logger.info("Expired OTPs cleaned up successfully.");
+//			System.out.println("scheduled end");
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//			// logger.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
+//		}
+//	}
 }
 
 //		RegistrationForm registrationEntity=new RegistrationForm();

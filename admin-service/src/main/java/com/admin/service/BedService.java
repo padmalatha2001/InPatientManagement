@@ -10,7 +10,7 @@ public interface BedService {
 	
 	List<BedBean> getAll();
 	void delete(long bedId);
-	void update(long bedId);
+	void update(long bedId,BedBean updatedBed);
 	List<BedBean> findByBedIdRoomEntityId(Long roomId);
 	BedBean getById(long bedId);
 }
