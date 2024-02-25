@@ -25,12 +25,12 @@ public class PatientController {
 private PatientService patientService;
 
 @PostMapping("/save")
-	public ResponseEntity<PatientBean> save(@RequestBody PatientBean patientBean) {
+	public PatientBean save(@RequestBody PatientBean patientBean) {
 	
 	patientService.save(patientBean);
 	ResponseEntity<PatientBean> responseEntity = new ResponseEntity<>(patientBean,
 			HttpStatus.OK);
-	return responseEntity;
+	return patientBean;
 }
 
 @GetMapping
@@ -68,6 +68,10 @@ public ResponseEntity getPatientsByName(@PathVariable String name)
 {
 	List<Object[]> result=patientService.getPatientDetailsByFullName(name);
 	return new ResponseEntity(result,HttpStatus.OK);
+}
+@GetMapping("/generate-number")
+public String generatePatientNumber() {
+    return patientService.generatePatientNo();
 }
 
 }

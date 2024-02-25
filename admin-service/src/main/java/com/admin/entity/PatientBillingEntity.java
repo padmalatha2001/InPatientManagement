@@ -1,4 +1,4 @@
-package com.patient.billing.service.entity;
+package com.admin.entity;
 
 
 
@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import com.patient.billing.service.bean.BedAllocationBean;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

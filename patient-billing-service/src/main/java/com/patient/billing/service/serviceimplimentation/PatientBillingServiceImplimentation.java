@@ -22,9 +22,11 @@ import com.patient.billing.service.bean.BedBean;
 import com.patient.billing.service.bean.PatientBean;
 import com.patient.billing.service.bean.PatientBillingBean;
 import com.patient.billing.service.bean.RoomBean;
+import com.patient.billing.service.dto.BedAllocationDto;
 import com.patient.billing.service.dto.PatientBillingDTO;
 import com.patient.billing.service.entity.CustomMonth;
 import com.patient.billing.service.entity.PatientBillingEntity;
+import com.patient.billing.service.entity.PatientEntity;
 import com.patient.billing.service.exception.BillingDetailsNotFoundException;
 import com.patient.billing.service.exception.BillingIdNotFoundException;
 import com.patient.billing.service.repository.PatientBillingRepository;
@@ -284,6 +286,33 @@ List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
 	public List<PatientBillingEntity> getDataByMonth(String monthName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<BedAllocationDto> getBedDetails() {
+		List<BedAllocationDto>bedAllocationDetails=patientBillingRepository.getBedAllocationDetails();
+				return bedAllocationDetails;
+	}
+
+	@Override
+	public void deleteRecord(int billId, String recordStatus) {
+	boolean existsById = patientBillingRepository.existsById(billId);
+	if(existsById)
+	{
+		//patientBillingRepository.
+	}
+		
+	}
+	
+
+	@Override
+	public BedAllocationDto getByPatientNo(String number) {
+	
+		BedAllocationDto details=patientBillingRepository.findPatientDataByPatientNumber(number);
+		
+//		String patientNumber=details.getPatientNumber();
+//		if(patientNumber.equalsIgnoreCase(number));
+		return details;
 	}
 	}
 

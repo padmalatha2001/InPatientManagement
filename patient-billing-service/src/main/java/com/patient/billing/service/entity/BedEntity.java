@@ -15,7 +15,7 @@ public class BedEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="bedId")
-    private long id;
+    private Long id;
 	@Column(name="bedNo")
 	private int bedNo;
 	@Column(name = "status")
@@ -31,7 +31,7 @@ public class BedEntity {
 
 	
 
-	public BedEntity(long id, int bedNo, String status, RoomEntity roomId) {
+	public BedEntity(Long id, int bedNo, String status, RoomEntity roomId) {
 		super();
 		this.id = id;
 		this.bedNo = bedNo;
@@ -41,11 +41,11 @@ public class BedEntity {
 
 
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
