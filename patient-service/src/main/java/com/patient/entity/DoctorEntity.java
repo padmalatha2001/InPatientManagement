@@ -19,18 +19,25 @@ public class DoctorEntity {
 	private String name;
 	@Column(name="department_id")
 	private long departmentId;
+	@Column(name="status")
+	private String status;
 	
 	public DoctorEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public DoctorEntity(long id, String name, long departmentId) {
+	
+
+	public DoctorEntity(long id, String name, long departmentId, String status) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.departmentId = departmentId;
+		this.status = status;
 	}
+
+
 
 	public long getId() {
 		return id;
@@ -56,10 +63,21 @@ public class DoctorEntity {
 		this.departmentId = departmentId;
 	}
 
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
-		return "DoctorEntity [id=" + id + ", name=" + name + ", departmentId=" + departmentId + "]";
+		return "DoctorEntity [id=" + id + ", name=" + name + ", departmentId=" + departmentId + ", status=" + status
+				+ "]";
 	}
+
 	
 	
 	

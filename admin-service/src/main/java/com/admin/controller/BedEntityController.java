@@ -32,15 +32,11 @@ public class BedEntityController {
 	@PostMapping("/save")
 	public ResponseEntity<BedBean> save(@RequestBody BedBean bedBean) {
 		log.info("Saving Bed");
-		try {
 		   BedBean bed1 = bedService.save(bedBean);
 		   ResponseEntity<BedBean> responseEntity = new ResponseEntity<>(bed1, HttpStatus.CREATED);
 		   log.info("Saving Bed is done");
 		   return responseEntity;
-		}catch(Exception e) {
-			log.error("error handled");
-			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
-		}
+		
 			
 	}
 	
@@ -103,5 +99,6 @@ public class BedEntityController {
 			  return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		  }
 	}
+	
 
 }

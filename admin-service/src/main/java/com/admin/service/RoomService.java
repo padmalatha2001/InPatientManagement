@@ -16,4 +16,5 @@ public interface RoomService {
 	public void delete(long id);
 
 	List<RoomEntity> findByWardId(Long wardId);
+	void updateStatus(RoomEntity roomEntity);
 }

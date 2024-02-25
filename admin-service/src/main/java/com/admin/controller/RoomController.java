@@ -46,6 +46,7 @@ public class RoomController {
 		}
 	}
 
+
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<RoomBean>> getAll() {
 		try {
@@ -97,7 +98,7 @@ public class RoomController {
 		}
 	}
 
-//	 @PutMapping(path = "/update")
+	 @PutMapping(path = "/update")
     public ResponseEntity<Object> updateRoom(@RequestBody RoomBean roomBean) {
         try {
             roomService.update(roomBean.getId());
@@ -111,4 +112,12 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Error occurred while updating room\"}");
         }
     }
+
+	
+	@PutMapping("/updateStatus")
+	public void put(@RequestBody RoomEntity roomEntity)
+	{
+		roomService.updateStatus(roomEntity);
+	}
+
 }

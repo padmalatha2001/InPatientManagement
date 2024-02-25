@@ -24,6 +24,8 @@ public interface PatientService {
     List<Object[]> getPatientDetailsByDoctor(String doctorName);
     
     List<Object[]> getPatientDetailsByFullName(String fullName);
+    
+    
 
 }
 

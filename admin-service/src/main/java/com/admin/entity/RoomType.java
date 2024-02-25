@@ -16,17 +16,22 @@ public class RoomType {
 	long id;
     @Column(name="roomTypeName") 
     String name;
+    @Column(name="status")
+	private String status;
 	
     public RoomType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public RoomType(long id, String name) {
+	
+	public RoomType(long id, String name, String status) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.status = status;
 	}
+
 
 	public long getId() {
 		return id;
@@ -44,10 +49,24 @@ public class RoomType {
 		this.name = name;
 	}
 
+
+	
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
 	@Override
 	public String toString() {
-		return "RoomType [id=" + id + ", name=" + name + "]";
+		return "RoomType [id=" + id + ", name=" + name + ", status=" + status + "]";
 	}
+
+	
     
     
 }

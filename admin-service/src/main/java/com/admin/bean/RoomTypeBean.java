@@ -6,11 +6,13 @@ public class RoomTypeBean {
 
 	long id;
     String name;
-	
-    public RoomTypeBean(long id, String name) {
+    private String status;
+   
+	public RoomTypeBean(long id, String name, String status) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.status = status;
 	}
 
 	public RoomTypeBean() {
@@ -34,12 +36,20 @@ public class RoomTypeBean {
 		this.name = name;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
-		return "RoomTypeBean [id=" + id + ", name=" + name + "]";
-	} 
-	
-     
+		return "RoomTypeBean [id=" + id + ", name=" + name + ", status=" + status + "]";
+	}
+
+
     
     
 	

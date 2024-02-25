@@ -21,6 +21,7 @@ public class DoctorServiceImplementation implements DoctorService{
 	public DoctorBean save(DoctorBean doctorBean) {
 		// TODO Auto-generated method stub
 		DoctorEntity doctorEntity=new DoctorEntity();
+		doctorBean.setStatus("Active");
 		BeanToEntity(doctorBean, doctorEntity);
 		doctorRepository.save(doctorEntity);
 		return doctorBean;
@@ -31,6 +32,7 @@ public class DoctorServiceImplementation implements DoctorService{
 		doctorEntity.setId(doctorBean.getId());
 		doctorEntity.setName(doctorBean.getName());
 		doctorEntity.setDepartmentId(doctorBean.getDepartmentId());
+		doctorEntity.setStatus(doctorBean.getStatus());
 	}
 
 	@Override
@@ -39,6 +41,7 @@ public class DoctorServiceImplementation implements DoctorService{
 
 		DoctorEntity doctorEntity= doctorRepository.findById(id).orElseThrow(()->new PatientIdNotFoundException("No record found with the given id"));
 		DoctorBean doctorBean=new DoctorBean();
+		
 		entityToBean(doctorEntity, doctorBean);
 
 		return doctorBean;	
@@ -68,8 +71,8 @@ public class DoctorServiceImplementation implements DoctorService{
 			doctorbean.setId(doctorEntity1.getId());
 			doctorbean.setName(doctorEntity1.getName());
 			doctorbean.setDepartmentId(doctorEntity1.getDepartmentId());
+			doctorbean.setStatus(doctorEntity1.getStatus());
 			doctorBean.add(doctorbean);
-			
 		}
 	}
 
@@ -89,7 +92,15 @@ public class DoctorServiceImplementation implements DoctorService{
 			doctorEntity.setId(doctorbean.getId());
 			doctorEntity.setName(doctorbean.getName());
 			doctorEntity.setDepartmentId(doctorbean.getDepartmentId());
+			doctorEntity.setStatus(doctorbean.getStatus());
 			doctorRepository.save(doctorEntity);
+	}
+
+	@Override
+	public void updateStatus(DoctorEntity doctor) {
+		// TODO Auto-generated method stub
+		doctor.setStatus("InActive");
+		doctorRepository.save(doctor);
 	}
 
 }

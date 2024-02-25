@@ -22,6 +22,7 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 		// TODO Auto-generated method stub
 		RoomType roomType=new RoomType();
 		beanToEntity(roomTypeBean,roomType);
+		roomType.setStatus("Active");
 		roomTypeRepository.save(roomType);
 		return roomTypeBean;
 		
@@ -30,6 +31,7 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	private void beanToEntity(RoomTypeBean roomTypeBean, RoomType roomType) {
 		// TODO Auto-generated method stub
 		roomType.setId(roomTypeBean.getId());
+		roomType.setStatus(roomTypeBean.getStatus());
 		roomType.setName(roomTypeBean.getName());
 	}
 
@@ -67,6 +69,7 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	private void entityToBean(RoomType roomType, RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
 		roomTypeBean.setId(roomType.getId());
+		roomTypeBean.setStatus(roomType.getStatus());
 		roomTypeBean.setName(roomType.getName());
 	}
 
@@ -80,6 +83,13 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	public RoomType update(long id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void updateStatus(RoomType roomEntity) {
+		
+		roomEntity.setStatus("InActive");
+		roomTypeRepository.save(roomEntity);
+			
 	}
 
 }
