@@ -38,6 +38,8 @@ public class PatientBillingEntity {
 	private double totalAmount;
 	@Column(name = "payment_status")
 	private String paymentStatus;
+	@Column(name= "status")
+	private String status;
 	public int getBillId() {
 		return billId;
 	}
@@ -94,8 +96,17 @@ public class PatientBillingEntity {
 		this.paymentStatus = paymentStatus;
 	}
 
-	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount, double discount,
-			double totalAmount, String paymentStatus) {
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
+			double discount, double totalAmount, String paymentStatus, String status) {
 		super();
 		this.billId = billId;
 		this.billingDate = billingDate;
@@ -104,7 +115,9 @@ public class PatientBillingEntity {
 		this.discount = discount;
 		this.totalAmount = totalAmount;
 		this.paymentStatus = paymentStatus;
+		this.status = status;
 	}
+
 	public PatientBillingEntity() {
 		super();
 	}
@@ -113,7 +126,8 @@ public class PatientBillingEntity {
 	public String toString() {
 		return "PatientBillingEntity [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
 				+ bedAllocationId + ", paidAmount=" + paidAmount + ", discount=" + discount + ", totalAmount="
-				+ totalAmount + ", paymentStatus=" + paymentStatus + "]";
+				+ totalAmount + ", paymentStatus=" + paymentStatus + ", status=" + status + "]";
 	}
 
+	
 }

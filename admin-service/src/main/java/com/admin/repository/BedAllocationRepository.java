@@ -7,4 +7,5 @@ import com.admin.entity.BedAllocation;
 @Repository
 public interface BedAllocationRepository extends JpaRepository<BedAllocation,Integer>{
 
+	public BedAllocation getByPatientId(int id);
 }

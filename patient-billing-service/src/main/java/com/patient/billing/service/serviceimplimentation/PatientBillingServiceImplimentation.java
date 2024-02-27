@@ -82,7 +82,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	@Override
 	public void save(PatientBillingBean patientBillingBean) {
-
+		patientBillingBean.setStatus("Active");
 		PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
 		beanToEntity(patientBillingEntity, patientBillingBean);
 
@@ -180,6 +180,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 		patientBillingEntity.setPaidAmount(patientBillingBean.getPaidAmount());
 		 patientBillingEntity.setTotalAmount(amount);
 		patientBillingEntity.setPaymentStatus(patientBillingBean.getPaymentStatus());
+		patientBillingEntity.setStatus(patientBillingBean.getStatus());
 
 	}
 
@@ -204,6 +205,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 			patientbean.setDiscount(patientEntity.getDiscount());
 			patientbean.setTotalAmount(patientEntity.getTotalAmount());
 			patientbean.setPaymentStatus(patientEntity.getPaymentStatus());
+			patientbean.setStatus(patientEntity.getStatus());
 			patientBillingBean.add(patientbean);
 
 		}
@@ -231,6 +233,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 		patientBillingBean.setDiscount(patientBillingEntity.getDiscount());
 		patientBillingBean.setPaymentStatus(patientBillingEntity.getPaymentStatus());
 		patientBillingBean.setTotalAmount(patientBillingEntity.getTotalAmount());
+		patientBillingBean.setStatus(patientBillingEntity.getStatus());
 
 	}
 
@@ -284,6 +287,13 @@ List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
 	public List<PatientBillingEntity> getDataByMonth(String monthName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void updateStatus(PatientBillingEntity patientBillingEntity) {
+		// TODO Auto-generated method stub
+	      patientBillingEntity.setStatus("InActive");
+	      patientBillingRepository.save(patientBillingEntity);
 	}
 	}
 

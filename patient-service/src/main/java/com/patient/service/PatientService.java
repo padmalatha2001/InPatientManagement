@@ -25,7 +25,7 @@ public interface PatientService {
     
     List<Object[]> getPatientDetailsByFullName(String fullName);
     
-    
+    void updateStatus(PatientEntity patient);
 
 }
 

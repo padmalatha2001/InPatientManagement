@@ -30,5 +30,7 @@ List<PatientBillingEntity> getDataByMonth(String monthName);
 //List<PatientBillingEntity> filterByDateRange(LocalDate startDate, LocalDate endDate);
 List<PatientBillingEntity> filterByDateRange(LocalDate startDate, Optional<LocalDate> endDate);
 List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate);
+
+     void updateStatus(PatientBillingEntity patientBillingEntity);
 	
 }

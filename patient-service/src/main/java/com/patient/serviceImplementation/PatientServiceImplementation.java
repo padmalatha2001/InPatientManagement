@@ -210,6 +210,14 @@ public class PatientServiceImplementation implements PatientService{
 
 		        return resultList;
 		    }
+
+
+		@Override
+		public void updateStatus(PatientEntity patient) {
+			// TODO Auto-generated method stub
+			patient.setStatus("InActive");
+			patientRepository.save(patient);
+		}
 	
 	
 	

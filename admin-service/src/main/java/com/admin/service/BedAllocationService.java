@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.admin.bean.BedAllocationBean;
 import com.admin.bean.PatientBean;
+import com.admin.entity.BedAllocation;
 
 public interface BedAllocationService {
 
@@ -14,5 +15,6 @@ public interface BedAllocationService {
 	void delete(int id);
 	void update(BedAllocationBean bedAllocationBean);
 	PatientBean getDetails(int id);
+	
 	List<Map<String, Object>> getAllBedAllocationsWithPatientNames();
 }

@@ -29,6 +29,7 @@ import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.BedAllocationRepository;
+import com.admin.repository.BedEntityRepository;
 import com.admin.repository.RoomRepository;
 import com.admin.repository.WardRepository;
 import com.admin.service.BedAllocationService;
@@ -44,6 +45,8 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 	RoomRepository roomRepository;
 	@Autowired
 	private RestTemplate restTemplate;
+	@Autowired
+	BedEntityRepository bedEntityRepository;
 
 	@Override
 	public PatientBean getDetails(int id) {
@@ -74,9 +77,17 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 	}
 
 	public BedAllocationBean save(BedAllocationBean bedAllocationBean) {
+		
 		// TODO Auto-generated method stub
+		BedAllocation bedallocate=bedAllocationRepository.getByPatientId(bedAllocationBean.getPatientId());
+		if(bedallocate==null) {
 		WardBean ward = bedAllocationBean.getBedId().getRoomId().getWardId();
 		RoomBean room= bedAllocationBean.getBedId().getRoomId();
+		BedBean bed=bedAllocationBean.getBedId();
+		bed.setStatus("Booked");
+		BedEntity bedEntity=new BedEntity();
+		beanToEntity(bed,bedEntity);
+		bedEntityRepository.save(bedEntity);
 		if(room.getAvailability()>0) {
 			room.setAvailability(room.getAvailability()-1);
 			RoomEntity roomEntity=new RoomEntity();
@@ -84,8 +95,11 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			roomRepository.save(roomEntity);
 		if (ward.getAvailability() > 0) {
 			ward.setAvailability(ward.getAvailability() - 1);
-			bedAllocationBean.setStatus("booked");
+			bedAllocationBean.setStatus("Active");
 			BedAllocation bedAllocation = new BedAllocation();
+		    long differenceInMillis = Math.abs(bedAllocationBean.getEndDate().getTime()- bedAllocationBean.getStartDate().getTime());
+			int differenceInDays = (int) (differenceInMillis / (1000 * 60 * 60 * 24));
+			bedAllocationBean.setNoOfDays(differenceInDays);
 			beanToEntity(bedAllocationBean, bedAllocation);
 			bedAllocationRepository.save(bedAllocation);
 			Ward wardEntity = new Ward();
@@ -98,7 +112,7 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			
 		}
 		
-
+		}
 		return bedAllocationBean;
 	}
 
