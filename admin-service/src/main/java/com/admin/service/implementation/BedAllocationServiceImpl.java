@@ -33,10 +33,9 @@ import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.BedAllocationRepository;
 import com.admin.repository.BedEntityRepository;
-<<<<<<< HEAD
-=======
 
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
+
 import com.admin.repository.RoomRepository;
 import com.admin.repository.WardRepository;
 import com.admin.service.BedAllocationService;

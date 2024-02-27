@@ -31,14 +31,14 @@ List<PatientBillingEntity> getDataByMonth(String monthName);
 //List<PatientBillingEntity> filterByDateRange(LocalDate startDate, LocalDate endDate);
 List<PatientBillingEntity> filterByDateRange(LocalDate startDate, Optional<LocalDate> endDate);
 List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate);
-<<<<<<< HEAD
+
 
      void updateStatus(PatientBillingEntity patientBillingEntity);
-=======
+
 List<BedAllocationDto>getBedDetails();
 void deleteRecord(int billId,String recordStatus);
 BedAllocationDto getByPatientNo(String number);
 void save(BedAllocationDto patientBillingBean);
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
 	
 }

@@ -5,12 +5,15 @@ import java.util.Map;
 
 import com.admin.bean.BedAllocationBean;
 import com.admin.bean.PatientBean;
-<<<<<<< HEAD
+
 import com.admin.entity.BedAllocation;
-=======
+
 import com.admin.dto.BedAllocationDto;
 
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
+import com.admin.dto.BedAllocationDto;
+
+
 
 public interface BedAllocationService {
 
@@ -20,12 +23,14 @@ public interface BedAllocationService {
 	void delete(int id);
 	void update(BedAllocationBean bedAllocationBean);
 	PatientBean getDetails(int id);
-<<<<<<< HEAD
-	
-=======
+
 
 	List<BedAllocationDto>getBedDetails();
 
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
+
+	List<BedAllocationDto>getBedDetails();
+
+
 	List<Map<String, Object>> getAllBedAllocationsWithPatientNames();
 }

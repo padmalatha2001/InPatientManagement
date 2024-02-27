@@ -14,11 +14,13 @@ public class PatientBillingBean {
 	
 	
 	public PatientBillingBean(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
-<<<<<<< HEAD
+
 			double discount, double totalAmount, String paymentStatus, String status) {
-=======
+
 			double discount, double totalAmount, double remainingAmount, String paymentStatus) {
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
+			double discount, double totalAmount, double remainingAmount, String paymentStatus) {
+
 		super();
 		this.billId = billId;
 		this.billingDate = billingDate;
@@ -89,7 +91,7 @@ public class PatientBillingBean {
 	public PatientBillingBean() {
 		super();
 	}
-<<<<<<< HEAD
+
 	@Override
 	public String toString() {
 		return "PatientBillingBean [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
@@ -97,8 +99,7 @@ public class PatientBillingBean {
 				+ totalAmount + ", paymentStatus=" + paymentStatus + ", status=" + status + "]";
 	}
 	
-=======
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
 	
 
 }

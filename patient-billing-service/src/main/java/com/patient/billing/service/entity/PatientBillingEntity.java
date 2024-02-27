@@ -38,10 +38,10 @@ public class PatientBillingEntity {
 	private double totalAmount;
 	@Column(name = "payment_status")
 	private String paymentStatus;
-<<<<<<< HEAD
+
 	@Column(name= "status")
 	private String status;
-=======
+
 	@Column(name="remaining_amount")
 	private double remainingAmount;
 	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
@@ -56,7 +56,8 @@ public class PatientBillingEntity {
 		this.paymentStatus = paymentStatus;
 		this.remainingAmount = remainingAmount;
 	}
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
+
 	public int getBillId() {
 		return billId;
 	}
@@ -99,7 +100,7 @@ public class PatientBillingEntity {
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
-<<<<<<< HEAD
+
 
 	
 	public String getStatus() {
@@ -121,18 +122,18 @@ public class PatientBillingEntity {
 		this.totalAmount = totalAmount;
 		this.paymentStatus = paymentStatus;
 		this.status = status;
-=======
+
 	public double getRemainingAmount() {
 		return remainingAmount;
 	}
 	public void setRemainingAmount(double remainingAmount) {
 		this.remainingAmount = remainingAmount;
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
 	}
 
 	public PatientBillingEntity() {
 		super();
-<<<<<<< HEAD
+
 	}
 
 	@Override
@@ -142,9 +143,12 @@ public class PatientBillingEntity {
 				+ totalAmount + ", paymentStatus=" + paymentStatus + ", status=" + status + "]";
 	}
 
-=======
+
 	}	
 	
->>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
+
+	}	
+	
+
 	
 }
