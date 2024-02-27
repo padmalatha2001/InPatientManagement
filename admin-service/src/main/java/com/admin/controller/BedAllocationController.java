@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.bean.BedAllocationBean;
 import com.admin.bean.PatientBean;
+import com.admin.dto.BedAllocationDto;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.BedAllocationService;
+
 
 @RestController
 @RequestMapping(path = "bedAllocation")
@@ -119,5 +121,11 @@ public class BedAllocationController {
 			  log.error("error handled");
 			  return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		  }
+	}
+	@GetMapping("/bed")
+	public ResponseEntity<List<BedAllocationDto>>getDetails()
+	{
+		List<BedAllocationDto> bedDetails=bedAllocationService.getBedDetails();
+		return new ResponseEntity<List<BedAllocationDto>>(bedDetails,HttpStatus.OK);
 	}
 }

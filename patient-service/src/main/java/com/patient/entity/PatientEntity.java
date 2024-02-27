@@ -20,14 +20,18 @@ public class PatientEntity {
 	private String firstName;
 	@Column(name="last_name")
 	private String lastName;
-	@Column(name="patient_gender")
-	private char patientGender;
+	@Column(name="gender")
+	private String patientGender;
 	@Column(name="patient_age")
 	private int patientAge;
 	@Column(name="patient_contact_no")
 	private long patientContactNo;
 	@Column(name="patient_alternte_contact_no")
 	private long patientAlternteContactNo;
+	@Column(name="patient_number")
+
+	private String patientNumber;
+	
 	@ManyToOne
 	@JoinColumn(name = "doctor", referencedColumnName = "doctor_id")
 	private DoctorEntity doctor;
@@ -38,8 +42,12 @@ public class PatientEntity {
 		
 	}
 	
-	public PatientEntity(int patientId, String firstName, String lastName, char patientGender, int patientAge,
-			long patientContactNo, long patientAlternteContactNo, DoctorEntity doctor, String status) {
+
+	public PatientEntity(int patientId, String firstName, String lastName, String patientGender, int patientAge,
+			long patientContactNo, long patientAlternteContactNo, String patientNumber, DoctorEntity doctor, String status) {
+
+	
+
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -48,10 +56,18 @@ public class PatientEntity {
 		this.patientAge = patientAge;
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
+		this.patientNumber = patientNumber;
 		this.doctor = doctor;
 		this.status = status;
 	}
 
+	public String getPatientNumber() {
+		return patientNumber;
+	}
+
+	public void setPatientNumber(String patientNumber) {
+		this.patientNumber = patientNumber;
+	}
 
 
 
@@ -73,10 +89,10 @@ public class PatientEntity {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public char getPatientGender() {
+	public String getPatientGender() {
 		return patientGender;
 	}
-	public void setPatientGender(char patientGender) {
+	public void setPatientGender(String patientGender) {
 		this.patientGender = patientGender;
 	}
 	public int getPatientAge() {

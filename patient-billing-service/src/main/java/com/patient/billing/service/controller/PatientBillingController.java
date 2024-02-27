@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.patient.billing.service.bean.BedAllocationBean;
 import com.patient.billing.service.bean.PatientBillingBean;
+import com.patient.billing.service.dto.BedAllocationDto;
 import com.patient.billing.service.dto.PatientBillingDTO;
 import com.patient.billing.service.entity.PatientBillingEntity;
 import com.patient.billing.service.service.PatientBillingService;
@@ -41,11 +42,11 @@ public class PatientBillingController {
 	}
 
 	@PostMapping(path = "/save")
-	public ResponseEntity<PatientBillingBean> save(@RequestBody PatientBillingBean patientBillingBean) {
+	public ResponseEntity<BedAllocationDto> save(@RequestBody BedAllocationDto patientBillingBean) {
 		System.out.println("controller");
 		log.info("billing save method{}"+patientBillingBean);
 		patientBillingService.save(patientBillingBean);
-		return new ResponseEntity<PatientBillingBean>(patientBillingBean, HttpStatus.OK);
+		return new ResponseEntity<BedAllocationDto>(patientBillingBean, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/getAll")
@@ -116,5 +117,18 @@ public class PatientBillingController {
 		 return new ResponseEntity<>(result, HttpStatus.OK);
 
 	    }
+	@GetMapping("bedDetails")
+	public ResponseEntity<List<BedAllocationDto>>getDetails()
+	{
+		List<BedAllocationDto> bedDetails=patientBillingService.getBedDetails();
+		return new ResponseEntity<List<BedAllocationDto>>(bedDetails,HttpStatus.OK);
+	}
+	@GetMapping("/getno")
+	public ResponseEntity<BedAllocationDto>getAllDetails(@RequestParam String patientNumber)
+	{
+		BedAllocationDto bedDetails=patientBillingService.getByPatientNo(patientNumber);
+		return new ResponseEntity<BedAllocationDto>(bedDetails,HttpStatus.OK);
+	}
+	
 
 }

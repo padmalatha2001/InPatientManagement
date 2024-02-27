@@ -32,9 +32,13 @@ public class PatientServiceImplementation implements PatientService{
 		
 		PatientEntity patientEntity=new PatientEntity();
 		BeanToEntity(patientEntity, patientBean);
+		
+//		String patientNumber=generatePatientNo();
+//		PatientEntity patient = new PatientEntity();
+//        patient.setPatientNumber(patientNumber);
 		patientRepository.save(patientEntity);
 
-		
+		//return patientBean;
 	}
 
 	
@@ -102,11 +106,15 @@ public class PatientServiceImplementation implements PatientService{
 		patientEntity.setPatientAge(patientBean.getPatientAge());
 		patientEntity.setPatientContactNo(patientBean.getPatientContactNo());
 		patientEntity.setPatientAlternteContactNo(patientBean.getPatientAlternteContactNo());
+		String patientNumber=generatePatientNo();
+		//PatientEntity patient = new PatientEntity();
+		patientEntity.setPatientNumber(patientNumber);
+
 		DoctorBean doctorBean=patientBean.getDoctorBean();
 		DoctorEntity doctorEntity=new DoctorEntity();
 		beanToEntity(doctorBean,doctorEntity);
 		patientEntity.setDoctor(doctorEntity);
-	}
+			}
 
 	private void beanToEntity(DoctorBean doctorBean, DoctorEntity doctorEntity) {
 		// TODO Auto-generated method stub
@@ -212,11 +220,38 @@ public class PatientServiceImplementation implements PatientService{
 		    }
 
 
+<<<<<<< HEAD
 		@Override
 		public void updateStatus(PatientEntity patient) {
 			// TODO Auto-generated method stub
 			patient.setStatus("InActive");
 			patientRepository.save(patient);
+=======
+		    private int currentYear;
+		    private int currentMonth;
+		    private int currentNumber;
+		@Override
+		public String generatePatientNo() {
+			int year = java.time.Year.now().getValue();
+	        int month = java.time.MonthDay.now().getMonthValue();
+
+	        // Reset the number if it's a new month or year
+	        if (year != currentYear || month != currentMonth) {
+	            currentYear = year;
+	            currentMonth = month;
+	            currentNumber = 1;
+	        } else {
+	            // Increment the number if it's the same month and year
+	            currentNumber++;
+	        }
+
+	        // Format the patient number
+	        //String formattedNumber = String.format("IN-%02d-%02d-%04d", currentYear % 100, currentMonth, currentNumber);
+	        String formattedNumber = String.format("IN-%02d-%02d-%04d", currentYear % 100, currentMonth, currentNumber);
+
+			System.out.println(formattedNumber);
+			return formattedNumber;
+>>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
 		}
 	
 	

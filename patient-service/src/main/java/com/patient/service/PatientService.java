@@ -24,8 +24,15 @@ public interface PatientService {
     List<Object[]> getPatientDetailsByDoctor(String doctorName);
     
     List<Object[]> getPatientDetailsByFullName(String fullName);
+<<<<<<< HEAD
     
     void updateStatus(PatientEntity patient);
+=======
+
+    String generatePatientNo();
+
+
+>>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
 
 }
 

@@ -8,12 +8,17 @@ public class PatientBillingBean {
 	private double paidAmount;
 	private double discount;
 	private double totalAmount;
+	private double remainingAmount;
 	private String paymentStatus;
 	private String status;
 	
 	
 	public PatientBillingBean(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
+<<<<<<< HEAD
 			double discount, double totalAmount, String paymentStatus, String status) {
+=======
+			double discount, double totalAmount, double remainingAmount, String paymentStatus) {
+>>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
 		super();
 		this.billId = billId;
 		this.billingDate = billingDate;
@@ -21,6 +26,7 @@ public class PatientBillingBean {
 		this.paidAmount = paidAmount;
 		this.discount = discount;
 		this.totalAmount = totalAmount;
+		this.remainingAmount = remainingAmount;
 		this.paymentStatus = paymentStatus;
 		this.status = status;
 	}
@@ -60,6 +66,12 @@ public class PatientBillingBean {
 	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+	public double getRemainingAmount() {
+		return remainingAmount;
+	}
+	public void setRemainingAmount(double remainingAmount) {
+		this.remainingAmount = remainingAmount;
+	}
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
@@ -77,6 +89,7 @@ public class PatientBillingBean {
 	public PatientBillingBean() {
 		super();
 	}
+<<<<<<< HEAD
 	@Override
 	public String toString() {
 		return "PatientBillingBean [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
@@ -84,6 +97,8 @@ public class PatientBillingBean {
 				+ totalAmount + ", paymentStatus=" + paymentStatus + ", status=" + status + "]";
 	}
 	
+=======
+>>>>>>> 91059446d64804056c3376ea3fcebe6379d46f8c
 	
 
 }
