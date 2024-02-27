@@ -20,4 +20,5 @@ public interface BedAllocationRepository extends JpaRepository<BedAllocation,Int
 	@Query("SELECT ba FROM BedAllocation ba WHERE ba.endDate < CURRENT_DATE")
     List<BedAllocation> findBedAllocationsWithEndDateBeforeCurrentDate();
 
+	public BedAllocation getByPatientId(int id);
 }

@@ -220,6 +220,13 @@ public class PatientServiceImplementation implements PatientService{
 		    }
 
 
+
+		@Override
+		public void updateStatus(PatientEntity patient) {
+			// TODO Auto-generated method stub
+			patient.setStatus("InActive");
+			patientRepository.save(patient);
+
 		    private int currentYear;
 		    private int currentMonth;
 		    private int currentNumber;
@@ -244,6 +251,7 @@ public class PatientServiceImplementation implements PatientService{
 
 			System.out.println(formattedNumber);
 			return formattedNumber;
+
 		}
 	
 	

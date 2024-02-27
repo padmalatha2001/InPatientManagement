@@ -38,6 +38,10 @@ public class PatientBillingEntity {
 	private double totalAmount;
 	@Column(name = "payment_status")
 	private String paymentStatus;
+
+	@Column(name= "status")
+	private String status;
+
 	@Column(name="remaining_amount")
 	private double remainingAmount;
 	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
@@ -52,6 +56,8 @@ public class PatientBillingEntity {
 		this.paymentStatus = paymentStatus;
 		this.remainingAmount = remainingAmount;
 	}
+
+
 	public int getBillId() {
 		return billId;
 	}
@@ -94,15 +100,55 @@ public class PatientBillingEntity {
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
+
+
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
+			double discount, double totalAmount, String paymentStatus, String status) {
+		super();
+		this.billId = billId;
+		this.billingDate = billingDate;
+		this.bedAllocationId = bedAllocationId;
+		this.paidAmount = paidAmount;
+		this.discount = discount;
+		this.totalAmount = totalAmount;
+		this.paymentStatus = paymentStatus;
+		this.status = status;
+
 	public double getRemainingAmount() {
 		return remainingAmount;
 	}
 	public void setRemainingAmount(double remainingAmount) {
 		this.remainingAmount = remainingAmount;
+
 	}
+
 	public PatientBillingEntity() {
 		super();
+
+	}
+
+	@Override
+	public String toString() {
+		return "PatientBillingEntity [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
+				+ bedAllocationId + ", paidAmount=" + paidAmount + ", discount=" + discount + ", totalAmount="
+				+ totalAmount + ", paymentStatus=" + paymentStatus + ", status=" + status + "]";
+	}
+
+
 	}	
 	
+
+	}	
+	
+
 	
 }

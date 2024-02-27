@@ -84,7 +84,10 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	// }
 
 	@Override
+
+
 	public void save(BedAllocationDto patientBillingBean) {
+
 
 		PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
 		beanToEntity(patientBillingEntity, patientBillingBean);
@@ -214,6 +217,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 		patientBillingEntity.setPaidAmount(patientBillingBean.getPaidAmount());
 		patientBillingEntity.setTotalAmount(amount);
 		patientBillingEntity.setPaymentStatus(patientBillingBean.getPaymentStatus());
+		patientBillingEntity.setStatus(patientBillingBean.getStatus());
 
 	}
 
@@ -238,6 +242,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 			patientbean.setDiscount(patientEntity.getDiscount());
 			patientbean.setTotalAmount(patientEntity.getTotalAmount());
 			patientbean.setPaymentStatus(patientEntity.getPaymentStatus());
+			patientbean.setStatus(patientEntity.getStatus());
 			patientBillingBean.add(patientbean);
 
 		}
@@ -265,6 +270,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 		patientBillingBean.setDiscount(patientBillingEntity.getDiscount());
 		patientBillingBean.setPaymentStatus(patientBillingEntity.getPaymentStatus());
 		patientBillingBean.setTotalAmount(patientBillingEntity.getTotalAmount());
+		patientBillingBean.setStatus(patientBillingEntity.getStatus());
 
 	}
 
@@ -280,7 +286,13 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	public static int convertMonthNameToNumber(String monthName) {
 		CustomMonth month;
 
+
 		if (monthName.length() <= 3) {
+
+
+
+		if (monthName.length() <= 3) {
+
 
 			month = CustomMonth.monthName(monthName);
 		} else {
@@ -320,6 +332,39 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	}
 
 	@Override
+
+	public void updateStatus(PatientBillingEntity patientBillingEntity) {
+		// TODO Auto-generated method stub
+	      patientBillingEntity.setStatus("InActive");
+	      patientBillingRepository.save(patientBillingEntity);
+	}
+
+	public List<BedAllocationDto> getBedDetails() {
+		List<BedAllocationDto> bedAllocationDetails = patientBillingRepository.getBedAllocationDetails();
+		return bedAllocationDetails;
+
+	}
+
+	@Override
+	public void deleteRecord(int billId, String recordStatus) {
+		boolean existsById = patientBillingRepository.existsById(billId);
+		if (existsById) {
+			// patientBillingRepository.
+		}
+
+	}
+
+	@Override
+	public BedAllocationDto getByPatientNo(String number) {
+
+		BedAllocationDto details = patientBillingRepository.findPatientDataByPatientNumber(number);
+
+//		String patientNumber=details.getPatientNumber();
+//		if(patientNumber.equalsIgnoreCase(number));
+		return details;
+	}
+
+
 	public List<BedAllocationDto> getBedDetails() {
 		List<BedAllocationDto> bedAllocationDetails = patientBillingRepository.getBedAllocationDetails();
 		return bedAllocationDetails;
@@ -343,6 +388,7 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 //		if(patientNumber.equalsIgnoreCase(number));
 		return details;
 	}
+
 
 }
 
