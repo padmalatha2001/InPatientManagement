@@ -19,6 +19,8 @@ public class DoctorEntity {
 	private String name;
 	@Column(name="department_id")
 	private long departmentId;
+	@Column(name="status")
+	private String status;
 	
 	public DoctorEntity() {
 		super();
@@ -56,10 +58,21 @@ public class DoctorEntity {
 		this.departmentId = departmentId;
 	}
 
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
-		return "DoctorEntity [id=" + id + ", name=" + name + ", departmentId=" + departmentId + "]";
+		return "DoctorEntity [id=" + id + ", name=" + name + ", departmentId=" + departmentId + ", status=" + status
+				+ "]";
 	}
+
 	
 	
 	

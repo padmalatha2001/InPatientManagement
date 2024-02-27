@@ -97,4 +97,10 @@ public class DepartmentController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	@PutMapping("/updateStatus")
+	public void put(@RequestBody Department department)
+	{
+		departmentService.updateStatus(department);
+	}
 }

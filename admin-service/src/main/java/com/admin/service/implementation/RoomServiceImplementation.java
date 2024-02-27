@@ -16,67 +16,88 @@ import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.RoomRepository;
+import com.admin.repository.WardRepository;
 import com.admin.service.RoomService;
+
+import jakarta.persistence.EntityManager;
 
 @Service
 public class RoomServiceImplementation implements RoomService {
 
 	@Autowired
-	RoomRepository RoomRepository;
+	RoomRepository roomRepository;
+	@Autowired
+	private WardRepository wardRepository;
 
 	@Override
 	public void save(RoomBean roomBean) {
-		RoomEntity roomEntity=new RoomEntity();
-		beanToEntity(roomEntity,roomBean);
-		RoomRepository.save(roomEntity);
+//		RoomEntity roomEntity=new RoomEntity();
+//	     beanToEntity(roomEntity,roomBean);
+//		 RoomRepository.save(roomEntity);
+         roomBean.setStatus("Active");
+		WardBean ward = roomBean.getWardId();
+		Integer totalRoomSharing = roomRepository.sumRoomSharingByWard(ward.getId());
+		if (totalRoomSharing == null) {
+			totalRoomSharing = 0;
+		}
+		if (totalRoomSharing + roomBean.getRoomSharing() <= ward.getCapacity()) {
+			RoomEntity roomEntity = new RoomEntity();
+			beanToEntity(roomEntity, roomBean);
+			roomRepository.save(roomEntity);
+		} else {
+			throw new RecordNotFoundException("Room capacity exceeded for ward");
+		}
 
 	}
 
 	@Override
 	public List<RoomBean> getAll() {
-		List<RoomBean> roomBean =new ArrayList<>();
-		List<RoomEntity> roomEntity=RoomRepository.findAll();
-		entityToBean(roomEntity, roomBean);
-		return roomBean;	
-	}
-	@Override
-	public RoomBean getById(long id) {
-		RoomBean roomBean=new RoomBean();
-		RoomEntity roomEntity=RoomRepository.findById(id).orElseThrow(()
-				->new RecordNotFoundException("record not found"));
+		List<RoomBean> roomBean = new ArrayList<>();
+		List<RoomEntity> roomEntity = roomRepository.findAll();
 		entityToBean(roomEntity, roomBean);
 		return roomBean;
-				
 	}
 
-	
+	@Override
+	public RoomBean getById(long id) {
+		RoomBean roomBean = new RoomBean();
+		RoomEntity roomEntity = roomRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("record not found"));
+		entityToBean(roomEntity, roomBean);
+		return roomBean;
+
+	}
+
 	@Override
 	public RoomBean update(long id) {
-	  RoomEntity room= RoomRepository.findById(id).orElseThrow(()
-			  ->new RecordNotFoundException("record not found"));
-		RoomBean roomBean=new RoomBean();
+		RoomEntity room = roomRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("record not found"));
+		RoomBean roomBean = new RoomBean();
 		entityToBean(room, roomBean);
 		return roomBean;
-		
+
 	}
 
 	@Override
 	public void delete(long id) {
-		RoomRepository.deleteById(id);
+		roomRepository.deleteById(id);
 
 	}
+
 	public void beanToEntity(RoomEntity roomEntity, RoomBean roomBean) {
 		roomEntity.setId(roomBean.getId());
 		roomEntity.setRoomNo(roomBean.getRoomNo());
-		RoomTypeBean roomTypeBean=roomBean.getRoomTypeId();
-		RoomType roomType=new RoomType();
-		beanToEntity(roomTypeBean,roomType);
+		RoomTypeBean roomTypeBean = roomBean.getRoomTypeId();
+		RoomType roomType = new RoomType();
+		beanToEntity(roomTypeBean, roomType);
 		roomEntity.setRoomTypeId(roomType);
 		roomEntity.setRoomPrice(roomBean.getRoomPrice());
 		roomEntity.setRoomSharing(roomBean.getRoomSharing());
-		WardBean wardBean=roomBean.getWardId();
-		Ward entity=new Ward();
-		beanToEntity(entity,wardBean);
+		roomEntity.setAvailability(roomBean.getAvailability());
+		roomEntity.setStatus(roomBean.getStatus());
+		WardBean wardBean = roomBean.getWardId();
+		Ward entity = new Ward();
+		beanToEntity(entity, wardBean);
 		roomEntity.setWardId(entity);
 	}
 
@@ -85,50 +106,59 @@ public class RoomServiceImplementation implements RoomService {
 		ward.setName(wardBean.getName());
 		ward.setCapacity(wardBean.getCapacity());
 		ward.setAvailability(wardBean.getAvailability());
+		ward.setStatus(wardBean.getStatus());
 		DepartmentBean DepartmentBean = wardBean.getDepartmentId();
 		Department Department = new Department();
 		beanToEntity(DepartmentBean, Department);
 		ward.setDepartmentId(Department);
 
 	}
-	public void beanToEntity(DepartmentBean DepartmentBean, Department Department) {
-		Department.setId(DepartmentBean.getId());
-		Department.setName(DepartmentBean.getName());
 
+	public void beanToEntity(DepartmentBean departmentBean,Department department)
+	{
+		department.setId(departmentBean.getId());
+		department.setName(departmentBean.getStatus());
+		department.setName(departmentBean.getName());
+		
 	}
 	private void beanToEntity(RoomTypeBean roomTypeBean, RoomType roomType) {
 		// TODO Auto-generated method stub
 		roomType.setId(roomTypeBean.getId());
+		roomType.setName(roomTypeBean.getStatus());
 		roomType.setName(roomTypeBean.getName());
 	}
+
 	private void entityToBean(RoomType roomType, RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
 		roomTypeBean.setId(roomType.getId());
+		roomTypeBean.setStatus(roomType.getStatus());
 		roomTypeBean.setName(roomType.getName());
 	}
-	public void entityToBean(List<RoomEntity> listEntity,
-			List<RoomBean> listbean) {
-		
-		for(RoomEntity roomEntity:listEntity) {
-			RoomBean roomBean=new RoomBean();
+
+	public void entityToBean(List<RoomEntity> listEntity, List<RoomBean> listbean) {
+
+		for (RoomEntity roomEntity : listEntity) {
+			RoomBean roomBean = new RoomBean();
 			roomBean.setId(roomEntity.getId());
 			roomBean.setRoomNo(roomEntity.getRoomNo());
-			RoomType roomType=roomEntity.getRoomTypeId();
-			RoomTypeBean roomTypeBean=new RoomTypeBean();
-			entityToBean(roomType,roomTypeBean);
+			roomBean.setStatus(roomEntity.getStatus());
+			RoomType roomType = roomEntity.getRoomTypeId();
+			RoomTypeBean roomTypeBean = new RoomTypeBean();
+			entityToBean(roomType, roomTypeBean);
 			roomBean.setRoomTypeId(roomTypeBean);
+			roomBean.setAvailability(roomEntity.getAvailability());
 			roomBean.setRoomPrice(roomEntity.getRoomPrice());
 			roomBean.setRoomSharing(roomEntity.getRoomSharing());
-			WardBean wardBean=new WardBean();
-			Ward entity=roomEntity.getWardId();
+			WardBean wardBean = new WardBean();
+			Ward entity = roomEntity.getWardId();
 			entityToBean(wardBean, entity);
 			roomBean.setWardId(wardBean);
-			listbean.add(roomBean);		}
+			listbean.add(roomBean);
+		}
 	}
 
 	public void entityToBean(RoomEntity roomEntity, RoomBean roomBean) {
 
-		
 		roomBean.setId(roomEntity.getId());
 
 		RoomType roomType = roomEntity.getRoomTypeId();
@@ -139,36 +169,46 @@ public class RoomServiceImplementation implements RoomService {
 		roomBean.setRoomNo(roomEntity.getRoomNo());
 		roomBean.setRoomPrice(roomEntity.getRoomPrice());
 		roomBean.setRoomSharing(roomEntity.getRoomSharing());
-		
+		roomBean.setAvailability(roomEntity.getAvailability());
+        roomBean.setStatus(roomEntity.getStatus());
 		Ward entity = roomEntity.getWardId();
 		WardBean wardBean = new WardBean();
 		entityToBean(wardBean, entity);
 		roomBean.setWardId(wardBean);
 
 	}
+
 	private void entityToBean(WardBean wardBean, Ward ward) {
 		wardBean.setId(ward.getId());
 		wardBean.setName(ward.getName());
 		wardBean.setCapacity(ward.getCapacity());
 		wardBean.setAvailability(ward.getAvailability());
+		wardBean.setStatus(ward.getStatus());
 		DepartmentBean DepartmentBean = new DepartmentBean();
 		Department Department = ward.getDepartmentId();
 		entityToBean(Department, DepartmentBean);
 		wardBean.setDepartmentId(DepartmentBean);
 
 	}
-	public void entityToBean(Department Department, DepartmentBean DepartmentBean) {
-		DepartmentBean.setId(Department.getId());
-		DepartmentBean.setName(Department.getName());
+
+	public void entityToBean(Department department,DepartmentBean departmentBean)
+	{
+		departmentBean.setId(department.getId());
+		departmentBean.setStatus(department.getStatus());
+		departmentBean.setName(department.getName());
 	}
 
 	@Override
 	public List<RoomEntity> findByWardId(Long wardId) {
 		// TODO Auto-generated method stub
-		return RoomRepository.findByWardId_Id(wardId);
+		return roomRepository.findByWardId_Id(wardId);
 	}
 
-
-	
-
+	@Override
+	public void updateStatus(RoomEntity roomEntity) {
+		
+		roomEntity.setStatus("InActive");
+		roomRepository.save(roomEntity);
+			
+	}
 }

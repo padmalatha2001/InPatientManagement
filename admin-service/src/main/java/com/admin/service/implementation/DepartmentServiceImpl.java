@@ -26,6 +26,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 		 if(dept==null)
 		 {
 			 beanToEntity(departmentBean,department); 
+			 department.setStatus("Active");
 			 departmentRepository.save(department);
 		 }
 		
@@ -59,6 +60,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 	public void beanToEntity(DepartmentBean departmentBean,Department department)
 	{
 		department.setId(departmentBean.getId());
+		department.setName(departmentBean.getStatus());
 		department.setName(departmentBean.getName());
 		
 	}
@@ -66,6 +68,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 	public void entityToBean(Department department,DepartmentBean departmentBean)
 	{
 		departmentBean.setId(department.getId());
+		departmentBean.setStatus(department.getStatus());
 		departmentBean.setName(department.getName());
 	}
 	
@@ -76,11 +79,19 @@ public class DepartmentServiceImpl implements DepartmentService{
 		{
 			DepartmentBean departmentBean=new DepartmentBean();
 			departmentBean.setId(department.getId());
+			departmentBean.setStatus(department.getStatus());
 			departmentBean.setName(department.getName());
 			beanList.add(departmentBean);
 		}
 
 		
 		
+	}
+	@Override
+	public void updateStatus(Department department) {
+		
+		department.setStatus("InActive");
+		departmentRepository.save(department);
+			
 	}
 }

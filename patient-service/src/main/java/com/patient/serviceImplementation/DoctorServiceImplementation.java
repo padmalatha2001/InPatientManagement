@@ -92,4 +92,11 @@ public class DoctorServiceImplementation implements DoctorService{
 			doctorRepository.save(doctorEntity);
 	}
 
+	@Override
+	public void updateStatus(DoctorEntity doctor) {
+		// TODO Auto-generated method stub
+		doctor.setStatus("InActive");
+		doctorRepository.save(doctor);
+	}
+
 }

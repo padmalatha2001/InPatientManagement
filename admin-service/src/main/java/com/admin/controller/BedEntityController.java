@@ -32,15 +32,11 @@ public class BedEntityController {
 	@PostMapping("/save")
 	public ResponseEntity<BedBean> save(@RequestBody BedBean bedBean) {
 		log.info("Saving Bed");
-		try {
 		   BedBean bed1 = bedService.save(bedBean);
 		   ResponseEntity<BedBean> responseEntity = new ResponseEntity<>(bed1, HttpStatus.CREATED);
 		   log.info("Saving Bed is done");
 		   return responseEntity;
-		}catch(Exception e) {
-			log.error("error handled");
-			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
-		}
+		
 			
 	}
 	
@@ -74,11 +70,11 @@ public class BedEntityController {
 	}
 
 	@PutMapping("/update/{bedId}")
-	public ResponseEntity<String> put(@PathVariable Long bedId) {
+	public ResponseEntity<String> put(@PathVariable Long bedId,@RequestBody BedBean bed) {
 
 		log.info("Updating BedStaus");
 		try {
-			     bedService.update(bedId);
+			     bedService.update(bedId,bed);
 			     ResponseEntity<String> responseEntity = new ResponseEntity<>("Bed Status updated Successfully", HttpStatus.OK);
 					log.info("Updating Bed is done");
 					return responseEntity;

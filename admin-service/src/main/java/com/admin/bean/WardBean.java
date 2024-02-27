@@ -6,6 +6,7 @@ public class WardBean {
 	private int capacity;
 	private int availability;
 	private DepartmentBean departmentId;
+	private String status;
 	
 	
 	public WardBean() {
@@ -13,14 +14,20 @@ public class WardBean {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public WardBean(long id, String name, int capacity, int availability, DepartmentBean departmentId) {
+	
+
+
+	public WardBean(long id, String name, int capacity, int availability, DepartmentBean departmentId, String status) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.capacity = capacity;
 		this.availability = availability;
 		this.departmentId = departmentId;
+		this.status = status;
 	}
+
+
 
 
 	public long getId() {
@@ -49,17 +56,37 @@ public class WardBean {
 	}
 	
 	
+	public String getStatus() {
+		return status;
+	}
+
+
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+
+
 	public DepartmentBean getDepartmentId() {
 		return departmentId;
 	}
 	public void setDepartmentId(DepartmentBean departmentId) {
 		this.departmentId = departmentId;
 	}
+
+
+
+
 	@Override
 	public String toString() {
 		return "WardBean [id=" + id + ", name=" + name + ", capacity=" + capacity + ", availability=" + availability
-				+ ", departmentId=" + departmentId + "]";
+				+ ", departmentId=" + departmentId + ", status=" + status + "]";
 	}
+	
+	
 	
 	
 }
