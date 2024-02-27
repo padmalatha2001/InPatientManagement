@@ -8,9 +8,10 @@ public class PatientBillingBean {
 	private double paidAmount;
 	private double discount;
 	private double totalAmount;
+	private double remainingAmount;
 	private String paymentStatus;
 	public PatientBillingBean(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
-			double discount, double totalAmount, String paymentStatus) {
+			double discount, double totalAmount, double remainingAmount, String paymentStatus) {
 		super();
 		this.billId = billId;
 		this.billingDate = billingDate;
@@ -18,6 +19,7 @@ public class PatientBillingBean {
 		this.paidAmount = paidAmount;
 		this.discount = discount;
 		this.totalAmount = totalAmount;
+		this.remainingAmount = remainingAmount;
 		this.paymentStatus = paymentStatus;
 	}
 	public int getBillId() {
@@ -56,6 +58,12 @@ public class PatientBillingBean {
 	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+	public double getRemainingAmount() {
+		return remainingAmount;
+	}
+	public void setRemainingAmount(double remainingAmount) {
+		this.remainingAmount = remainingAmount;
+	}
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
@@ -65,6 +73,6 @@ public class PatientBillingBean {
 	public PatientBillingBean() {
 		super();
 	}
-			
+	
 
 }

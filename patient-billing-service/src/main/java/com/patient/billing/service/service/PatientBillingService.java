@@ -15,7 +15,7 @@ import com.patient.billing.service.entity.PatientBillingEntity;
 
 
 public interface PatientBillingService {
-	public void save(PatientBillingBean patientBillingBean);
+	//public void save(PatientBillingBean patientBillingBean);
 	public List<PatientBillingBean> getAll();
 	public PatientBillingBean getById(Integer patientBillingId);
 //    public PatientBillingEntity update(Integer billingId,Double paymentAmmount);
@@ -34,5 +34,6 @@ List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate
 List<BedAllocationDto>getBedDetails();
 void deleteRecord(int billId,String recordStatus);
 BedAllocationDto getByPatientNo(String number);
+void save(BedAllocationDto patientBillingBean);
 	
 }

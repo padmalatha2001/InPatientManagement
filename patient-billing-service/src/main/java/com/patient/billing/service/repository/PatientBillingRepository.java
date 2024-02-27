@@ -27,7 +27,7 @@ public interface PatientBillingRepository  extends JpaRepository<PatientBillingE
 //          "JOIN bed_allocation ba   ON b.bed_allocation_id = ba.bed_allocation_id " +
 //          "JOIN patientregistration p  ON ba.patient_id = p.patient_id",nativeQuery = true)
 	@Query("SELECT new com.patient.billing.service.dto.PatientBillingDTO (b.billId,b.billingDate,b.bedAllocationId,b.paidAmount,"
-	  		+ "b.discount,b.totalAmount,b.paymentStatus,p.firstName,p.lastName) " +
+	  		+ "b.discount,b.totalAmount,b.remainingAmount,b.paymentStatus,p.firstName,p.lastName) " +
 		        "FROM PatientBillingEntity b " +
 		        " JOIN BedAllocation ba ON b.bedAllocationId = ba.id " +
 		        " JOIN PatientEntity p ON ba.patientId = p.patientId " )
@@ -62,7 +62,7 @@ public interface PatientBillingRepository  extends JpaRepository<PatientBillingE
   
   
   @Query("SELECT new com.patient.billing.service.dto.PatientBillingDTO (b.billId,b.billingDate,b.bedAllocationId,b.paidAmount,"
-  		+ "b.discount,b.totalAmount,b.paymentStatus,p.firstName,p.lastName) " +
+  		+ "b.discount,b.totalAmount,b.remainingAmount,b.paymentStatus,p.firstName,p.lastName) " +
 	        "FROM PatientBillingEntity b " +
 	        " JOIN BedAllocation ba ON b.bedAllocationId = ba.id " +
 	        " JOIN PatientEntity p ON ba.patientId = p.patientId " +
@@ -75,13 +75,25 @@ public interface PatientBillingRepository  extends JpaRepository<PatientBillingE
   List<BedAllocationDto>getBedAllocationDetails();
   
   
-  @Query("SELECT new  com.patient.billing.service.dto.BedAllocationDto"
-  		+ "(p.firstName,p.lastName,p.patientAge,p.patientGender,p.patientContactNo,p.patientAlternteContactNo,"
-  		+ " ba.noOfDays,ba.id,ba.startDate,ba.endDate,ba.bedId,ba.status)"
-  		+ " FROM PatientEntity p " +
-        "JOIN BedAllocation ba ON p.patientId = ba.patientId " +
-          "WHERE p.patientNumber = :patientNumber")
-  BedAllocationDto findPatientDataByPatientNumber(@Param("patientNumber") String patientNumber);
- 
+//  @Query("SELECT new  com.patient.billing.service.dto.BedAllocationDto"
+//  		+ "(p.firstName,p.lastName,p.patientAge,p.patientGender,p.patientContactNo,p.patientAlternteContactNo,"
+//  		+ " ba.noOfDays,ba.id,ba.startDate,ba.endDate,ba.bedId,ba.status,b.paidAmount,b.totalAmount)"
+//  		+ " FROM PatientBillingEntity b " +
+//        "JOIN BedAllocation ba ON b.bedAllocationId = ba.id" +
+//  		"JOIN PatientEntity p ON ba.patientId=p.patientId"+
+//          "WHERE p.patientNumber = :patientNumber")
+//  BedAllocationDto findPatientDataByPatientNumber(@Param("patientNumber") String patientNumber);
+// 
+  
+  
+  @Query("SELECT new com.patient.billing.service.dto.BedAllocationDto" +
+	       "(p.firstName, p.lastName, p.patientAge, p.patientGender, p.patientContactNo, " +
+	       " ba.noOfDays, ba.id, ba.startDate, ba.endDate, ba.bedId, ba.status, b.paidAmount, b.totalAmount) " +
+	       " FROM PatientBillingEntity b " +
+	       " JOIN BedAllocation ba ON b.bedAllocationId = ba.id " +
+	       " JOIN PatientEntity p ON ba.patientId = p.patientId " +
+	       " WHERE p.patientNumber = :patientNumber")
+	BedAllocationDto findPatientDataByPatientNumber(@Param("patientNumber") String patientNumber);
+
 }
 

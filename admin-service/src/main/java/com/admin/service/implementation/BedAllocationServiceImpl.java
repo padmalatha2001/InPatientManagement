@@ -258,8 +258,10 @@ public class BedAllocationServiceImpl implements BedAllocationService{
 				BedEntity entity=list.getBedId();
 				if(entity.getStatus().equalsIgnoreCase("booked"))
 				{	
-				  entity.setStatus("Active");
+				  entity.setStatus("Empty");
 				  bedRepository.save(entity);
+				  RoomEntity room=entity.getRoomId();
+				  
 				  Ward ward=entity.getRoomId().getWardId();
 				  ward.setAvailability(ward.getAvailability()+1);
 				  wardRepository.save(ward); 

@@ -42,11 +42,11 @@ public class PatientBillingController {
 	}
 
 	@PostMapping(path = "/save")
-	public ResponseEntity<PatientBillingBean> save(@RequestBody PatientBillingBean patientBillingBean) {
+	public ResponseEntity<BedAllocationDto> save(@RequestBody BedAllocationDto patientBillingBean) {
 		System.out.println("controller");
 		log.info("billing save method{}"+patientBillingBean);
 		patientBillingService.save(patientBillingBean);
-		return new ResponseEntity<PatientBillingBean>(patientBillingBean, HttpStatus.OK);
+		return new ResponseEntity<BedAllocationDto>(patientBillingBean, HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/getAll")

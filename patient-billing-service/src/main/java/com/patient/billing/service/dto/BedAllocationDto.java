@@ -18,34 +18,35 @@ public class BedAllocationDto {
 	private int patientAge;
 	private String patientGender;
 	private long patientContactNo;
-	private long patientAlternteContactNo;
 	private int noOfDays;
 	private int id;
 	private Date startDate;
 	private Date endDate;
 	private BedEntity bedId;
 	private String status;
-	
-	
-	
-//	 [java.lang.String, java.lang.String, java.lang.Integer, java.lang.Character, java.lang.Long, java.lang.Long, java.lang.Integer, java.lang.Integer, java.sql.Date, java.sql.Date,
-//	  com.patient.billing.service.entity.BedEntity, java.lang.String], and not every argument has an alias)
+	private double paidAmount;
+	private double totalAmount;
 	public BedAllocationDto(String firstName, String lastName, int patientAge, String patientGender,
-			long patientContactNo, long patientAlternteContactNo, int noOfDays, int id, Date startDate, Date endDate,
-			BedEntity bedId, String status) {
+			long patientContactNo,  int noOfDays, int id, Date startDate, Date endDate,
+			BedEntity bedId, String status, double paidAmount, double totalAmount) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.patientAge = patientAge;
 		this.patientGender = patientGender;
 		this.patientContactNo = patientContactNo;
-		this.patientAlternteContactNo = patientAlternteContactNo;
 		this.noOfDays = noOfDays;
 		this.id = id;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.bedId = bedId;
 		this.status = status;
+		this.paidAmount = paidAmount;
+		this.totalAmount = totalAmount;
+		//[java.lang.String, java.lang.String, java.lang.Integer, java.lang.String, java.lang.Long, 
+//		 java.lang.Integer, java.lang.Integer, java.sql.Date, java.sql.Date, com.patient.billing.service.entity.BedEntity, 
+//		 java.lang.String, java.lang.Double, 
+//		 java.lang.Double], and not every argument has an alias)
 	}
 	public String getFirstName() {
 		return firstName;
@@ -76,13 +77,7 @@ public class BedAllocationDto {
 	}
 	public void setPatientContactNo(long patientContactNo) {
 		this.patientContactNo = patientContactNo;
-	}
-	public long getPatientAlternteContactNo() {
-		return patientAlternteContactNo;
-	}
-	public void setPatientAlternteContactNo(long patientAlternteContactNo) {
-		this.patientAlternteContactNo = patientAlternteContactNo;
-	}
+	}	
 	public int getNoOfDays() {
 		return noOfDays;
 	}
@@ -119,6 +114,20 @@ public class BedAllocationDto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public double getPaidAmount() {
+		return paidAmount;
+	}
+	public void setPaidAmount(double paidAmount) {
+		this.paidAmount = paidAmount;
+	}
+	public double getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(double totalAmount) {
+		this.totalAmount = totalAmount;
+	}	
 	
+//	 [java.lang.String, java.lang.String, java.lang.Integer, java.lang.Character, java.lang.Long, java.lang.Long, java.lang.Integer, java.lang.Integer, java.sql.Date, java.sql.Date,
+//	  com.patient.billing.service.entity.BedEntity, java.lang.String], and not every argument has an alias)
 	
 }

@@ -24,9 +24,11 @@ import com.patient.billing.service.bean.PatientBillingBean;
 import com.patient.billing.service.bean.RoomBean;
 import com.patient.billing.service.dto.BedAllocationDto;
 import com.patient.billing.service.dto.PatientBillingDTO;
+import com.patient.billing.service.entity.BedEntity;
 import com.patient.billing.service.entity.CustomMonth;
 import com.patient.billing.service.entity.PatientBillingEntity;
 import com.patient.billing.service.entity.PatientEntity;
+import com.patient.billing.service.entity.RoomEntity;
 import com.patient.billing.service.exception.BillingDetailsNotFoundException;
 import com.patient.billing.service.exception.BillingIdNotFoundException;
 import com.patient.billing.service.repository.PatientBillingRepository;
@@ -38,9 +40,8 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	private PatientBillingRepository patientBillingRepository;
 	@Autowired
 	private RestTemplate restTemplate;
-	//private List<PatientBillingEntity> PatientBillingEntity  result;
+	// private List<PatientBillingEntity> PatientBillingEntity result;
 	private List<PatientBillingEntity> findByBillingDateBetween;
-
 
 	@Override
 	public BedAllocationBean getDetails(int bedId) {
@@ -83,12 +84,41 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	// }
 
 	@Override
-	public void save(PatientBillingBean patientBillingBean) {
+	public void save(BedAllocationDto patientBillingBean) {
 
 		PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
 		beanToEntity(patientBillingEntity, patientBillingBean);
+		
 
 		patientBillingRepository.save(patientBillingEntity);
+
+	}
+
+	private void beanToEntity(PatientBillingEntity patientBillingEntity, BedAllocationDto patientBillingBean) {
+		patientBillingEntity.setBillingDate(LocalDate.now());
+		patientBillingEntity.setBedAllocationId(patientBillingBean.getId());
+		int bedAllocationId = patientBillingEntity.getBedAllocationId();
+		//BedAllocationBean bedAllocationBean = getDetails(bedAllocationId);
+		int days = patientBillingBean.getNoOfDays();
+		BedEntity BedBean = patientBillingBean.getBedId();
+		RoomEntity room=BedBean.getRoomId();
+		int roomBean = BedBean.getBedNo();
+		double roomPrice = room.getRoomPrice();
+		double paidAmount=patientBillingBean.getPaidAmount();
+		double totalAmount=patientBillingBean.getTotalAmount();
+		
+	 patientBillingEntity.setPaidAmount(paidAmount);
+		patientBillingEntity.setTotalAmount(patientBillingBean.getPaidAmount());
+		double remainingAmount=totalAmount-paidAmount;
+		patientBillingEntity.setRemainingAmount(remainingAmount);
+		if(remainingAmount+paidAmount==totalAmount) {
+		
+		patientBillingEntity.setPaymentStatus("completed");
+		}
+		else
+		{
+			patientBillingEntity.setPaymentStatus("completed");
+		}
 
 	}
 
@@ -133,7 +163,8 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	@Override
 	public void update(PatientBillingBean patitentBean) {
-		Optional<PatientBillingEntity> patientBillingEntity = patientBillingRepository.findById(patitentBean.getBillId());
+		Optional<PatientBillingEntity> patientBillingEntity = patientBillingRepository
+				.findById(patitentBean.getBillId());
 		if (patientBillingEntity.isEmpty()) {
 			System.out.println(patientBillingEntity);
 			throw new BillingIdNotFoundException("billing id not found");
@@ -147,10 +178,11 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 			double paidAmount = patientBillingEntity.get().getPaidAmount();
 //			beanToEntity(patientEntity,patitentBean);
 			double totalPaidAmount = paidAmount + patitentBean.getPaidAmount();
-			double discount=patitentBean.getDiscount();
-			beanToEntity(patientEntity,patitentBean);
-			//double discountAmount=totalPaidAmount-(totalPaidAmount*(patitentBean.getDiscount()/100));
-			
+			double discount = patitentBean.getDiscount();
+			beanToEntity(patientEntity, patitentBean);
+			// double
+			// discountAmount=totalPaidAmount-(totalPaidAmount*(patitentBean.getDiscount()/100));
+
 			if (totalPaidAmount == totalAmount) {
 				patientBillingEntity.get().setPaymentStatus("Completed");
 				patientBillingRepository.save(patientEntity);
@@ -171,16 +203,16 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 		patientBillingEntity.setBedAllocationId(patientBillingBean.getBedAllocationId());
 
 		int bedAllocationId = patientBillingEntity.getBedAllocationId();
-		BedAllocationBean bedAllocationBean=getDetails(bedAllocationId);
-		int days=bedAllocationBean.getNoOfDays();
-		BedBean BedBean=bedAllocationBean.getBedId();
-		 RoomBean roomBean = BedBean.getRoomId();
-		 double roomPrice=roomBean.getRoomPrice();
-		double amount=roomPrice*days;
-		 System.out.println(amount);
+		BedAllocationBean bedAllocationBean = getDetails(bedAllocationId);
+		int days = bedAllocationBean.getNoOfDays();
+		BedBean BedBean = bedAllocationBean.getBedId();
+		RoomBean roomBean = BedBean.getRoomId();
+		double roomPrice = roomBean.getRoomPrice();
+		double amount = roomPrice * days;
+		System.out.println(amount);
 		patientBillingEntity.setDiscount(patientBillingBean.getDiscount());
 		patientBillingEntity.setPaidAmount(patientBillingBean.getPaidAmount());
-		 patientBillingEntity.setTotalAmount(amount);
+		patientBillingEntity.setTotalAmount(amount);
 		patientBillingEntity.setPaymentStatus(patientBillingBean.getPaymentStatus());
 
 	}
@@ -238,27 +270,26 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	@Override
 	public List<PatientBillingDTO> getAllDetails() {
-List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
-    	
-    	System.out.println("filterde data"+data);
-    	return data;
-		
-		
+		List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
+
+		System.out.println("filterde data" + data);
+		return data;
+
 	}
+
 	public static int convertMonthNameToNumber(String monthName) {
-	    CustomMonth month;
+		CustomMonth month;
 
-	    if (monthName.length() <= 3) {
-	        
-	        month = CustomMonth.monthName(monthName);
-	    } else {
-	        	        month = CustomMonth.fullMonthName(monthName);
-	    }
+		if (monthName.length() <= 3) {
 
-	    return month.getValue();
+			month = CustomMonth.monthName(monthName);
+		} else {
+			month = CustomMonth.fullMonthName(monthName);
+		}
+
+		return month.getValue();
 	}
 
-    
 //    public List<PatientBillingEntity> getDataByMonth(String monthName) {
 //        int monthNumber = convertMonthNameToNumber(monthName.toUpperCase());
 //        System.out.println("Month Number: " + monthNumber);
@@ -268,13 +299,13 @@ List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
 //        // Process the result or return it based on your requirements
 //        return result;
 //    }
-    @Override
-    public List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate) {
-    	List<PatientBillingDTO> data = patientBillingRepository.findByBillingDateBetween(startDate, endDate);
-    	
-    	System.out.println("filterde data"+data);
-    	return data;
-    }
+	@Override
+	public List<PatientBillingDTO> filterByDateRange(LocalDate startDate, LocalDate endDate) {
+		List<PatientBillingDTO> data = patientBillingRepository.findByBillingDateBetween(startDate, endDate);
+
+		System.out.println("filterde data" + data);
+		return data;
+	}
 
 	@Override
 	public List<PatientBillingEntity> filterByDateRange(LocalDate startDate, Optional<LocalDate> endDate) {
@@ -290,33 +321,31 @@ List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
 
 	@Override
 	public List<BedAllocationDto> getBedDetails() {
-		List<BedAllocationDto>bedAllocationDetails=patientBillingRepository.getBedAllocationDetails();
-				return bedAllocationDetails;
+		List<BedAllocationDto> bedAllocationDetails = patientBillingRepository.getBedAllocationDetails();
+		return bedAllocationDetails;
 	}
 
 	@Override
 	public void deleteRecord(int billId, String recordStatus) {
-	boolean existsById = patientBillingRepository.existsById(billId);
-	if(existsById)
-	{
-		//patientBillingRepository.
+		boolean existsById = patientBillingRepository.existsById(billId);
+		if (existsById) {
+			// patientBillingRepository.
+		}
+
 	}
-		
-	}
-	
 
 	@Override
 	public BedAllocationDto getByPatientNo(String number) {
-	
-		BedAllocationDto details=patientBillingRepository.findPatientDataByPatientNumber(number);
-		
+
+		BedAllocationDto details = patientBillingRepository.findPatientDataByPatientNumber(number);
+
 //		String patientNumber=details.getPatientNumber();
 //		if(patientNumber.equalsIgnoreCase(number));
 		return details;
 	}
-	}
 
-	
+}
+
 //	@Override
 //	public BillingDetailsBean getBillingDetails() {
 //		// TODO Auto-generated method stub
@@ -337,6 +366,3 @@ List<PatientBillingDTO> data = patientBillingRepository.getBillingResults();
 //		
 //		return billingDetailsBean;
 //	}
-	
-
-

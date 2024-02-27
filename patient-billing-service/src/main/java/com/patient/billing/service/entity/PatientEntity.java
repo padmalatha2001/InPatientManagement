@@ -18,7 +18,7 @@ public class PatientEntity {
 	private String firstName;
 	@Column(name="last_name")
 	private String lastName;
-	@Column(name="patient_gender")
+	@Column(name="gender")
 	private String patientGender;
 	@Column(name="patient_age")
 	private int patientAge;

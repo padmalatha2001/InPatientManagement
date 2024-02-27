@@ -38,11 +38,10 @@ public class PatientBillingEntity {
 	private double totalAmount;
 	@Column(name = "payment_status")
 	private String paymentStatus;
-	@Column(name="record_status")
-	private String  recordStatus;
-	
+	@Column(name="remaining_amount")
+	private double remainingAmount;
 	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
-			double discount, double totalAmount, String paymentStatus, String recordStatus) {
+			double discount, double totalAmount, String paymentStatus, double remainingAmount) {
 		super();
 		this.billId = billId;
 		this.billingDate = billingDate;
@@ -51,83 +50,59 @@ public class PatientBillingEntity {
 		this.discount = discount;
 		this.totalAmount = totalAmount;
 		this.paymentStatus = paymentStatus;
-		this.recordStatus = recordStatus;
+		this.remainingAmount = remainingAmount;
 	}
-
 	public int getBillId() {
 		return billId;
 	}
-
 	public void setBillId(int billId) {
 		this.billId = billId;
 	}
-
 	public LocalDate getBillingDate() {
 		return billingDate;
 	}
-
 	public void setBillingDate(LocalDate billingDate) {
 		this.billingDate = billingDate;
 	}
-
 	public int getBedAllocationId() {
 		return bedAllocationId;
 	}
-
 	public void setBedAllocationId(int bedAllocationId) {
 		this.bedAllocationId = bedAllocationId;
 	}
-
 	public double getPaidAmount() {
 		return paidAmount;
 	}
-
 	public void setPaidAmount(double paidAmount) {
 		this.paidAmount = paidAmount;
 	}
-
 	public double getDiscount() {
 		return discount;
 	}
-
 	public void setDiscount(double discount) {
 		this.discount = discount;
 	}
-
 	public double getTotalAmount() {
 		return totalAmount;
 	}
-
 	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
-
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
-
-	
-	public String getRecordStatus() {
-		return recordStatus;
+	public double getRemainingAmount() {
+		return remainingAmount;
 	}
-
-	public void setRecordStatus(String recordStatus) {
-		this.recordStatus = recordStatus;
+	public void setRemainingAmount(double remainingAmount) {
+		this.remainingAmount = remainingAmount;
 	}
-
 	public PatientBillingEntity() {
 		super();
-	}
-
-	@Override
-	public String toString() {
-		return "PatientBillingEntity [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
-				+ bedAllocationId + ", paidAmount=" + paidAmount + ", discount=" + discount + ", totalAmount="
-				+ totalAmount + ", paymentStatus=" + paymentStatus + "]";
-	}
-
+	}	
+	
+	
 }
