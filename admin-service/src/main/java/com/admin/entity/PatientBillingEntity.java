@@ -1,4 +1,4 @@
-package com.patient.billing.service.entity;
+package com.admin.entity;
 
 
 
@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import com.patient.billing.service.bean.BedAllocationBean;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,10 +38,11 @@ public class PatientBillingEntity {
 	private double totalAmount;
 	@Column(name = "payment_status")
 	private String paymentStatus;
-	@Column(name="remaining_amount")
-	private double remainingAmount;
+	@Column(name="record_status")
+	private String  recordStatus;
+	
 	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
-			double discount, double totalAmount, String paymentStatus, double remainingAmount) {
+			double discount, double totalAmount, String paymentStatus, String recordStatus) {
 		super();
 		this.billId = billId;
 		this.billingDate = billingDate;
@@ -50,59 +51,83 @@ public class PatientBillingEntity {
 		this.discount = discount;
 		this.totalAmount = totalAmount;
 		this.paymentStatus = paymentStatus;
-		this.remainingAmount = remainingAmount;
+		this.recordStatus = recordStatus;
 	}
+
 	public int getBillId() {
 		return billId;
 	}
+
 	public void setBillId(int billId) {
 		this.billId = billId;
 	}
+
 	public LocalDate getBillingDate() {
 		return billingDate;
 	}
+
 	public void setBillingDate(LocalDate billingDate) {
 		this.billingDate = billingDate;
 	}
+
 	public int getBedAllocationId() {
 		return bedAllocationId;
 	}
+
 	public void setBedAllocationId(int bedAllocationId) {
 		this.bedAllocationId = bedAllocationId;
 	}
+
 	public double getPaidAmount() {
 		return paidAmount;
 	}
+
 	public void setPaidAmount(double paidAmount) {
 		this.paidAmount = paidAmount;
 	}
+
 	public double getDiscount() {
 		return discount;
 	}
+
 	public void setDiscount(double discount) {
 		this.discount = discount;
 	}
+
 	public double getTotalAmount() {
 		return totalAmount;
 	}
+
 	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+
 	public String getPaymentStatus() {
 		return paymentStatus;
 	}
+
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
-	public double getRemainingAmount() {
-		return remainingAmount;
+
+	
+	public String getRecordStatus() {
+		return recordStatus;
 	}
-	public void setRemainingAmount(double remainingAmount) {
-		this.remainingAmount = remainingAmount;
+
+	public void setRecordStatus(String recordStatus) {
+		this.recordStatus = recordStatus;
 	}
+
 	public PatientBillingEntity() {
 		super();
-	}	
-	
-	
+	}
+
+	@Override
+	public String toString() {
+		return "PatientBillingEntity [billId=" + billId + ", billingDate=" + billingDate + ", bedAllocationId="
+				+ bedAllocationId + ", paidAmount=" + paidAmount + ", discount=" + discount + ", totalAmount="
+				+ totalAmount + ", paymentStatus=" + paymentStatus + "]";
+	}
+
 }

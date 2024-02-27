@@ -1,5 +1,6 @@
 package com.admin.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -137,34 +138,43 @@ public class RegistrationController {
 			if (registrationService.verifyOtp(email, enteredOtp)) {
 				String jsonString = "{\"message\":\"Verified Successfully\"}";
 
-		        // Set Content-Type header to application/json
-		        return ResponseEntity.status(HttpStatus.OK)
-		                .header("Content-Type", "application/json")
-		                .body(jsonString);
-             // System.out.println("successfull");
-				//return  new ResponseEntity(HttpStatus.OK);
+				return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(jsonString);
 			} else {
 				String jsonString = "{\"message\":\"Invalid OTP\"}";
+				System.out.println("jsonString"+jsonString);
 
-		        // Set Content-Type header to application/json
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-		                .header("Content-Type", "application/json")
-		                .body(jsonString);
-				//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
+				// Set Content-Type header to application/json
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Content-Type", "application/json")
+						.body(jsonString);
+				// return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
 			}
 		} catch (RuntimeException e) {
-			// Handle exceptions thrown during OTP verification
-			//System.out.println("error occured");
-			//return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-			String jsonString = "{\"message\":\"error occured\"}";
+			// return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			String jsonString = "{\"message\":\"wrong otp\"}";
 
-	        // Set Content-Type header to application/json
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	                .header("Content-Type", "application/json")
-	                .body(jsonString);
+			// Set Content-Type header to application/json
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Content-Type", "application/json")
+					.body(jsonString);
 
 		}
 	}
+	
+//	@PostMapping("/verify")
+//	public ResponseEntity<Object> verifyOtp(@RequestParam String email, @RequestParam String enteredOtp) {
+//	    try {
+//	        if (registrationService.verifyOtp(email, enteredOtp)) {
+//	            String successMessage = "Verified Successfully";
+//	            return ResponseEntity.ok().body(Collections.singletonMap("message", successMessage));
+//	        } else {
+//	            String errorMessage = "Invalid OTP";
+//	            return ResponseEntity.badRequest().body(Collections.singletonMap("message", errorMessage));
+//	        }
+//	    } catch (RuntimeException e) {
+//	        String errorMessage = "Error verifying OTP: " + e.getMessage();
+//	        return ResponseEntity.badRequest().body(Collections.singletonMap("message", errorMessage));
+//	    }
+//	}
+
 }
 
 //	@PostMapping("/getdetails")

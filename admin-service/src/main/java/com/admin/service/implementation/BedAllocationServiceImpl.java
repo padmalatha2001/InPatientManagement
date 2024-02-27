@@ -1,5 +1,6 @@
 package com.admin.service.implementation;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +23,7 @@ import com.admin.bean.PatientBean;
 import com.admin.bean.RoomBean;
 import com.admin.bean.RoomTypeBean;
 import com.admin.bean.WardBean;
+import com.admin.dto.BedAllocationDto;
 import com.admin.entity.BedAllocation;
 import com.admin.entity.BedEntity;
 import com.admin.entity.Department;
@@ -29,6 +32,8 @@ import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.BedAllocationRepository;
+import com.admin.repository.BedEntityRepository;
+
 import com.admin.repository.RoomRepository;
 import com.admin.repository.WardRepository;
 import com.admin.service.BedAllocationService;
@@ -37,12 +42,16 @@ import com.admin.service.BedAllocationService;
 public class BedAllocationServiceImpl implements BedAllocationService {
 
 	@Autowired
-	BedAllocationRepository bedAllocationRepository;
+
+	BedAllocationRepository bedAllocationRepository; 
 	@Autowired
-	private WardRepository wardRepository;
+	WardRepository wardRepository;
 	@Autowired
 	RoomRepository roomRepository;
 	@Autowired
+	BedEntityRepository bedRepository;
+
+   @Autowired
 	private RestTemplate restTemplate;
 
 	@Override
@@ -247,6 +256,46 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 
 	}
 
+
+	@Override
+	public List<BedAllocationDto> getBedDetails() {
+		
+		List<BedAllocationDto> bedDetails=bedAllocationRepository.getBedAllocationDetails();
+		
+		return bedDetails;
+	}
+	
+	
+	@Scheduled(fixedRate = 60000) // 5 minutes in milliseconds
+	public void getDetails() {
+		try {
+			System.out.println("scheduled start");
+			LocalDateTime currentTime = LocalDateTime.now();
+			List<BedAllocation> bedDetails=bedAllocationRepository.findBedAllocationsWithEndDateBeforeCurrentDate();
+			for(BedAllocation list:bedDetails)
+			{
+				BedEntity entity=list.getBedId();
+				if(entity.getStatus().equalsIgnoreCase("booked"))
+				{	
+				  entity.setStatus("Empty");
+				  bedRepository.save(entity);
+				  RoomEntity room=entity.getRoomId();
+				  room.setAvailability(room.getAvailability()+1);
+				  roomRepository.save(room);
+				  
+				  Ward ward=entity.getRoomId().getWardId();
+				  ward.setAvailability(ward.getAvailability()+1);
+				  wardRepository.save(ward); 
+				}
+				
+			}
+			System.out.println("scheduled end");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			// logger.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
+		}
+	}
+
 	private void entityToBean(BedEntity bedEntity, BedBean bedBean) {
 		// TODO Auto-generated method stub
 		bedBean.setId(bedEntity.getId());
@@ -301,6 +350,7 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 		DepartmentBean.setId(Department.getId());
 		DepartmentBean.setName(Department.getName());
 	}
+	
 
 	public List<Map<String, Object>> getAllBedAllocationsWithPatientNames() {
 		List<BedAllocation> bedAllocations = bedAllocationRepository.findAll();

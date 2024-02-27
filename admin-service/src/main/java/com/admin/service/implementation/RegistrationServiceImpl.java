@@ -216,7 +216,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String otp = generateOtp();
 			//LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // Set expiration time (5 minutes in this
 																				// example)
-			Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(10)));
+			Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(5)));
 
 			sendOtpEmail(email, otp);
 			saveOtp(email, otp, expirationTime);
@@ -275,24 +275,20 @@ public class RegistrationServiceImpl implements RegistrationService {
 	    // Convert the Timestamp to Instant and then to LocalDateTime
 	    LocalDateTime expirationLocalDateTime = expirationTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-//	    if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
-//	        throw new RuntimeException("OTP has expired");
-//	    }
+	    if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
+	        //throw new RuntimeException("OTP has expired");
+	    	return false;
+	    }
 
 	    // Check if the entered OTP matches the one stored in the database
-	     if (!enteredOtp.equals(otpEntity.getOtp())) {
-	        throw new InvalidOtpException("Invalid OTP");
+	    else if (!enteredOtp.equals(otpEntity.getOtp())) {
+	        throw new InvalidOtpException("Entered Correct otp");
 	    }
 	    else
 	    {
 	    	return true;
 	    }
 	}
-
-	    // Clear the OTP after successful verification (optional)
-	    //otpRepository.delete(otpEntity);
-
-	    //return true;
 
 //	@Scheduled(fixedRate = 600000) // 5 minutes in milliseconds
 //	public void cleanupExpiredOtps() {

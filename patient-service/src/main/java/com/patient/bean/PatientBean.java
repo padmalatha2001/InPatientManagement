@@ -5,17 +5,42 @@ public class PatientBean {
 	private int patientId;
 	private String firstName;
 	private String lastName;
-	private char patientGender;
+	private String patientGender;
 	private int patientAge;
 	private long patientContactNo;
 	private long patientAlternteContactNo;
+	private String patientNumber;
 	private DoctorBean doctorBean;
+	public String getPatientNumber() {
+		return patientNumber;
+	}
+
+	public void setPatientNumber(String patientNumber) {
+		this.patientNumber = patientNumber;
+	}
+
+	public PatientBean(int patientId, String firstName, String lastName, String patientGender, int patientAge,
+			long patientContactNo, long patientAlternteContactNo, String patientNumber, DoctorBean doctorBean) {
+		super();
+		this.patientId = patientId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.patientGender = patientGender;
+		this.patientAge = patientAge;
+		this.patientContactNo = patientContactNo;
+		this.patientAlternteContactNo = patientAlternteContactNo;
+		this.patientNumber = patientNumber;
+		this.doctorBean = doctorBean;
+	}
+
+
+	
 	
 	public PatientBean() {
 		super();
 	}
 
-	public PatientBean(int patientId, String firstName, String lastName, char patientGender, int patientAge,
+	public PatientBean(int patientId, String firstName, String lastName, String patientGender, int patientAge,
 			long patientContactNo, long patientAlternteContactNo, DoctorBean doctorBean) {
 		super();
 		this.patientId = patientId;
@@ -58,12 +83,12 @@ public class PatientBean {
 	}
 
 
-	public char getPatientGender() {
+	public String getPatientGender() {
 		return patientGender;
 	}
 
 
-	public void setPatientGender(char patientGender) {
+	public void setPatientGender(String patientGender) {
 		this.patientGender = patientGender;
 	}
 
