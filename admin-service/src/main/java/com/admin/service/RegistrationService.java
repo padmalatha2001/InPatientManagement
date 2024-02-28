@@ -22,4 +22,5 @@ public interface RegistrationService {
 	String generateOtp();
 		void saveOtp(String email, String otp, Timestamp expirationTime);
 	boolean verifyOtp(String email, String enteredOtp);
+	void updatePassword(String email, String password);
 }

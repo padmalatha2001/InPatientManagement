@@ -288,6 +288,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 	    	return true;
 	    }
 	}
+	@Override
+	
+	public void updatePassword(String email,String password)
+	{
+		RegistrationForm result=registrationRepository.findByEmail(email);
+		if(result!=null) {
+			
+			result.setPassword(password);
+			registrationRepository.save(result);
+			
+		}
+	}
+	
 
 	    // Clear the OTP after successful verification (optional)
 	    //otpRepository.delete(otpEntity);

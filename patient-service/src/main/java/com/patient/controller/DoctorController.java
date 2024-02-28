@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.patient.bean.DoctorBean;
+
 import com.patient.entity.DoctorEntity;
 import com.patient.service.DoctorService;
 
@@ -60,6 +61,18 @@ public class DoctorController {
 			    List<DoctorBean> list = doctorService.getAll();
 			    ResponseEntity<List<DoctorBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
 			    log.info("Getting  All Doctor Details is done");
+			    return responseEntity;
+			
+		}
+		
+
+		@GetMapping("/getAllWithDept")
+		public ResponseEntity<List<Object[]>> get() {
+			log.info("Getting  All Doctor Details");
+			
+			List<Object[]> list = doctorService.getAllWithDept();
+			    ResponseEntity<List<Object[]>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
+			    log.info("Getting  All Doctor Details with dept names is done ");
 			    return responseEntity;
 			
 		}

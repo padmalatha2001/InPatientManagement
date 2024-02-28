@@ -11,11 +11,16 @@ import com.patient.entity.DoctorEntity;
 import com.patient.exception.PatientIdNotFoundException;
 import com.patient.repository.DoctorRepository;
 import com.patient.service.DoctorService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 @Service
 public class DoctorServiceImplementation implements DoctorService{
 	
 	@Autowired
 	DoctorRepository doctorRepository;
+	@PersistenceContext
+    private EntityManager entityManager;
 
 	@Override
 	public DoctorBean save(DoctorBean doctorBean) {
@@ -101,6 +106,17 @@ public class DoctorServiceImplementation implements DoctorService{
 		// TODO Auto-generated method stub
 		doctor.setStatus("InActive");
 		doctorRepository.save(doctor);
+	}
+
+	@Override
+	public List<Object[]> getAllWithDept() {
+		// TODO Auto-generated method stub
+		String sqlQuery ="SELECT d.doctor_name,d.status,dp.department_name FROM doctor d\r\n"
+				+ "JOIN department dp ON d.department_id = dp.dept_id";
+		 List<Object[]> resultList = entityManager.createNativeQuery(sqlQuery)
+	                .getResultList();
+		 
+		 return resultList;
 	}
 
 }

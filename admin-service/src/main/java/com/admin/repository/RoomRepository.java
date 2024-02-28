@@ -13,4 +13,6 @@ public interface RoomRepository extends JpaRepository<RoomEntity,Long>{
 	//SELECT SUM(r.room_sharing) FROM Room r WHERE r.ward_id = 2;
 	@Query("SELECT SUM(r.roomSharing) FROM RoomEntity r WHERE r.wardId.id = :wardId")
     Integer sumRoomSharingByWard(@Param("wardId") Long wardId);
+	
+	public RoomEntity getByRoomNoAndWardId_Id(int roomNo,long id);
 }

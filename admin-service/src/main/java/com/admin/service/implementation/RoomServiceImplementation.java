@@ -34,7 +34,9 @@ public class RoomServiceImplementation implements RoomService {
 //		RoomEntity roomEntity=new RoomEntity();
 //	     beanToEntity(roomEntity,roomBean);
 //		 RoomRepository.save(roomEntity);
-         roomBean.setStatus("Active");
+		RoomEntity roomEntity1=roomRepository.getByRoomNoAndWardId_Id(roomBean.getRoomNo(), roomBean.getWardId().getId());
+        if(roomEntity1==null) {
+		roomBean.setStatus("Active");
 		WardBean ward = roomBean.getWardId();
 		Integer totalRoomSharing = roomRepository.sumRoomSharingByWard(ward.getId());
 		if (totalRoomSharing == null) {
@@ -47,6 +49,7 @@ public class RoomServiceImplementation implements RoomService {
 		} else {
 			throw new RecordNotFoundException("Room capacity exceeded for ward");
 		}
+      }
 
 	}
 

@@ -20,10 +20,13 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	@Override
 	public RoomTypeBean save(RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
+		RoomType roomtype1=roomTypeRepository.getByName(roomTypeBean.getName());
+		if(roomtype1==null) {
 		RoomType roomType=new RoomType();
 		beanToEntity(roomTypeBean,roomType);
 		roomType.setStatus("Active");
 		roomTypeRepository.save(roomType);
+		}
 		return roomTypeBean;
 		
 	}

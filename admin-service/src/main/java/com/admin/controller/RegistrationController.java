@@ -162,6 +162,13 @@ public class RegistrationController {
 
 		}
 	}
+	
+	@PutMapping("/password")
+	public ResponseEntity<String>updatePassword(@RequestParam String email,@RequestParam String password)
+	{
+		registrationService.updatePassword(email, password);
+		return new ResponseEntity<String>("updated successfully",HttpStatus.OK);
+	}
 }
 //	@PostMapping("/getdetails")
 //	public ResponseEntity<String>getDetails(@RequestBody String email,String password)

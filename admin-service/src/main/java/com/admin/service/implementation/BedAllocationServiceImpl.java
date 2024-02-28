@@ -29,6 +29,7 @@ import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.BedAllocationRepository;
+import com.admin.repository.BedEntityRepository;
 import com.admin.repository.RoomRepository;
 import com.admin.repository.WardRepository;
 import com.admin.service.BedAllocationService;
@@ -42,6 +43,8 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 	private WardRepository wardRepository;
 	@Autowired
 	RoomRepository roomRepository;
+	@Autowired
+	BedEntityRepository bedEntityRepository;
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -77,6 +80,11 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 		// TODO Auto-generated method stub
 		WardBean ward = bedAllocationBean.getBedId().getRoomId().getWardId();
 		RoomBean room= bedAllocationBean.getBedId().getRoomId();
+		BedBean bed=bedAllocationBean.getBedId();
+		bed.setStatus("Booked");
+		BedEntity bedEntity =new BedEntity();
+		beanToEntity(bed,bedEntity);
+		bedEntityRepository.save(bedEntity);
 		if(room.getAvailability()>0) {
 			room.setAvailability(room.getAvailability()-1);
 			RoomEntity roomEntity=new RoomEntity();
@@ -84,7 +92,7 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			roomRepository.save(roomEntity);
 		if (ward.getAvailability() > 0) {
 			ward.setAvailability(ward.getAvailability() - 1);
-			bedAllocationBean.setStatus("booked");
+			bedAllocationBean.setStatus("Active");
 			BedAllocation bedAllocation = new BedAllocation();
 			beanToEntity(bedAllocationBean, bedAllocation);
 			bedAllocationRepository.save(bedAllocation);
@@ -95,7 +103,7 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			throw new RuntimeException("No availability in the ward");
 		   }
 		}else {
-			
+			throw new RuntimeException("No availability in the Room");
 		}
 		
 

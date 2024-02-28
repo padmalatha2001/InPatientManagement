@@ -29,20 +29,22 @@ public class BedServiceImpl implements BedService {
 	@Override
 	public BedBean save(BedBean bedBean) {
 		// TODO Auto-generated method stub
-       
-		RoomBean room = bedBean.getRoomId();
+		BedEntity bedEntity1=bedEntityRepository.getByBedNoAndRoomId_Id(bedBean.getBedNo(), bedBean.getRoomId().getId());
+		if(bedEntity1==null)
+		{RoomBean room = bedBean.getRoomId();
 		Integer totalBeds = bedEntityRepository.sumBedsByRoom(room.getId());
 		if (totalBeds == null) {
 			totalBeds = 0;
 		}
 		if (totalBeds + 1 <= room.getRoomSharing()) {
 			BedEntity bedEntity = new BedEntity();
+			bedBean.setStatus("Empty");
 			beanToEntity(bedBean, bedEntity);
 			bedEntityRepository.save(bedEntity);
 		} else {
 			throw new RecordNotFoundException("Room bed capacity exceeded");
 		}
-
+		}
 		return bedBean;
 	}
 

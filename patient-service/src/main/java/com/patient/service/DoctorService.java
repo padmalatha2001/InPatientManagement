@@ -12,7 +12,7 @@ DoctorBean save(DoctorBean doctorBean);
 	DoctorBean getById(long id);
 	
 	List<DoctorBean> getAll();
-	
+	List<Object[]> getAllWithDept();
 	void delete(Long id);
 
     void update(DoctorBean doctorbean);
