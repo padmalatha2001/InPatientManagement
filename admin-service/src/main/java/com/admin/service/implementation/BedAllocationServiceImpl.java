@@ -23,6 +23,7 @@ import com.admin.bean.BedBean;
 import com.admin.bean.PatientBean;
 import com.admin.bean.RoomBean;
 import com.admin.bean.WardBean;
+import com.admin.constants.CommonConstants;
 import com.admin.dto.BedAllocationDto;
 import com.admin.entity.BedAllocation;
 import com.admin.entity.BedEntity;
@@ -56,113 +57,134 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 	private RestTemplate restTemplate;
 	@Autowired
 	BedEntityRepository bedEntityRepository;
-	
+
 	private static Logger log = LoggerFactory.getLogger(BedAllocationServiceImpl.class.getSimpleName());
 
 	ObjectMapper objectMapper = new ObjectMapper();
+
 	@Override
 	public PatientBean getDetails(int id) {
-		String url = "http://localhost:8085/registration/" + id;
+		try {
+			log.info("Retriving patient details by id");
+			String url = "http://localhost:8085/registration/" + id;
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
-		ResponseEntity<PatientBean> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-				PatientBean.class);
-
-		if (responseEntity.getStatusCode().is2xxSuccessful()) {
+			ResponseEntity<PatientBean> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+					PatientBean.class);
 
 			PatientBean patientBean = responseEntity.getBody();
 
 			if (patientBean != null) {
 				return patientBean;
 			} else {
-                throw new PatientDoesNotExistsException("Patient does not exists with given id ");
+				throw new PatientDoesNotExistsException("Patient does not exists with given id ");
 			}
-		} else {
+
+		} catch (Exception exception) {
 			log.error("Error Occured while getting patient Details by id ");
-			return null;
+			throw exception;
 		}
 
-		
 	}
 
 	public BedAllocationBean save(BedAllocationBean bedAllocationBean) {
 
 		// TODO Auto-generated method stub
-		BedAllocation bedallocate = bedAllocationRepository.getByPatientId(bedAllocationBean.getPatientId());
-		if (bedallocate == null) {
-			WardBean wardBean = bedAllocationBean.getBedId().getRoomId().getWardId();
-			RoomBean roomBean = bedAllocationBean.getBedId().getRoomId();
-			BedBean bedBean = bedAllocationBean.getBedId();
-			bedBean.setStatus("Booked");
+		try {
+			log.info("Saving bed allocation details");
 
-			BedEntity bedEntity = new BedEntity();
-			bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
-			bedEntityRepository.save(bedEntity);
-			if (roomBean.getAvailability() > 0) {
-				roomBean.setAvailability(roomBean.getAvailability() - 1);
-				RoomEntity roomEntity = new RoomEntity();
-				roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
-				roomRepository.save(roomEntity);
-				if (wardBean.getAvailability() > 0) {
-					wardBean.setAvailability(wardBean.getAvailability() - 1);
-					bedAllocationBean.setStatus("Active");
-					BedAllocation bedAllocation = new BedAllocation();
-					long days=ChronoUnit.DAYS.between(bedAllocationBean.getStartDate().toLocalDate(), bedAllocationBean.getEndDate().toLocalDate());
-			        bedAllocationBean.setNoOfDays(days);
-					beanToEntity(bedAllocationBean, bedAllocation);
-					bedAllocationRepository.save(bedAllocation);
-					Ward wardEntity = new Ward();
-					wardEntity = objectMapper.convertValue(wardBean, Ward.class);
-					wardRepository.save(wardEntity);
+			BedAllocation bedallocate = bedAllocationRepository.getByPatientId(bedAllocationBean.getPatientId());
+			if (bedallocate == null) {
+				WardBean wardBean = bedAllocationBean.getBedId().getRoomId().getWardId();
+				RoomBean roomBean = bedAllocationBean.getBedId().getRoomId();
+				BedBean bedBean = bedAllocationBean.getBedId();
+				bedBean.setStatus(CommonConstants.Booked);
+
+				BedEntity bedEntity = new BedEntity();
+				bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
+				bedEntityRepository.save(bedEntity);
+				if (roomBean.getAvailability() > 0) {
+					roomBean.setAvailability(roomBean.getAvailability() - 1);
+					RoomEntity roomEntity = new RoomEntity();
+					roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
+					roomRepository.save(roomEntity);
+					if (wardBean.getAvailability() > 0) {
+						wardBean.setAvailability(wardBean.getAvailability() - 1);
+						bedAllocationBean.setStatus(CommonConstants.Active);
+						BedAllocation bedAllocation = new BedAllocation();
+						long days = ChronoUnit.DAYS.between(bedAllocationBean.getStartDate().toLocalDate(),
+								bedAllocationBean.getEndDate().toLocalDate());
+						bedAllocationBean.setNoOfDays(days);
+						beanToEntity(bedAllocationBean, bedAllocation);
+						bedAllocationRepository.save(bedAllocation);
+						Ward wardEntity = new Ward();
+						wardEntity = objectMapper.convertValue(wardBean, Ward.class);
+						wardRepository.save(wardEntity);
+					} else {
+						throw new WardAvailabilityException("No availability in the ward");
+					}
 				} else {
-					throw new WardAvailabilityException("No availability in the ward");
+					throw new RoomAvailabilityException("No availability in the Room");
 				}
-			} else {
-				throw new RoomAvailabilityException("No availability in the Room");
-			}
 
+			}
+			return bedAllocationBean;
+		} catch (Exception exception) {
+			log.error("Error Occured while saving bed allocation details");
+			throw exception;
 		}
-		return bedAllocationBean;
 	}
 
 	private void beanToEntity(BedAllocationBean bedAllocationBean, BedAllocation bedAllocation) {
 		// TODO Auto-generated method stub
-		 bedAllocation = objectMapper.convertValue(bedAllocationBean, BedAllocation.class);
+		bedAllocation = objectMapper.convertValue(bedAllocationBean, BedAllocation.class);
 
 	}
 
 	@Override
 	public BedAllocationBean getById(int id) {
 		// TODO Auto-generated method stub
-		BedAllocation bedAllocation = bedAllocationRepository.findById(id)
-				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
-		BedAllocationBean bedAllocationBean = new BedAllocationBean();
-		entityToBean(bedAllocation, bedAllocationBean);
-		return bedAllocationBean;
+		try {
+			log.info("Retrieving bed allocation by id");
+			BedAllocation bedAllocation = bedAllocationRepository.findById(id)
+					.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+			BedAllocationBean bedAllocationBean = new BedAllocationBean();
+			entityToBean(bedAllocation, bedAllocationBean);
+			return bedAllocationBean;
+		} catch (Exception exception) {
+			log.error("Error Occured while retrieving bed allocation details by id ");
+			throw exception;
+		}
 	}
 
 	private void entityToBean(BedAllocation bedAllocation, BedAllocationBean bedAllocationBean) {
 		// TODO Auto-generated method stub
-		 bedAllocationBean = objectMapper.convertValue(bedAllocation, BedAllocationBean.class);
+		bedAllocationBean = objectMapper.convertValue(bedAllocation, BedAllocationBean.class);
 	}
 
 	@Override
 	public List<BedAllocationBean> getAll() {
 		// TODO Auto-generated method stub
-		List<BedAllocation> entityList = bedAllocationRepository.findAll();
-		List<BedAllocationBean> beanList = new ArrayList<>();
-		entityToBean(entityList, beanList);
-		return beanList;
+		try {
+			log.info("Retrieving all bed allocation details");
+			List<BedAllocation> entityList = bedAllocationRepository.findAll();
+			List<BedAllocationBean> beanList = new ArrayList<>();
+			entityToBean(entityList, beanList);
+			return beanList;
+		} catch (Exception exception) {
+			log.error("Error Occured while retrieving all bed allocation details ");
+			throw exception;
+		}
 	}
 
 	private void entityToBean(List<BedAllocation> entitylist, List<BedAllocationBean> beanList) {
 		// TODO Auto-generated method stub
 		for (BedAllocation bedAllocation : entitylist) {
 			BedAllocationBean bedAllocationBean = new BedAllocationBean();
-			 bedAllocationBean = objectMapper.convertValue(bedAllocation, BedAllocationBean.class);
+			bedAllocationBean = objectMapper.convertValue(bedAllocation, BedAllocationBean.class);
 			beanList.add(bedAllocationBean);
 		}
 	}
@@ -170,26 +192,37 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 	@Override
 	public void delete(int id) {
 		// TODO Auto-generated method stub
-		bedAllocationRepository.deleteById(id);
+		try {
+			log.error("Deleting bed allocation by id");
+			bedAllocationRepository.deleteById(id);
+		} catch (Exception exception) {
+			log.error("Error Occured while deleting bed allocation details by id ");
+			throw exception;
+		}
 
 	}
 
 	@Override
 	public void update(BedAllocationBean bedAllocationBean) {
 		// TODO Auto-generated method stub
-		BedAllocation bedAllocation = bedAllocationRepository.getReferenceById(bedAllocationBean.getId());
-		bedAllocation.setId(bedAllocationBean.getId());
-		bedAllocation.setStartDate(bedAllocationBean.getStartDate());
-		bedAllocation.setEndDate(bedAllocationBean.getEndDate());
-		bedAllocation.setNoOfDays(bedAllocationBean.getNoOfDays());
-		bedAllocation.setPatientId(bedAllocationBean.getPatientId());
-		BedBean bedBean = bedAllocationBean.getBedId();
-		BedEntity bedEntity = new BedEntity();
-		bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
-		bedAllocation.setBedId(bedEntity);
-		bedAllocation.setStatus(bedAllocationBean.getStatus());
-		bedAllocationRepository.save(bedAllocation);
-
+		try {
+			log.info("updating bed allocation details");
+			BedAllocation bedAllocation = bedAllocationRepository.getReferenceById(bedAllocationBean.getId());
+			bedAllocation.setId(bedAllocationBean.getId());
+			bedAllocation.setStartDate(bedAllocationBean.getStartDate());
+			bedAllocation.setEndDate(bedAllocationBean.getEndDate());
+			bedAllocation.setNoOfDays(bedAllocationBean.getNoOfDays());
+			bedAllocation.setPatientId(bedAllocationBean.getPatientId());
+			BedBean bedBean = bedAllocationBean.getBedId();
+			BedEntity bedEntity = new BedEntity();
+			bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
+			bedAllocation.setBedId(bedEntity);
+			bedAllocation.setStatus(bedAllocationBean.getStatus());
+			bedAllocationRepository.save(bedAllocation);
+		} catch (Exception exception) {
+			log.error("Error Occured while updating bed allocation details by id ");
+			throw exception;
+		}
 	}
 
 	@Override
@@ -207,8 +240,8 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			List<BedAllocation> bedDetails = bedAllocationRepository.findBedAllocationsWithEndDateBeforeCurrentDate();
 			for (BedAllocation list : bedDetails) {
 				BedEntity entity = list.getBedId();
-				if (entity.getStatus().equalsIgnoreCase("booked")) {
-					entity.setStatus("Empty");
+				if (entity.getStatus().equalsIgnoreCase(CommonConstants.Booked)) {
+					entity.setStatus(CommonConstants.Empty);
 					bedRepository.save(entity);
 					RoomEntity room = entity.getRoomId();
 					room.setAvailability(room.getAvailability() + 1);
@@ -222,42 +255,52 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			}
 			System.out.println("scheduled end");
 		} catch (Exception e) {
-			
-		   log.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
+
+			log.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
 		}
 	}
 
-
 	public List<Map<String, Object>> getAllBedAllocationsWithPatientNames() {
-		List<BedAllocation> bedAllocations = bedAllocationRepository.findAll();
-		List<Map<String, Object>> mappedData = new ArrayList<>();
+		try {
+			log.info("Retrieving all bed allocations with patient names");
+			List<BedAllocation> bedAllocations = bedAllocationRepository.findAll();
+			List<Map<String, Object>> mappedData = new ArrayList<>();
 
-		for (BedAllocation bedAllocation : bedAllocations) {
-			Map<String, Object> allocationMap = new HashMap<>();
-			allocationMap.put("id", bedAllocation.getId());
-			allocationMap.put("noOfDays", bedAllocation.getNoOfDays());
-			allocationMap.put("startDate", bedAllocation.getStartDate());
-			allocationMap.put("endDate", bedAllocation.getEndDate());
-			allocationMap.put("status", bedAllocation.getStatus());
-			allocationMap.put("bedId", bedAllocation.getBedId());
-			// Fetch PatientRegistration and map patientId to patientName
-			PatientBean patient = getDetails(bedAllocation.getPatientId());
-			if (patient != null) {
-				String patientName = patient.getFirstName() + " " + patient.getLastName();
-				allocationMap.put("patientName", patientName);
-			} else {
-				allocationMap.put("patientName", "Unknown");
+			for (BedAllocation bedAllocation : bedAllocations) {
+				Map<String, Object> allocationMap = new HashMap<>();
+				allocationMap.put("id", bedAllocation.getId());
+				allocationMap.put("noOfDays", bedAllocation.getNoOfDays());
+				allocationMap.put("startDate", bedAllocation.getStartDate());
+				allocationMap.put("endDate", bedAllocation.getEndDate());
+				allocationMap.put("status", bedAllocation.getStatus());
+				allocationMap.put("bedId", bedAllocation.getBedId());
+				// Fetch PatientRegistration and map patientId to patientName
+				PatientBean patient = getDetails(bedAllocation.getPatientId());
+				if (patient != null) {
+					String patientName = patient.getFirstName() + " " + patient.getLastName();
+					allocationMap.put("patientName", patientName);
+				} else {
+					allocationMap.put("patientName", "Unknown");
+				}
+
+				mappedData.add(allocationMap);
 			}
 
-			mappedData.add(allocationMap);
+			return mappedData;
+		} catch (Exception exception) {
+			log.error("Error Occured while retrieving all bed allocations with patient names");
+			throw exception;
 		}
-
-		return mappedData;
 	}
 
 	public BedAllocation getDetailsForUpdating(String patientNo) {
 		// TODO Auto-generated method stub
-
-		return bedAllocationRepository.getDetailsForUpdating(patientNo);
+		try {
+			log.info("Updating bed allocation details by patient number");
+			return bedAllocationRepository.getDetailsForUpdating(patientNo);
+		} catch (Exception exception) {
+			log.error("Error Occured while updating bed allocation details by patient number");
+			throw exception;
+		}
 	}
 }

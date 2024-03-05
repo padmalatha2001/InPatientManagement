@@ -3,6 +3,8 @@ package com.patient.serviceImplementation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patient.bean.DoctorBean;
 import com.patient.constants.CommonConstants;
 import com.patient.entity.DoctorEntity;
-import com.patient.exception.PatientIdNotFoundException;
+import com.patient.exception.DoctorIdNotFoundException;
 import com.patient.repository.DoctorRepository;
 import com.patient.service.DoctorService;
 
@@ -18,17 +20,19 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @Service
-public class DoctorServiceImplementation implements DoctorService{
-	
+public class DoctorServiceImplementation implements DoctorService {
+
 	@Autowired
 	DoctorRepository doctorRepository;
 	@PersistenceContext
-    private EntityManager entityManager;
-    ObjectMapper objectMapper=new ObjectMapper();
+	private EntityManager entityManager;
+	ObjectMapper objectMapper = new ObjectMapper();
+	private static Logger log = LoggerFactory.getLogger(DoctorServiceImplementation.class.getSimpleName());
+
 	@Override
 	public DoctorBean save(DoctorBean doctorBean) {
 		// TODO Auto-generated method stub
-		DoctorEntity doctorEntity=new DoctorEntity();
+		DoctorEntity doctorEntity = new DoctorEntity();
 		doctorBean.setStatus("Active");
 		BeanToEntity(doctorBean, doctorEntity);
 		doctorRepository.save(doctorEntity);
@@ -44,12 +48,21 @@ public class DoctorServiceImplementation implements DoctorService{
 	public DoctorBean getById(long id) {
 		// TODO Auto-generated method stub
 
-		DoctorEntity doctorEntity= doctorRepository.findById(id).orElseThrow(()->new PatientIdNotFoundException("No record found with the given id"));
-		DoctorBean doctorBean=new DoctorBean();
-		
-		entityToBean(doctorEntity, doctorBean);
+		try {
+			log.info("Get by Doctor Id");
+			DoctorEntity doctorEntity = doctorRepository.findById(id)
+					.orElseThrow(() -> new DoctorIdNotFoundException("Record not found with given id"));
+			DoctorBean doctorBean = new DoctorBean();
+			entityToBean(doctorEntity, doctorBean);
 
-		return doctorBean;	
+			return doctorBean;
+		} catch (DoctorIdNotFoundException e) {
+			log.error("Doctor ID not found: " + e.getMessage());
+			throw e;
+		} catch (Exception exception) {
+			log.error("An error occurred while getting doctor by ID: " + exception.getMessage());
+			throw exception;
+		}
 	}
 
 	private void entityToBean(DoctorEntity doctorEntity, DoctorBean doctorBean) {
@@ -59,18 +72,23 @@ public class DoctorServiceImplementation implements DoctorService{
 
 	@Override
 	public List<DoctorBean> getAll() {
-		// TODO Auto-generated method stub
-		List<DoctorBean> doctorBean=new ArrayList<>();
-	    List<DoctorEntity>	doctorEntity=doctorRepository.findAll();
-        entityToBean(doctorEntity,doctorBean);
-		return doctorBean;
+		log.info("Getting all Doctor details");
+		try {
+			List<DoctorBean> doctorBean = new ArrayList<>();
+			List<DoctorEntity> doctorEntity = doctorRepository.findAll();
+			entityToBean(doctorEntity, doctorBean);
+			log.info("Getting all Doctor details");
+			return doctorBean;
+		} catch (Exception e) {
+			log.error("An error occurred while getting all doctors: " + e.getMessage());
+			throw e;
+		}
 	}
 
 	private void entityToBean(List<DoctorEntity> doctorEntity, List<DoctorBean> doctorBean) {
 		// TODO Auto-generated method stub
-		for(DoctorEntity doctorEntity1:doctorEntity)
-		{  
-			DoctorBean doctorBean1=new DoctorBean();
+		for (DoctorEntity doctorEntity1 : doctorEntity) {
+			DoctorBean doctorBean1 = new DoctorBean();
 			entityToBean(doctorEntity1, doctorBean1);
 			doctorBean.add(doctorBean1);
 		}
@@ -79,21 +97,33 @@ public class DoctorServiceImplementation implements DoctorService{
 	@Override
 	public void delete(Long id) {
 		// TODO Auto-generated method stub
-		doctorRepository.deleteById(id);
+		log.info("Deleting Doctor ");
+		try {
+			doctorRepository.deleteById(id);
+			log.info("deleting Doctor Bean completed");
+		} catch (Exception e) {
+			log.error("An error occurred while deleting doctor: " + e.getMessage());
+			throw e;
+		}
 	}
 
 	@Override
 	public void update(DoctorBean doctorbean) {
 		// TODO Auto-generated method stub
+		log.info("Updating doctor Bean");
+		try {
+			DoctorEntity doctorEntity = doctorRepository.getReferenceById(doctorbean.getId());
 
-		DoctorEntity doctorEntity=doctorRepository.getReferenceById(doctorbean.getId());
-
-			//DoctorBean doctorBean=new DoctorBean();
-			doctorEntity.setId(doctorbean.getId());
-			doctorEntity.setName(doctorbean.getName());
-			doctorEntity.setDepartmentId(doctorbean.getDepartmentId());
-			doctorEntity.setStatus(doctorbean.getStatus());
+			DoctorBean doctorBean = new DoctorBean();
+			doctorEntity.setId(doctorBean.getId());
+			doctorEntity.setName(doctorBean.getName());
+			doctorEntity.setDepartmentId(doctorBean.getDepartmentId());
 			doctorRepository.save(doctorEntity);
+			log.info("Updating Doctor Bean completed");
+		} catch (Exception e) {
+			log.error("An error occurred while updating doctor: " + e.getMessage());
+			throw e;
+		}
 	}
 
 	@Override
@@ -107,12 +137,11 @@ public class DoctorServiceImplementation implements DoctorService{
 		doctorRepository.save(doctor);
 
 	}
-	
 
 	@Override
 	public List<Object[]> getAllWithDept() {
 		// TODO Auto-generated method stub
-		 return doctorRepository.getAllWithDept();
+		return doctorRepository.getAllWithDept();
 	}
 
 }

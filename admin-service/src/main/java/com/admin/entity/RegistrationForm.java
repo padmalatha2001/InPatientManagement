@@ -131,6 +131,4 @@ public class RegistrationForm {
 				+ phoneNumber + ", serviceType=" + serviceType + "]";
 	}
 
-	
-
 }

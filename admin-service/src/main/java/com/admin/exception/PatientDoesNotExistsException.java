@@ -1,6 +1,6 @@
 package com.admin.exception;
 
-public class PatientDoesNotExistsException extends RuntimeException{
+public class PatientDoesNotExistsException extends RuntimeException {
 
 	public PatientDoesNotExistsException() {
 		super();
@@ -12,5 +12,4 @@ public class PatientDoesNotExistsException extends RuntimeException{
 		// TODO Auto-generated constructor stub
 	}
 
-	
 }

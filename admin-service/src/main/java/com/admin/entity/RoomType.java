@@ -8,30 +8,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="roomType")
+@Table(name = "roomType")
 public class RoomType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="room_type_id") 
+	@Column(name = "room_type_id")
 	long id;
-    @Column(name="room_type_name") 
-    String name;
-    @Column(name="status")
+	@Column(name = "room_type_name")
+	String name;
+	@Column(name = "status")
 	private String status;
-	
-    public RoomType() {
+
+	public RoomType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	
 	public RoomType(long id, String name, String status) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.status = status;
 	}
-
 
 	public long getId() {
 		return id;
@@ -49,24 +47,17 @@ public class RoomType {
 		this.name = name;
 	}
 
-
-	
 	public String getStatus() {
 		return status;
 	}
 
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 
 	@Override
 	public String toString() {
 		return "RoomType [id=" + id + ", name=" + name + ", status=" + status + "]";
 	}
 
-	
-    
-    
 }

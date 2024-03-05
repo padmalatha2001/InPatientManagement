@@ -2,6 +2,8 @@ package com.admin.constants;
 
 public class CommonConstants {
 
- public static final String InActive="InActive";
- public static final String Active="Active";
+	public static final String InActive = "InActive";
+	public static final String Active = "Active";
+	public static final String Booked = "Booked";
+	public static final String Empty = "Empty";
 }

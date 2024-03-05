@@ -1,7 +1,5 @@
 package com.admin.entity;
 
-
-
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -22,20 +20,20 @@ public class PatientBillingEntity {
 
 	@Column(name = "bill_date")
 	private LocalDate billingDate;
-	
+
 	@Column(name = "bed_allocation_id")
 	private int bedAllocationId;
 	@Column(name = "paid_amount")
 	private double paidAmount;
 	@Column(name = "discount")
-	private double discount;  
+	private double discount;
 	@Column(name = "total_amount")
 	private double totalAmount;
 	@Column(name = "payment_status")
 	private String paymentStatus;
-	@Column(name="record_status")
-	private String  recordStatus;
-	
+	@Column(name = "record_status")
+	private String recordStatus;
+
 	public PatientBillingEntity(int billId, LocalDate billingDate, int bedAllocationId, double paidAmount,
 			double discount, double totalAmount, String paymentStatus, String recordStatus) {
 		super();
@@ -105,7 +103,6 @@ public class PatientBillingEntity {
 		this.paymentStatus = paymentStatus;
 	}
 
-	
 	public String getRecordStatus() {
 		return recordStatus;
 	}

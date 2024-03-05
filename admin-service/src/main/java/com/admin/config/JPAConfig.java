@@ -5,10 +5,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories(basePackages ="com.admin")
+@EnableJpaRepositories(basePackages = "com.admin")
 @EnableTransactionManagement
-public class JPAConfig 
-{
-	
+public class JPAConfig {
 
 }

@@ -1,16 +1,12 @@
 package com.admin.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +19,6 @@ import com.admin.bean.RegistrationBean;
 import com.admin.entity.RegistrationForm;
 import com.admin.exception.EmailAlreadyExistsException;
 import com.admin.exception.EmailNotFoundException;
-import com.admin.exception.RecordNotFoundException;
 import com.admin.service.RegistrationService;
 
 @RestController
@@ -39,7 +34,7 @@ public class RegistrationController {
 	public ResponseEntity<RegistrationBean> save(@RequestBody RegistrationBean registrationBean) {
 		log.info("Saving Registration entity");
 		try {
-			registrationService.save(registrationBean);
+			registrationService.saveRegistration(registrationBean);
 			ResponseEntity<RegistrationBean> responseEntity = new ResponseEntity<>(registrationBean,
 					HttpStatus.CREATED);
 			log.info("Saving Registration entity is done");
@@ -49,51 +44,6 @@ public class RegistrationController {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<RegistrationBean> getById(@PathVariable int id) {
-		log.info("Fetching Department by Id");
-
-		RegistrationBean registrationBean = registrationService.getById(id);
-		log.info("Fetching Department by Id is done");
-		return ResponseEntity.status(HttpStatus.OK).body(registrationBean);
-
-	}
-
-	@GetMapping("/getAll")
-	public ResponseEntity<List<RegistrationBean>> getAll() {
-		log.info("Fetching All Department details");
-
-		List<RegistrationBean> list = registrationService.getAll();
-		ResponseEntity<List<RegistrationBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-		log.info("Fetching All Department details is done");
-		return responseEntity;
-
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteById(@PathVariable int id) {
-		log.info("Deleting Department by ID");
-		try {
-			registrationService.delete(id);
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
-			log.info("Deleting Registration by ID is done");
-			return responseEntity;
-		} catch (RecordNotFoundException e) {
-			log.error("error handled");
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@PutMapping()
-	public ResponseEntity<String> update(@RequestBody RegistrationBean registrationBean) {
-
-		log.info("Updating Department");
-		registrationService.update(registrationBean);
-		ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated Successfully", HttpStatus.OK);
-		log.info("Updating Department is done");
-		return responseEntity;
 	}
 
 	@PostMapping("/login")
@@ -165,7 +115,7 @@ public class RegistrationController {
 		log.info("Update the password");
 
 		registrationService.updatePassword(email, password);
-		log.info("Update the  password");
+		log.info("Updated the  password successfully");
 		return new ResponseEntity<String>("updated successfully", HttpStatus.OK);
 	}
 

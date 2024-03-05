@@ -3,38 +3,47 @@ package com.admin.service.implementation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.admin.bean.RoomBean;
 import com.admin.bean.RoomTypeBean;
 import com.admin.constants.CommonConstants;
 import com.admin.entity.RoomType;
 import com.admin.exception.RecordNotFoundException;
+import com.admin.exception.RoomTypeAlreadyExistsException;
 import com.admin.repository.RoomTypeRepository;
 import com.admin.service.RoomTypeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
-public class RoomTypeServiceImpl implements RoomTypeService{
+public class RoomTypeServiceImpl implements RoomTypeService {
 
 	@Autowired
 	RoomTypeRepository roomTypeRepository;
 	ObjectMapper objectMapper = new ObjectMapper();
+	Logger log = LoggerFactory.getLogger(RoomTypeServiceImpl.class);
+
 	@Override
 	public RoomTypeBean save(RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
-		RoomType roomtype1=roomTypeRepository.getByName(roomTypeBean.getName());
-		if(roomtype1==null) {
-		RoomType roomType=new RoomType();
-		beanToEntity(roomTypeBean,roomType);
-		roomType.setStatus("Active");
-		roomTypeRepository.save(roomType);
+		try {
+			log.info("Saving roomtype");
+			RoomType roomtype1 = roomTypeRepository.getByName(roomTypeBean.getName());
+			if (roomtype1 == null) {
+				RoomType roomType = new RoomType();
+				beanToEntity(roomTypeBean, roomType);
+				roomType.setStatus(CommonConstants.Active);
+				roomTypeRepository.save(roomType);
+			} else {
+				throw new RoomTypeAlreadyExistsException("Already exists");
+			}
+			return roomTypeBean;
+		} catch (Exception exception) {
+			log.info("Error occured while saving roomType", exception);
+			throw exception;
 		}
-		else {
-			throw new RecordNotFoundException("Already exists");
-		}
-		return roomTypeBean;
-		
 	}
 
 	private void beanToEntity(RoomTypeBean roomTypeBean, RoomType roomType) {
@@ -45,18 +54,23 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	@Override
 	public List<RoomTypeBean> getAll() {
 		// TODO Auto-generated method stub
-		List<RoomType> entityList=roomTypeRepository.findAll();
-		List<RoomTypeBean> beanList=new ArrayList<>();
-		entityListToBeanList(entityList,beanList);
-		return beanList;
+		try {
+			log.info("Fetching all roomtypes");
+			List<RoomType> entityList = roomTypeRepository.findAll();
+			List<RoomTypeBean> beanList = new ArrayList<>();
+			entityListToBeanList(entityList, beanList);
+			return beanList;
+		} catch (Exception exception) {
+			log.info("Error occured while fetching all roomTypes", exception);
+			throw exception;
+		}
 	}
 
 	private void entityListToBeanList(List<RoomType> entityList, List<RoomTypeBean> beanList) {
 		// TODO Auto-generated method stub
-		for(RoomType roomType:entityList)
-		{
-			RoomTypeBean roomTypeBean=new RoomTypeBean();
-			entityToBean(roomType,roomTypeBean);
+		for (RoomType roomType : entityList) {
+			RoomTypeBean roomTypeBean = new RoomTypeBean();
+			entityToBean(roomType, roomTypeBean);
 			beanList.add(roomTypeBean);
 		}
 	}
@@ -64,45 +78,61 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	@Override
 	public RoomTypeBean getById(long id) {
 		// TODO Auto-generated method stub
-		
-		RoomType roomType=roomTypeRepository.findById(id).orElseThrow(()->new RecordNotFoundException("There is no record with the given id"));
-		
-		RoomTypeBean roomTypeBean=new RoomTypeBean();
-		entityToBean(roomType,roomTypeBean);
-		
-		return roomTypeBean;
+		try {
+			log.info("Fetching roomtype by ID");
+			RoomType roomType = roomTypeRepository.findById(id)
+					.orElseThrow(() -> new RecordNotFoundException("There is no record with the given id"));
+
+			RoomTypeBean roomTypeBean = new RoomTypeBean();
+			entityToBean(roomType, roomTypeBean);
+
+			return roomTypeBean;
+		} catch (Exception exception) {
+			log.info("Error occured while fetching roomType by Id", exception);
+			throw exception;
+		}
 	}
 
 	private void entityToBean(RoomType roomType, RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
-	   roomTypeBean = objectMapper.convertValue(roomType, RoomTypeBean.class);
+		roomTypeBean = objectMapper.convertValue(roomType, RoomTypeBean.class);
 	}
 
 	@Override
 	public void delete(long id) {
 		// TODO Auto-generated method stub
-		roomTypeRepository.deleteById(id);
+		try {
+			roomTypeRepository.deleteById(id);
+		} catch (Exception exception) {
+			log.info("Error occured while deleting roomType by Id", exception);
+			throw exception;
+		}
 	}
 
 	@Override
 	public RoomType update(RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
-		RoomType roomType=roomTypeRepository.getReferenceById(roomTypeBean.getId());
-		beanToEntity(roomTypeBean,roomType);
-		roomTypeRepository.save(roomType);
+		try {
+			RoomType roomType = roomTypeRepository.getReferenceById(roomTypeBean.getId());
+			beanToEntity(roomTypeBean, roomType);
+			roomTypeRepository.save(roomType);
+		} catch (Exception exception) {
+			log.info("Error occured while updating roomType", exception);
+			throw exception;
+		}
 		return null;
 	}
+
 	@Override
 	public void updateStatus(RoomType roomTypeEntity) {
-		
+
 		if (roomTypeEntity.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
 			roomTypeEntity.setStatus(CommonConstants.InActive);
 		} else {
-		    roomTypeEntity.setStatus(CommonConstants.Active);
+			roomTypeEntity.setStatus(CommonConstants.Active);
 		}
 		roomTypeRepository.save(roomTypeEntity);
 
-			
 	}
 
 }

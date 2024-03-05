@@ -33,10 +33,6 @@ public class PatientBean {
 		this.doctorBean = doctorBean;
 	}
 
-
-	
-	
-
 	public PatientBean() {
 		super();
 	}
@@ -78,11 +74,9 @@ public class PatientBean {
 		this.lastName = lastName;
 	}
 
-
 	public String getPatientGender() {
 		return patientGender;
 	}
-
 
 	public void setPatientGender(String patientGender) {
 		this.patientGender = patientGender;

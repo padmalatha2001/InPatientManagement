@@ -12,22 +12,14 @@ public class RegistrationBean {
 	private long phoneNumber;
 	private String serviceType;
 	private String password;
-	
-	
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-
-	
-
 
 	public RegistrationBean(int id, String firstName, String lastName, Date dateOfBirth, String email, String gender,
 			long phoneNumber, String serviceType, String password) {
@@ -43,16 +35,13 @@ public class RegistrationBean {
 		this.password = password;
 	}
 
-
 	public int getId() {
 		return id;
 	}
 
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 
 	public RegistrationBean() {
 		super();
@@ -75,17 +64,13 @@ public class RegistrationBean {
 		this.lastName = lastName;
 	}
 
-	
-
 	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-
 
 	public String getEmail() {
 		return email;
@@ -114,10 +99,10 @@ public class RegistrationBean {
 	public String getGender() {
 		return gender;
 	}
+
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
 
 	@Override
 	public String toString() {
@@ -125,9 +110,5 @@ public class RegistrationBean {
 				+ dateOfBirth + ", email=" + email + ", gender=" + gender + ", phoneNumber=" + phoneNumber
 				+ ", serviceType=" + serviceType + ", password=" + password + "]";
 	}
-
-
-	
-	
 
 }

@@ -24,16 +24,16 @@ public class RoomEntity {
 	private int roomSharing;
 	@Column(name = "room_price")
 	private double roomPrice;
-	@Column(name="availability")
+	@Column(name = "availability")
 	private int availability;
 	@ManyToOne
 	@JoinColumn(name = "room_type_id", referencedColumnName = "room_type_id")
 	private RoomType roomTypeId;
-	
+
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "ward_id", referencedColumnName = "ward_id")
 	private Ward wardId;
-	@Column(name="status")
+	@Column(name = "status")
 	private String status;
 
 	public RoomEntity() {
@@ -109,7 +109,6 @@ public class RoomEntity {
 		this.wardId = wardId;
 	}
 
-	
 	public String getStatus() {
 		return status;
 	}
@@ -124,11 +123,5 @@ public class RoomEntity {
 				+ roomPrice + ", availability=" + availability + ", roomTypeId=" + roomTypeId + ", wardId=" + wardId
 				+ ", status=" + status + "]";
 	}
-
-	
-	
-	
-   
-	
 
 }

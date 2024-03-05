@@ -25,15 +25,13 @@ public class Ward {
 	private int capacity;
 	@Column(name = "availability")
 	private int availability;
-	
-	@ManyToOne(cascade = {CascadeType.MERGE})
-	@JoinColumn(name = "departmentId",referencedColumnName = "dept_id")
+
+	@ManyToOne(cascade = { CascadeType.MERGE })
+	@JoinColumn(name = "departmentId", referencedColumnName = "dept_id")
 	private Department departmentId;
-	@Column(name="status")
+	@Column(name = "status")
 	private String status;
-	
-	
-	
+
 	public Ward(long id, String name, int capacity, int availability, Department departmentId, String status) {
 		super();
 		this.id = id;
@@ -102,11 +100,4 @@ public class Ward {
 				+ ", departmentId=" + departmentId + ", status=" + status + "]";
 	}
 
-	
-
-	
-	
-
 }
-
-	

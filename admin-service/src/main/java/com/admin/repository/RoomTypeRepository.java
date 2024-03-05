@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 import com.admin.entity.RoomType;
 
 @Repository
-public interface RoomTypeRepository extends JpaRepository<RoomType,Long> {
-    
-	public RoomType getByName(String name); 
-	
+public interface RoomTypeRepository extends JpaRepository<RoomType, Long> {
+
+	public RoomType getByName(String name);
+
 }

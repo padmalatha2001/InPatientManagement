@@ -12,29 +12,24 @@ import com.admin.repository.OtpRepository;
 import com.admin.service.OTPService;
 
 @Service
-public class OTPServiceImplentation implements OTPService
-{
+public class OTPServiceImplentation implements OTPService {
 	@Autowired
 	private OtpRepository otpRepository;
 
 	@Override
 	public void saveOtp(String email, String otp, Timestamp expirationTime) {
-		Optional<OTPEntity> OtpEntity=otpRepository.findByEmail(email);	
-		if(OtpEntity.get().getEmail()!=null)
-		{
+		Optional<OTPEntity> OtpEntity = otpRepository.findByEmail(email);
+		if (OtpEntity.get().getEmail() != null) {
 			OTPEntity otpEntity = new OTPEntity();
-	        otpEntity.setEmail(email);
-	        otpEntity.setOtp(otp);
-	        otpEntity.setExpirationTime(expirationTime);
+			otpEntity.setEmail(email);
+			otpEntity.setOtp(otp);
+			otpEntity.setExpirationTime(expirationTime);
 
-	        otpRepository.save(otpEntity);
-		}
-		else
-		{
+			otpRepository.save(otpEntity);
+		} else {
 			throw new EmailNotFoundException("Email not found");
 		}
-		
+
 	}
-	
 
 }

@@ -1,6 +1,5 @@
 package com.admin.contollertest;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -24,22 +23,22 @@ import com.admin.service.BedService;
 @ExtendWith(MockitoExtension.class)
 public class BedEntityControllerTest {
 
-    @Mock
-    private BedService bedService;
+	@Mock
+	private BedService bedService;
 
-    @InjectMocks
-    private BedEntityController bedEntityController;
+	@InjectMocks
+	private BedEntityController bedEntityController;
 
-    private BedBean bedBean;
+	private BedBean bedBean;
 
-    @BeforeEach
-    public void setUp() {
-        bedBean = new BedBean();
-        bedBean.setId(1L);
-        // Initialize other properties if needed
-    }
+	@BeforeEach
+	public void setUp() {
+		bedBean = new BedBean();
+		bedBean.setId(1L);
+		// Initialize other properties if needed
+	}
 
-    @Test
+	@Test
     public void testSave() {
         when(bedService.save(any(BedBean.class))).thenReturn(bedBean);
 
@@ -49,7 +48,7 @@ public class BedEntityControllerTest {
         assertEquals(bedBean, response.getBody());
     }
 
-    @Test
+	@Test
     public void testGetById() {
         when(bedService.getById(1L)).thenReturn(bedBean);
 
@@ -59,16 +58,16 @@ public class BedEntityControllerTest {
         assertEquals(bedBean, response.getBody());
     }
 
-    @Test
-    public void testGetAll() {
-        List<BedBean> bedList = new ArrayList<>();
-        bedList.add(bedBean);
-        when(bedService.getAll()).thenReturn(bedList);
+	@Test
+	public void testGetAll() {
+		List<BedBean> bedList = new ArrayList<>();
+		bedList.add(bedBean);
+		when(bedService.getAll()).thenReturn(bedList);
 
-        ResponseEntity<List<BedBean>> response = bedEntityController.getAll();
+		ResponseEntity<List<BedBean>> response = bedEntityController.getAll();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(bedList, response.getBody());
-    }
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(bedList, response.getBody());
+	}
 
 }

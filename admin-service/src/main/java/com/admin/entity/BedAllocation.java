@@ -22,7 +22,7 @@ public class BedAllocation {
 	@Column(name = "patient_id")
 	private int patientId;
 	@ManyToOne
-	@JoinColumn(name = "bed_id",referencedColumnName = "bed_id")
+	@JoinColumn(name = "bed_id", referencedColumnName = "bed_id")
 	private BedEntity bedId;
 	@Column(name = "no_of_days")
 	private long noOfDays;
@@ -32,8 +32,9 @@ public class BedAllocation {
 	private Date endDate;
 	@Column(name = "status")
 	private String status;
-    @Column(name="patient_number")
-    private String patientNumber;
+	@Column(name = "patient_number")
+	private String patientNumber;
+
 	public BedAllocation() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -51,7 +52,6 @@ public class BedAllocation {
 		this.status = status;
 		this.patientNumber = patientNumber;
 	}
-
 
 	public int getId() {
 		return id;
@@ -124,5 +124,4 @@ public class BedAllocation {
 				+ patientNumber + "]";
 	}
 
-	
 }

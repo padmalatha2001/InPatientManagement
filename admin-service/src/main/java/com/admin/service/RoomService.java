@@ -7,6 +7,7 @@ import com.admin.entity.RoomEntity;
 
 public interface RoomService {
 	void save(RoomBean roomTypeBean);
+
 	List<RoomBean> getAll();
 
 	RoomBean getById(long id);
@@ -16,5 +17,6 @@ public interface RoomService {
 	public void delete(long id);
 
 	List<RoomEntity> findByWardId(Long wardId);
+
 	void updateStatus(RoomEntity roomEntity);
 }

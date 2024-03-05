@@ -2,12 +2,6 @@ package com.admin.bean;
 
 import java.sql.Date;
 
-import com.admin.entity.BedEntity;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 public class BedAllocationBean {
 
 	private int id;
@@ -23,7 +17,6 @@ public class BedAllocationBean {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
 
 	public BedAllocationBean(int id, int patientId, long noOfDays, BedBean bedId, Date startDate, Date endDate,
 			String status, String patientNumber) {
@@ -94,21 +87,17 @@ public class BedAllocationBean {
 		this.status = status;
 	}
 
-	
 	public String getPatientNumber() {
 		return patientNumber;
 	}
-
 
 	public void setPatientNumber(String patientNumber) {
 		this.patientNumber = patientNumber;
 	}
 
-
 	public void setNoOfDays(long noOfDays) {
 		this.noOfDays = noOfDays;
 	}
-
 
 	@Override
 	public String toString() {
@@ -117,6 +106,4 @@ public class BedAllocationBean {
 				+ ", patientNumber=" + patientNumber + "]";
 	}
 
-
-	
 }

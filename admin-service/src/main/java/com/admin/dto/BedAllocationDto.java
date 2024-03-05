@@ -4,10 +4,7 @@ import java.sql.Date;
 
 import com.admin.entity.BedEntity;
 
-
-
 public class BedAllocationDto {
-
 
 	private int id;
 	private int noOfDays;
@@ -20,6 +17,7 @@ public class BedAllocationDto {
 	public BedAllocationDto() {
 		super();
 	}
+
 	public BedAllocationDto(int id, int noOfDays, Date startDate, Date endDate, String firstName, String lastName,
 			BedEntity bedId) {
 		super();

@@ -16,78 +16,95 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.patient.bean.DoctorBean;
-
 import com.patient.entity.DoctorEntity;
 import com.patient.service.DoctorService;
 
 @Controller
 @RequestMapping("/doctor")
 public class DoctorController {
-@Autowired
-	
+	@Autowired
+
 	private DoctorService doctorService;
-	private static Logger log = LoggerFactory
-			.getLogger(DoctorController.class.getSimpleName());
-	
+	private static Logger log = LoggerFactory.getLogger(DoctorController.class.getSimpleName());
 
 	@PostMapping("/save")
-		public ResponseEntity<DoctorBean> save(@RequestBody DoctorBean doctorBean) {
+	public ResponseEntity<DoctorBean> save(@RequestBody DoctorBean doctorBean) {
 		log.info("Saving Doctor");
 		try {
-			doctorBean = doctorService.save( doctorBean);
-		   ResponseEntity<DoctorBean> responseEntity = new ResponseEntity<>(doctorBean, HttpStatus.CREATED);
-		   log.info("Saving doctor is done");
-		   return responseEntity;
-		}catch(Exception e) {
+			doctorBean = doctorService.save(doctorBean);
+			ResponseEntity<DoctorBean> responseEntity = new ResponseEntity<>(doctorBean, HttpStatus.CREATED);
+			log.info("Saving doctor is done");
+			return responseEntity;
+		} catch (Exception e) {
 			log.error("error handled");
-			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
-		}		
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
-	
-	 @GetMapping("/getById/{id}")
-		public ResponseEntity<DoctorBean> getById(@PathVariable long id) {
-			 log.info("Getting Doctor Details by Id");
-			  DoctorBean doctorBean = doctorService.getById(id);
-			 log.info("Getting Doctor Details by Id is done");
-			 return new ResponseEntity<DoctorBean>(doctorBean, HttpStatus.OK);
-	
-       }
-	 
 
-		@GetMapping("/getAll")
-		public ResponseEntity<List<DoctorBean>> getAll() {
-			log.info("Getting  All Doctor Details");
-			
-			    List<DoctorBean> list = doctorService.getAll();
-			    ResponseEntity<List<DoctorBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-			    log.info("Getting  All Doctor Details is done");
-			    return responseEntity;
-			
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<DoctorBean> getById(@PathVariable long id) {
+		log.info("Getting Doctor Details by Id");
+		try {
+			DoctorBean doctorBean = doctorService.getById(id);
+			log.info("Getting Doctor Details by Id is done");
+			return new ResponseEntity<>(doctorBean, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("An error occurred while getting doctor by ID: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+	}
 
-		@GetMapping("/getAllWithDept")
-		public ResponseEntity<List<Object[]>> get() {
-			log.info("Getting  All Doctor Details");
-			
+	@GetMapping("/getAll")
+	public ResponseEntity<List<DoctorBean>> getAll() {
+		log.info("Getting All Doctor Details");
+		try {
+			List<DoctorBean> list = doctorService.getAll();
+			log.info("Getting All Doctor Details is done");
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("An error occurred while getting all doctors: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/getAllWithDept")
+	public ResponseEntity<List<Object[]>> getDoctorsByDepartment() {
+		log.info("Getting All Doctor Details with Department Names");
+		try {
 			List<Object[]> list = doctorService.getAllWithDept();
-			    ResponseEntity<List<Object[]>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-			    log.info("Getting  All Doctor Details with dept names is done ");
-			    return responseEntity;
-			
+			log.info("Getting All Doctor Details with dept names is done");
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("An error occurred while getting all doctors with department names: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		@PutMapping("/update")
-		public ResponseEntity<String> put(@RequestBody DoctorBean doctorBean) {
 
-			log.info("Updating Doctor");
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<String> updateDoctor(@RequestBody DoctorBean doctorBean) {
+		log.info("Updating Doctor");
+		try {
 			doctorService.update(doctorBean);
-			return null;
+			log.info("Updating Doctor is done");
+			return new ResponseEntity<>("Doctor updated successfully", HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("An error occurred while updating doctor: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		@PutMapping("/updateStatus")
-		public ResponseEntity updateStatus(@RequestBody DoctorEntity doctor) {
+	}
+
+	@PutMapping("/updateStatus")
+	public ResponseEntity<String> updateStatus(@RequestBody DoctorEntity doctor) {
+		log.info("Updating Doctor Status");
+		try {
 			doctorService.updateStatus(doctor);
-			return null;
+			log.info("Updating Doctor Status is done");
+			return new ResponseEntity<>("Doctor status updated successfully", HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("An error occurred while updating doctor status: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+	}
 }

@@ -4,10 +4,8 @@ import java.util.List;
 
 import com.admin.bean.WardBean;
 import com.admin.entity.Ward;
-import com.admin.exception.RecordNotFoundException;
 
 public interface WardService {
-
 
 	WardBean getById(Long id);
 
@@ -15,11 +13,9 @@ public interface WardService {
 
 	List<WardBean> getAll();
 
-
 	List<Ward> findByDepartmentId(Long departmentId);
+
 	void update(WardBean wardBean);
-
-
 
 	WardBean save(WardBean wardBean);
 

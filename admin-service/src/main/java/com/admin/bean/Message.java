@@ -2,9 +2,7 @@ package com.admin.bean;
 
 public class Message {
 
-	   private String content;
-	   
-	
+	private String content;
 
 	public Message() {
 		super();
@@ -16,7 +14,6 @@ public class Message {
 		this.content = content;
 	}
 
-
 	public String getContent() {
 		return content;
 	}
@@ -24,7 +21,5 @@ public class Message {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	   
-	   
-	   
+
 }

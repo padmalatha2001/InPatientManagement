@@ -9,9 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.patient.bean.DoctorBean;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patient.bean.PatientBean;
-import com.patient.entity.DoctorEntity;
 import com.patient.entity.PatientEntity;
 import com.patient.exception.PatientIdNotFoundException;
 import com.patient.repository.PatientRepository;
@@ -19,13 +18,12 @@ import com.patient.service.PatientService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PatientServiceImplementation implements PatientService {
 	@Autowired
 	private PatientRepository patientRepository;
-    ObjectMapper objectMapper=new ObjectMapper();
+	ObjectMapper objectMapper = new ObjectMapper();
 	@PersistenceContext
 	private EntityManager entityManager;
 	private int currentYear;
@@ -34,49 +32,54 @@ public class PatientServiceImplementation implements PatientService {
 	private static Logger log = LoggerFactory.getLogger(PatientServiceImplementation.class.getSimpleName());
 
 	@Override
-	public void save(PatientBean patientBean) {
-		
-		log.info("saving the patient details");
+	public PatientBean save(PatientBean patientBean) {
 
-		PatientEntity patientEntity = new PatientEntity();
-		BeanToEntity(patientEntity, patientBean);
-
-		String patientNumber = generatePatientNo();
-		PatientEntity patient = new PatientEntity();
-		patient.setPatientNumber(patientNumber);
-		patientRepository.save(patientEntity);
-		log.info("saved the patient details sucessfully");
+		log.info("Saving the patient details");
+		try {
+			PatientEntity patientEntity = new PatientEntity();
+			BeanToEntity(patientEntity, patientBean);
+			String patientNumber = generatePatientNo();
+			patientEntity.setPatientNumber(patientNumber);
+			patientRepository.save(patientEntity);
+			log.info("Patient details saved successfully");
+			return patientBean;
+		} catch (Exception e) {
+			log.error("Error occurred while saving patient details: " + e.getMessage());
+			throw e;
+		}
 
 	}
 
 	@Override
 	public List<PatientBean> getAll() {
-		log.info("getting the patient details");
-		List<PatientBean> patientBean = new ArrayList<>();
-		// List<PatientEntity> patientEntity=new ArrayList<>();
-		List<PatientEntity> patientEntity = patientRepository.findAll();
-		entityToBean(patientEntity, patientBean);
-		log.info("get the patient details sucessfully");
-		return patientBean;
+		log.info("Getting all patient details");
+		try {
+			List<PatientBean> patientBeanList = new ArrayList<>();
+			List<PatientEntity> patientEntityList = patientRepository.findAll();
+			entityToBean(patientEntityList, patientBeanList);
+			log.info("Retrieved all patient details successfully");
+			return patientBeanList;
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving all patient details: " + e.getMessage());
+			throw e;
+		}
 	}
 
 	@Override
 	public Optional<PatientEntity> getPatientById(Integer id) {
 
-		PatientBean patientBean = new PatientBean();
-		log.info("get the patient details by using id");
-		Optional<PatientEntity> patientEntity = patientRepository.findById(id);
-		// entityToBean(patientEntity, patientBean);
-		// int billingId=patientEntity.get().getBillId();
-		boolean patientId = patientRepository.existsById(id);
-		if (patientId != true) {
-			log.error("patient Id not found");
-			throw new PatientIdNotFoundException("Patient Id not found");
-			
-		} else {
-			log.info("get the patient details based on id");
-			return patientEntity;
-
+		log.info("Getting patient details by ID");
+		try {
+			Optional<PatientEntity> patientEntityOptional = patientRepository.findById(id);
+			if (!patientEntityOptional.isPresent()) {
+				log.error("Patient with ID " + id + " not found");
+				throw new PatientIdNotFoundException("Patient with ID " + id + " not found");
+			}
+			log.info("Retrieved patient details by ID successfully");
+			return patientEntityOptional;
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving patient details by ID: " + e.getMessage());
+			throw e;
 		}
 
 	}
@@ -95,7 +98,6 @@ public class PatientServiceImplementation implements PatientService {
 		}
 	}
 
-	
 	public void entityToBean(PatientEntity patientEntity, PatientBean patientBean) {
 
 		patientBean = objectMapper.convertValue(patientEntity, PatientBean.class);

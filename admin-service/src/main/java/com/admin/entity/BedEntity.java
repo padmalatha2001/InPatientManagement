@@ -14,22 +14,20 @@ import jakarta.persistence.Table;
 public class BedEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="bed_id")
-    private long id;
-	@Column(name="bed_no")
+	@Column(name = "bed_id")
+	private long id;
+	@Column(name = "bed_no")
 	private int bedNo;
 	@Column(name = "status")
 	private String status;
 	@ManyToOne
 	@JoinColumn(name = "room_id", referencedColumnName = "room_id")
 	private RoomEntity roomId;
-	
+
 	public BedEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	
 
 	public BedEntity(long id, int bedNo, String status, RoomEntity roomId) {
 		super();
@@ -38,8 +36,6 @@ public class BedEntity {
 		this.status = status;
 		this.roomId = roomId;
 	}
-
-
 
 	public long getId() {
 		return id;
@@ -65,28 +61,17 @@ public class BedEntity {
 		this.roomId = roomId;
 	}
 
-	
 	public int getBedNo() {
 		return bedNo;
 	}
 
-
-
 	public void setBedNo(int bedNo) {
 		this.bedNo = bedNo;
 	}
-
-
 
 	@Override
 	public String toString() {
 		return "BedEntity [id=" + id + ", bedNo=" + bedNo + ", status=" + status + ", roomId=" + roomId + "]";
 	}
 
-
-
-
-    	
-	
-	
 }

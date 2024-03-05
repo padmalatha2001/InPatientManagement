@@ -46,7 +46,6 @@ public class RoomController {
 		}
 	}
 
-
 	@GetMapping(path = "/getAll")
 	public ResponseEntity<List<RoomBean>> getAll() {
 		try {
@@ -98,28 +97,27 @@ public class RoomController {
 		}
 	}
 
-	 @PutMapping(path = "/update")
-    public ResponseEntity<Object> updateRoom(@RequestBody RoomBean roomBean) {
-        try {
-            roomService.update(roomBean.getId());
-            logger.info("Room updated successfully");
-            return ResponseEntity.ok().body("{\"message\": \"Room updated successfully\"}");
-        } catch (RecordNotFoundException e) {
-            logger.error("Room update failed: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
-        } catch (Exception e) {
-            logger.error("Error occurred while updating room", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Error occurred while updating room\"}");
-        }
-    }
+	@PutMapping(path = "/update")
+	public ResponseEntity<Object> updateRoom(@RequestBody RoomBean roomBean) {
+		try {
+			roomService.update(roomBean.getId());
+			logger.info("Room updated successfully");
+			return ResponseEntity.ok().body("{\"message\": \"Room updated successfully\"}");
+		} catch (RecordNotFoundException e) {
+			logger.error("Room update failed: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		} catch (Exception e) {
+			logger.error("Error occurred while updating room", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"Error occurred while updating room\"}");
+		}
+	}
 
-	
 	@PutMapping("/updateStatus")
-	public void put(@RequestBody RoomEntity roomEntity)
-	{
-		 logger.info("Update the room status");
+	public void put(@RequestBody RoomEntity roomEntity) {
+		logger.info("Update the room status");
 		roomService.updateStatus(roomEntity);
-		 logger.info(" Update the room status sucessfully");
+		logger.info(" Update the room status sucessfully");
 	}
 
 }

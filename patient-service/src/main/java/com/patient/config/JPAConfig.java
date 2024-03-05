@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableJpaRepositories(basePackages = "com.patient")
 @EnableTransactionManagement
- class JPAConfig {
-	
+class JPAConfig {
 
 }

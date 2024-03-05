@@ -1,14 +1,12 @@
 package com.patient.bean;
 
-import jakarta.persistence.Column;
-
 public class DoctorBean {
-	
+
 	private long id;
 	private String name;
 	private long departmentId;
 	private String status;
-	
+
 	public DoctorBean() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -21,8 +19,6 @@ public class DoctorBean {
 		this.departmentId = departmentId;
 		this.status = status;
 	}
-
-
 
 	public long getId() {
 		return id;
@@ -62,7 +58,4 @@ public class DoctorBean {
 				+ "]";
 	}
 
-	
-	
-	
 }

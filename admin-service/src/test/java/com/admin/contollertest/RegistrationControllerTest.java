@@ -1,19 +1,11 @@
 package com.admin.contollertest;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,24 +19,24 @@ import com.admin.service.RegistrationService;
 @ExtendWith(MockitoExtension.class)
 public class RegistrationControllerTest {
 
-    @Mock
-    private RegistrationService registrationService;
+	@Mock
+	private RegistrationService registrationService;
 
-    @InjectMocks
-    private RegistrationController registrationController;
+	@InjectMocks
+	private RegistrationController registrationController;
 
-    private RegistrationBean registrationBean;
+	private RegistrationBean registrationBean;
 
-    @BeforeEach
-    public void setUp() {
-        registrationBean = new RegistrationBean();
-        registrationBean.setId(1);
-        // Initialize other properties if needed
-    }
+	@BeforeEach
+	public void setUp() {
+		registrationBean = new RegistrationBean();
+		registrationBean.setId(1);
+		// Initialize other properties if needed
+	}
 
-    @Test
+	@Test
     public void testSave() {
-        when(registrationService.save(registrationBean)).thenReturn(registrationBean);
+        when(registrationService.saveRegistration(registrationBean)).thenReturn(registrationBean);
 
         ResponseEntity<RegistrationBean> response = registrationController.save(registrationBean);
 
@@ -52,54 +44,4 @@ public class RegistrationControllerTest {
         assertEquals(registrationBean, response.getBody());
     }
 
-    @Test
-    public void testGetById() {
-        when(registrationService.getById(1)).thenReturn(registrationBean);
-
-        ResponseEntity<RegistrationBean> response = registrationController.getById(1);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(registrationBean, response.getBody());
-    }
-
-    @Test
-    public void testGetAll() {
-        List<RegistrationBean> registrationList = new ArrayList<>();
-        registrationList.add(registrationBean);
-        when(registrationService.getAll()).thenReturn(registrationList);
-
-        ResponseEntity<List<RegistrationBean>> response = registrationController.getAll();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(registrationList, response.getBody());
-    }
-
-    @Test
-    public void testDeleteById() {
-        doNothing().when(registrationService).delete(1);
-
-        ResponseEntity<String> response = registrationController.deleteById(1);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Deleted successfully", response.getBody());
-    }
-
-    @Test
-    public void testUpdate() {
-//        doNothing().when(registrationService).update(any(RegistrationBean.class));
-
-        registrationController.update(registrationBean);
-        
-        ArgumentCaptor<RegistrationBean> argumentCaptor =ArgumentCaptor.forClass(RegistrationBean.class);
-        
-        verify(registrationService).update(argumentCaptor.capture());
-       RegistrationBean bean=argumentCaptor.getValue();
-       
-        assertEquals(registrationBean, bean);
-      
-//       assertEquals(HttpStatus.OK, response.getStatusCode());
-//      assertEquals("Department updated Successfully", response.getBody());
-   }
-
-    // Add tests for other methods as needed
 }

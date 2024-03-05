@@ -1,7 +1,5 @@
 package com.admin.contollertest;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -29,23 +27,23 @@ import com.admin.service.DepartmentService;
 @ExtendWith(MockitoExtension.class)
 public class DepartmentControllerTest {
 
-    @Mock
-    private DepartmentService departmentService;
+	@Mock
+	private DepartmentService departmentService;
 
-    @InjectMocks
-    private DepartmentController departmentController;
+	@InjectMocks
+	private DepartmentController departmentController;
 
-    private DepartmentBean departmentBean;
+	private DepartmentBean departmentBean;
 
-    @BeforeEach
-    public void setUp() {
-        departmentBean = new DepartmentBean();
-        departmentBean.setId(1L);
-        departmentBean.setName("cardiology");
-        // Initialize other properties if needed
-    }
+	@BeforeEach
+	public void setUp() {
+		departmentBean = new DepartmentBean();
+		departmentBean.setId(1L);
+		departmentBean.setName("cardiology");
+		// Initialize other properties if needed
+	}
 
-    @Test
+	@Test
     public void testSave() {
         when(departmentService.save(departmentBean)).thenReturn(departmentBean);
 
@@ -59,7 +57,7 @@ public class DepartmentControllerTest {
 
     }
 
-    @Test
+	@Test
     public void testGetById() {
         when(departmentService.getById(1L)).thenReturn(departmentBean);
 
@@ -69,29 +67,29 @@ public class DepartmentControllerTest {
         assertEquals(departmentBean, response.getBody());
     }
 
-    @Test
-    public void testGetAll() {
-        List<DepartmentBean> departmentList = new ArrayList<>();
-        departmentList.add(departmentBean);
-        when(departmentService.getAll()).thenReturn(departmentList);
+	@Test
+	public void testGetAll() {
+		List<DepartmentBean> departmentList = new ArrayList<>();
+		departmentList.add(departmentBean);
+		when(departmentService.getAll()).thenReturn(departmentList);
 
-        ResponseEntity<List<DepartmentBean>> response = departmentController.getAll();
+		ResponseEntity<List<DepartmentBean>> response = departmentController.getAll();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(departmentList, response.getBody());
-    }
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(departmentList, response.getBody());
+	}
 
-    @Test
-    public void testDeleteById() {
-        doNothing().when(departmentService).delete(1L);
+	@Test
+	public void testDeleteById() {
+		doNothing().when(departmentService).delete(1L);
 
-        ResponseEntity response = departmentController.deleteById(1L);
+		ResponseEntity<?> response = departmentController.deleteById(1L);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(null, response.getBody());
-    }
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(null, response.getBody());
+	}
 
-    @Test
+	@Test
     public void testPut()  {
         when(departmentService.getById(1L)).thenReturn(departmentBean);
 

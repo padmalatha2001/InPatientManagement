@@ -1,26 +1,14 @@
 package com.admin.service;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 import com.admin.bean.LoginBean;
-import com.admin.bean.OtpBean;
 import com.admin.bean.RegistrationBean;
 import com.admin.entity.RegistrationForm;
 
 public interface RegistrationService {
-	RegistrationBean save(RegistrationBean registration);
 
-	RegistrationBean getById(int id);
-
-	List<RegistrationBean> getAll();
-
-	void delete(int id);
-
-	void update(RegistrationBean registration);
-
-	// boolean getDetails(String email);
 	RegistrationForm validateLogin(LoginBean loginBean);
 
 	RegistrationForm forgetPassword(String email);
@@ -33,5 +21,7 @@ public interface RegistrationService {
 
 	boolean verifyOtp(String email, String enteredOtp);
 
-	void updatePassword(String email, String password);
+	Optional<RegistrationForm> updatePassword(String email, String password);
+
+	RegistrationBean saveRegistration(RegistrationBean registrationBean);
 }

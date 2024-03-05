@@ -8,26 +8,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="doctor")
+@Table(name = "doctor")
 public class DoctorEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="doctor_id")
+	@Column(name = "doctor_id")
 	private long id;
-	@Column(name="doctor_name")
+	@Column(name = "doctor_name")
 	private String name;
-	@Column(name="department_id")
+	@Column(name = "department_id")
 	private long departmentId;
-	@Column(name="status")
+	@Column(name = "status")
 	private String status;
-	
+
 	public DoctorEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	
 
 	public DoctorEntity(long id, String name, long departmentId, String status) {
 		super();
@@ -36,8 +34,6 @@ public class DoctorEntity {
 		this.departmentId = departmentId;
 		this.status = status;
 	}
-
-
 
 	public long getId() {
 		return id;
@@ -63,7 +59,6 @@ public class DoctorEntity {
 		this.departmentId = departmentId;
 	}
 
-	
 	public String getStatus() {
 		return status;
 	}
@@ -78,7 +73,4 @@ public class DoctorEntity {
 				+ "]";
 	}
 
-	
-	
-	
 }

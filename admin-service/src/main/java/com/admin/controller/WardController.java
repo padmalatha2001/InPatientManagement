@@ -38,13 +38,12 @@ public class WardController {
 	public ResponseEntity<WardBean> save(@RequestBody WardBean wardBean) {
 		log.info("started WardController ::save()");
 		try {
-			WardBean wardBean1=wardService.save(wardBean);
-			return new ResponseEntity<WardBean>(wardBean1,HttpStatus.OK);
+			WardBean wardBean1 = wardService.save(wardBean);
+			return new ResponseEntity<WardBean>(wardBean1, HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error(e.getMessage());
-			return new ResponseEntity<WardBean>(HttpStatus.NOT_FOUND);
-
+			log.error("Exception occurred in save() method: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -55,31 +54,40 @@ public class WardController {
 
 		try {
 			WardBean wardBean = wardService.getById(id);
-			return new ResponseEntity<WardBean>(wardBean,HttpStatus.OK);
+			return new ResponseEntity<WardBean>(wardBean, HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.error("exception started");
-			return new ResponseEntity<WardBean>(HttpStatus.NOT_FOUND);
+			log.error("Exception occurred in getById() method: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
 
 	@GetMapping("/getAll")
 	public ResponseEntity<List<WardBean>> getAll() {
-		
+		try {
 			List<WardBean> wardBean = wardService.getAll();
-
 			return new ResponseEntity<List<WardBean>>(wardBean, HttpStatus.OK);
-
+		} catch (Exception e) {
+			log.error("Exception occurred in getAll() method: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 	}
-	
-	  @GetMapping("/getByDepartmentId/{id}")
-	    public List<Ward> getWardsByDepartmentId(@PathVariable Long id) {
-		  log.info("Get the ward details sucessfully");
-	        return wardService.findByDepartmentId(id);
-	    }
-	
+
+	@GetMapping("/getByDepartmentId/{id}")
+	public ResponseEntity<List<Ward>> getWardsByDepartmentId(@PathVariable Long id) {
+		try {
+			log.info("Get the ward details sucessfully");
+			List<Ward> ward = wardService.findByDepartmentId(id);
+
+			return new ResponseEntity<List<Ward>>(ward, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Exception occurred in getWardsByDepartmentId() method: " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<String> put(@RequestBody WardBean wardBean, @PathVariable Long id) {
@@ -102,24 +110,21 @@ public class WardController {
 		try {
 			wardService.delete(id);
 			log.info("deleted successfully");
-			return new ResponseEntity<>( HttpStatus.OK);
-			
+			return new ResponseEntity<>(HttpStatus.OK);
+
 		} catch (RecordNotFoundException e) {
 			log.error("exception handled");
 
-			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
 	}
-	
-	
+
 	@PutMapping("/updateStatus")
-	public void put(@RequestBody Ward ward)
-	{
+	public void put(@RequestBody Ward ward) {
 		log.info("Updating the status of ward");
 		wardService.updateStatus(ward);
 		log.info("Update ward status sucessfully");
 	}
-
 
 }
