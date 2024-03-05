@@ -23,7 +23,6 @@ public class PatientBillingDTO {
 //	b.billId,b.billingDate,b.bedAllocationId,b.paidAmount,"
 //	  		+ "b.discount,b.totalAmount,b.remainingAmount,b.paymentStatus,p.firstName,p.lastName
 
-	
 //	
 	public PatientBillingDTO() {
 		super();

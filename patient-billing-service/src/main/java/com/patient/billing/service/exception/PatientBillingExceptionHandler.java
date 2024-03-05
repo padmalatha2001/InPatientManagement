@@ -15,7 +15,7 @@ public class PatientBillingExceptionHandler {
 	}
 	
 	@ExceptionHandler
-	public ResponseEntity<String> billingdetails(BillingDetailsNotFoundException billingDetails) {
+	public ResponseEntity<String> billingDetailsNotFoundException(BillingDetailsNotFoundException billingDetails) {
 		//log.error("ResourceNotFoundException-" + exception.getMessage(), exception);
 		return new ResponseEntity<>(billingDetails.getMessage(), HttpStatus.NOT_FOUND);
 	}

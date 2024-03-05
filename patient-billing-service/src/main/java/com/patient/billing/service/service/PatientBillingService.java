@@ -8,16 +8,17 @@ import com.patient.billing.service.dto.BedAllocationDto;
 import com.patient.billing.service.dto.PatientBillingDTO;
 import com.patient.billing.service.entity.PatientBillingEntity;
 
+
 public interface PatientBillingService {
-
-	Optional<List<PatientBillingDTO>> getAllDetails();
-
-	Optional<List<PatientBillingDTO>> filterByDateRange(LocalDate startDate, LocalDate endDate);
 
 	void updateStatus(PatientBillingEntity patientBillingEntity);
 
-	Optional<BedAllocationDto> getByPatientNo(String number);
+	Optional<List<PatientBillingDTO>> filterBillingDetailsByDateRange(LocalDate startDate, LocalDate endDate);
 
-	void save(BedAllocationDto patientBillingBean);
+	Optional<BedAllocationDto> getBedAllocationDetailsBasedOnPatientNumber(String patientNumber);
+
+	Optional<List<PatientBillingDTO>> getAllBillingDetails();
+
+	void savebillingDetails(BedAllocationDto billing);
 
 }
