@@ -1,13 +1,11 @@
 package com.admin.bean;
 
-import jakarta.persistence.Column;
-
 public class RoomTypeBean {
 
 	long id;
-    String name;
-    private String status;
-   
+	String name;
+	private String status;
+
 	public RoomTypeBean(long id, String name, String status) {
 		super();
 		this.id = id;
@@ -49,8 +47,4 @@ public class RoomTypeBean {
 		return "RoomTypeBean [id=" + id + ", name=" + name + ", status=" + status + "]";
 	}
 
-
-    
-    
-	
 }

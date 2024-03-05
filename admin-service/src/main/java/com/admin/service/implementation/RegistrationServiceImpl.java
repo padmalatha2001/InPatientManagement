@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,13 +19,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.admin.bean.LoginBean;
-import com.admin.bean.OtpBean;
 import com.admin.bean.RegistrationBean;
+import com.admin.controller.RegistrationController;
 import com.admin.entity.OTPEntity;
 import com.admin.entity.RegistrationForm;
 import com.admin.exception.EmailAlreadyExistsException;
 import com.admin.exception.EmailNotFoundException;
 import com.admin.exception.InvalidOtpException;
+import com.admin.exception.PasswordMismatchException;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.OtpRepository;
 import com.admin.repository.RegistrationRepository;
@@ -37,16 +39,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 	RegistrationRepository registrationRepository;
 	@Autowired
 	OtpRepository otpRepository;
+	private static Logger log = LoggerFactory.getLogger(RegistrationController.class.getSimpleName());
 
 	@Override
 	public RegistrationBean save(RegistrationBean registrationBean) {
+		log.info("save the registration details");
 
 		if (registrationRepository.existsByEmail(registrationBean.getEmail())) {
+			log.info("emaiId is already exits");
 			throw new EmailAlreadyExistsException("Email is already exit...");
+
 		} else {
 			RegistrationForm registrationEntity = new RegistrationForm();
 			beanToEntity(registrationBean, registrationEntity);
 			registrationRepository.save(registrationEntity);
+			log.info("save the details sucessfully");
 			return registrationBean;
 		}
 
@@ -91,9 +98,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public List<RegistrationBean> getAll() {
+		log.info("getting the registration details");
 		List<RegistrationForm> entityList = registrationRepository.findAll();
 		List<RegistrationBean> beanList = new ArrayList<>();
 		entityToBean(entityList, beanList);
+		log.info("get the registration details sucessfully");
 		return beanList;
 	}
 
@@ -111,6 +120,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public void delete(int id) {
 		RegistrationForm RegistrationForm = registrationRepository.findById(id)
 				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+		log.info("deteled by using id");
 		registrationRepository.delete(RegistrationForm);
 	}
 
@@ -122,68 +132,34 @@ public class RegistrationServiceImpl implements RegistrationService {
 		registrationRepository.save(RegistrationForm);
 	}
 
-//	@Override
-//	public RegistrationForm validateLogin(LoginBean loginBean) {
-//		RegistrationForm user = registrationRepository.findByEmail(loginBean.getEmail());
-//		System.out.println(user);
-//
-//		if (user != null) {
-//			RegistrationBean registrationBean = new RegistrationBean();
-//			// beanToEntity(registrationBean, user);
-//
-//			if (user.getPassword().equals(loginBean.getPassword())) {
-//				System.out.println(user.getPassword());
-//				System.out.println(loginBean.getPassword());
-//				return user;
-//			} else {
-//				try {
-//					throw new PasswordMismatchException("password is wrong");
-//				} catch (Exception e) {
-//					System.out.println(e.getMessage());
-//				}
-//				//return user;
-//
-//			}
-//		} else {
-//			try {
-//				throw new EmailNotFoundException("incorrect EmailId");
-//			} catch (Exception e) {
-//				System.out.println(e.getMessage());
-//
-//			}
-//
-//		}
-//		return user;
-//	}
 	@Override
 	public RegistrationForm validateLogin(LoginBean loginBean) {
-	    RegistrationForm user = registrationRepository.findByEmail(loginBean.getEmail());
-      try {
-	        RegistrationBean registrationBean = new RegistrationBean();
-	    if (user != null) {
+		RegistrationForm user = registrationRepository.findByEmail(loginBean.getEmail());
+		log.info("login by using email and password");
+		try {
+			;
+			if (user != null) {
+				log.info("email is valid");
 
-	        if (user.getPassword().equals(loginBean.getPassword())) {
-	            return user;  // Return user only if the password matches
-	        } else {
-	        	try {
-	            throw new PasswordMismatchException("Password is wrong");
-	        	}catch (Exception e) {
-					System.out.println(e.getMessage());
+				if (user.getPassword().equals(loginBean.getPassword())) {
+					log.info("login sucessfull");
+					return user;
+				} else {
+					try {
+						log.info("login faild");
+						throw new PasswordMismatchException("Password is wrong");
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+				}
+			} else {
+				throw new EmailNotFoundException("Email not found");
 			}
-	       }
-	    }
-	        else {
-	    	        throw new EmailNotFoundException("Email not found");
-	    	    }
-	    return null;
-      }
-	        catch(EmailNotFoundException e)
-	        {
-	        	throw new EmailNotFoundException("Email not found");
-	        }
-	        //return user;
-	     
-		//return null;
+			return null;
+		} catch (EmailNotFoundException e) {
+			throw new EmailNotFoundException("Email not found");
+		}
+
 	}
 
 	@Autowired
@@ -191,7 +167,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public String generateOtp() {
-		// Generate a 6-digit random OTP
 		Random random = new Random();
 		int otp = 100000 + random.nextInt(900000);
 		return String.valueOf(otp);
@@ -209,19 +184,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public RegistrationForm forgetPassword(String email) {
+		log.info("checking email is present or not");
 
 		RegistrationForm user = registrationRepository.findByEmail(email);
 
 		if (user != null) {
+			log.info(" email is valid");
 			String otp = generateOtp();
-			//LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5); // Set expiration time (5 minutes in this
-																				// example)
-			Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(10)));
+
+			Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(5)));
 
 			sendOtpEmail(email, otp);
 			saveOtp(email, otp, expirationTime);
 			return user;
 		} else {
+			log.info("email is not not valid");
 			throw new EmailNotFoundException("Email not found");
 
 		}
@@ -265,61 +242,54 @@ public class RegistrationServiceImpl implements RegistrationService {
 //	}
 	@Override
 	public boolean verifyOtp(String email, String enteredOtp) {
-		
-	    OTPEntity otpEntity = otpRepository.findByEmail(email)
-	            .orElseThrow(() -> new RuntimeException("OTP not found"));
 
-	    // Get the expiration time as a Timestamp
-	    Timestamp expirationTime = otpEntity.getExpirationTime();
+		OTPEntity otpEntity = otpRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("OTP not found"));
 
-	    // Convert the Timestamp to Instant and then to LocalDateTime
-	    LocalDateTime expirationLocalDateTime = expirationTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		// Get the expiration time as a Timestamp
+		Timestamp expirationTime = otpEntity.getExpirationTime();
 
-//	    if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
-//	        throw new RuntimeException("OTP has expired");
-//	    }
+		// Convert the Timestamp to Instant and then to LocalDateTime
+		LocalDateTime expirationLocalDateTime = expirationTime.toInstant().atZone(ZoneId.systemDefault())
+				.toLocalDateTime();
 
-	    // Check if the entered OTP matches the one stored in the database
-	     if (!enteredOtp.equals(otpEntity.getOtp())) {
-	        throw new InvalidOtpException("Invalid OTP");
-	    }
-	    else
-	    {
-	    	return true;
-	    }
-	}
-	@Override
-	
-	public void updatePassword(String email,String password)
-	{
-		RegistrationForm result=registrationRepository.findByEmail(email);
-		if(result!=null) {
-			
-			result.setPassword(password);
-			registrationRepository.save(result);
-			
+		if (expirationLocalDateTime.isBefore(LocalDateTime.now())) {
+			// throw new RuntimeException("OTP has expired");
+			return false;
+		}
+
+		// Check if the entered OTP matches the one stored in the database
+		else if (!enteredOtp.equals(otpEntity.getOtp())) {
+			throw new InvalidOtpException("Entered Correct otp");
+		} else {
+			return true;
 		}
 	}
-	
 
-	    // Clear the OTP after successful verification (optional)
-	    //otpRepository.delete(otpEntity);
+	@Override
 
-	    //return true;
+	public void updatePassword(String email, String password) {
+		RegistrationForm result = registrationRepository.findByEmail(email);
+		if (result != null) {
 
-//	@Scheduled(fixedRate = 600000) // 5 minutes in milliseconds
-//	public void cleanupExpiredOtps() {
-//		try {
-//			System.out.println("scheduled start");
-//			LocalDateTime currentTime = LocalDateTime.now();
-//			otpRepository.deleteExpiredOtps();
-//			// logger.info("Expired OTPs cleaned up successfully.");
-//			System.out.println("scheduled end");
-//		} catch (Exception e) {
-//			System.out.println(e.getMessage());
-//			// logger.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
-//		}
-//	}
+			result.setPassword(password);
+			registrationRepository.save(result);
+
+		}
+	}
+
+	@Scheduled(fixedRate = 600000) // 5 minutes in milliseconds
+	public void cleanupExpiredOtps() {
+		try {
+			System.out.println("scheduled start");
+			
+			otpRepository.deleteExpiredOtps();
+			// logger.info("Expired OTPs cleaned up successfully.");
+			System.out.println("scheduled end");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			// logger.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
+		}
+	}
 }
 
 //		RegistrationForm registrationEntity=new RegistrationForm();

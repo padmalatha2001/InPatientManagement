@@ -1,7 +1,5 @@
 package com.patient.billing.service.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +15,7 @@ public class Department {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="dept_id")
 	private long id;
-	@Column(name="departmentName")
+	@Column(name="department_name")
 	private String name;
 	
 	public Department() {

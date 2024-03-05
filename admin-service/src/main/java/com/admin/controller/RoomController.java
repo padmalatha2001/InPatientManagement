@@ -117,7 +117,9 @@ public class RoomController {
 	@PutMapping("/updateStatus")
 	public void put(@RequestBody RoomEntity roomEntity)
 	{
+		 logger.info("Update the room status");
 		roomService.updateStatus(roomEntity);
+		 logger.info(" Update the room status sucessfully");
 	}
 
 }

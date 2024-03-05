@@ -1,7 +1,5 @@
 package com.patient.billing.service.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,19 +15,19 @@ public class RoomEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "roomId")
+	@Column(name = "room_id")
 	private long id;
-	@Column(name = "roomNo")
+	@Column(name = "room_no")
 	private int roomNo;
-	@Column(name = "roomSharing")
+	@Column(name = "room_sharing")
 	private int roomSharing;
-	@Column(name = "roomPrice")
+	@Column(name = "room_price")
 	private double roomPrice;
 	@ManyToOne
-	@JoinColumn(name = "roomTypeId", referencedColumnName = "roomTypeId")
+	@JoinColumn(name = "room_type_id", referencedColumnName = "room_type_id")
 	private RoomType roomTypeId;
 	@ManyToOne
-	@JoinColumn(name = "wardId", referencedColumnName = "wardId")
+	@JoinColumn(name = "ward_id", referencedColumnName = "ward_id")
 	private Ward wardId;
 	
 	public RoomEntity() {

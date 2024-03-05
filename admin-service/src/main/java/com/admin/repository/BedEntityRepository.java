@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 import com.admin.entity.BedEntity;
 
 @Repository
-public interface BedEntityRepository extends JpaRepository<BedEntity,Long>{
-	
+public interface BedEntityRepository extends JpaRepository<BedEntity, Long> {
+
 	List<BedEntity> findByRoomId_Id(Long roomId);
-			
+
 	@Query("SELECT COUNT(bedNo) FROM BedEntity b WHERE b.roomId.id = :roomId")
-    Integer sumBedsByRoom(@Param("roomId") Long roomId);
-	
-	public BedEntity getByBedNoAndRoomId_Id(int bedNo,long roomId);
+	Integer sumBedsByRoom(@Param("roomId") Long roomId);
+
+	public BedEntity getByBedNoAndRoomId_Id(int bedNo, long roomId);
 }

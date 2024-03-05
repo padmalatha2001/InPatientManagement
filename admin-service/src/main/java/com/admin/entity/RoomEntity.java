@@ -16,22 +16,22 @@ public class RoomEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "roomId")
+	@Column(name = "room_id")
 	private long id;
-	@Column(name = "roomNo")
+	@Column(name = "room_no")
 	private int roomNo;
-	@Column(name = "roomSharing")
+	@Column(name = "room_sharing")
 	private int roomSharing;
-	@Column(name = "roomPrice")
+	@Column(name = "room_price")
 	private double roomPrice;
 	@Column(name="availability")
 	private int availability;
 	@ManyToOne
-	@JoinColumn(name = "roomTypeId", referencedColumnName = "roomTypeId")
+	@JoinColumn(name = "room_type_id", referencedColumnName = "room_type_id")
 	private RoomType roomTypeId;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "wardId", referencedColumnName = "wardId")
+	@JoinColumn(name = "ward_id", referencedColumnName = "ward_id")
 	private Ward wardId;
 	@Column(name="status")
 	private String status;

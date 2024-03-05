@@ -18,7 +18,7 @@ public class PatientEntity {
 	private String firstName;
 	@Column(name="last_name")
 	private String lastName;
-	@Column(name="patient_gender")
+	@Column(name="gender")
 	private String patientGender;
 	@Column(name="patient_age")
 	private int patientAge;
@@ -26,13 +26,25 @@ public class PatientEntity {
 	private long patientContactNo;
 	@Column(name="patient_alternte_contact_no")
 	private long patientAlternteContactNo;
+	private String patientNumber;
 	
 	public PatientEntity() {
 		
 	}
-	
-	public PatientEntity(int patientId, String firstName, String lastName, String patientGender,
-			int patientAge, long patientContactNo, long patientAlternteContactNo) {
+		
+	public String getPatientNumber() {
+		return patientNumber;
+	}
+
+
+	public void setPatientNumber(String patientNumber) {
+		this.patientNumber = patientNumber;
+	}
+
+
+	public PatientEntity(int patientId, String firstName, String lastName, String patientGender, int patientAge,
+			long patientContactNo, long patientAlternteContactNo, String patientNumber) {
+
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -41,7 +53,10 @@ public class PatientEntity {
 		this.patientAge = patientAge;
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
+		this.patientNumber = patientNumber;
 	}
+
+
 	public int getPatientId() {
 		return patientId;
 	}
@@ -60,10 +75,13 @@ public class PatientEntity {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
 	
 	public String getPatientGender() {
 		return patientGender;
 	}
+
+
 
 	public void setPatientGender(String patientGender) {
 		this.patientGender = patientGender;

@@ -12,9 +12,9 @@ import jakarta.persistence.Table;
 public class RoomType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="roomTypeId") 
+    @Column(name="room_type_id") 
 	long id;
-    @Column(name="roomTypeName") 
+    @Column(name="room_type_name") 
     String name;
 	
     public RoomType() {

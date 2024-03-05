@@ -27,6 +27,9 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 		roomType.setStatus("Active");
 		roomTypeRepository.save(roomType);
 		}
+		else {
+			throw new RecordNotFoundException("Already exists");
+		}
 		return roomTypeBean;
 		
 	}
@@ -83,8 +86,11 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 	}
 
 	@Override
-	public RoomType update(long id) {
+	public RoomType update(RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
+		RoomType roomType=roomTypeRepository.getReferenceById(roomTypeBean.getId());
+		beanToEntity(roomTypeBean,roomType);
+		roomTypeRepository.save(roomType);
 		return null;
 	}
 	@Override

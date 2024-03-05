@@ -2,6 +2,8 @@ package com.admin.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,48 +25,56 @@ import com.admin.service.RoomTypeService;
 @RequestMapping("/roomType")
 @CrossOrigin(origins="http://localhost:4200")
 public class RoomTypeController {
+	private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
 	@Autowired
 	RoomTypeService roomTypeService;
 	@PostMapping(path = "/save")
 	public ResponseEntity<RoomTypeBean> save(@RequestBody RoomTypeBean roomTypeBean){
+		logger.info("Saving the roomtype details ");
 		roomTypeService.save(roomTypeBean);
 		ResponseEntity<RoomTypeBean> entity=new ResponseEntity<>(roomTypeBean,HttpStatus.CREATED);
-		System.out.println("inserted");
+		logger.info("RoomType details saved successfully");
 		return entity;
 		
 		
 	}
 	@GetMapping(path ="/getAll")
 	public ResponseEntity<List<RoomTypeBean>> getAll(){
+		logger.info("Getting the roomtype details");
 		List<RoomTypeBean> list=roomTypeService.getAll();
+		logger.info("Get the roomType details successfully");
 		return new ResponseEntity<List<RoomTypeBean>>(list,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/getById/{id}")
 	public ResponseEntity<RoomTypeBean> getById(@PathVariable Long id){
+		logger.info("Getting the roomtype details by using id");
 		RoomTypeBean roombyid = roomTypeService.getById(id);
+		logger.info("get the roomtype details by using id successfully");
 		return new ResponseEntity<RoomTypeBean>(roombyid,HttpStatus.OK);	
 	}
-//	@DeleteMapping(path = "/delete/{id}")
-//	public ResponseEntity delete(@PathVariable Long id){
-//		roomTypeService.delete(id);
-//		return new ResponseEntity(HttpStatus.OK);
-//		
-//	}
+
 	 @DeleteMapping("/deleteById/{id}")
 	    public ResponseEntity<Void> deleteRoomType(@PathVariable long id) {
+		 logger.info("deleting the roomtype by using id");
 	        roomTypeService.delete(id);
+	        logger.info("deleting the roomtype by using id is done");
 	        return ResponseEntity.ok().build();
 	    }
-	  @PutMapping("/updateStatus")
-	    public ResponseEntity<Void> updateStatus(@RequestBody RoomType roomType) {
-	        roomTypeService.updateStatus(roomType);
+	  @PutMapping("/update")
+	    public ResponseEntity<Void> updateStatus(@RequestBody RoomTypeBean roomType) {
+		  logger.info("Updating the roomtype details");
+	        roomTypeService.update(roomType);
+	        logger.info("updated the roomtype details sucessfully");
 	        return ResponseEntity.ok().build();
 	    }
+	  
 	@PutMapping(path="/status")
-	public ResponseEntity put(@RequestBody RoomType roomType)
+	public ResponseEntity<Void> put(@RequestBody RoomType roomType)
 	{
+		logger.info("Updating the status of roomtype");
 		roomTypeService.updateStatus(roomType);
+		logger.info("Updated the status of roomtype sucessfully ");
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

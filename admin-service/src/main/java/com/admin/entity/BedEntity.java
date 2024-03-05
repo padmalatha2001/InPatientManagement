@@ -14,14 +14,14 @@ import jakarta.persistence.Table;
 public class BedEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="bedId")
+	@Column(name="bed_id")
     private long id;
-	@Column(name="bedNo")
+	@Column(name="bed_no")
 	private int bedNo;
 	@Column(name = "status")
 	private String status;
 	@ManyToOne
-	@JoinColumn(name = "roomId", referencedColumnName = "roomId")
+	@JoinColumn(name = "room_id", referencedColumnName = "room_id")
 	private RoomEntity roomId;
 	
 	public BedEntity() {

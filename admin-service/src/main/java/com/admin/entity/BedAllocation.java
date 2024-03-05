@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -23,24 +22,25 @@ public class BedAllocation {
 	@Column(name = "patient_id")
 	private int patientId;
 	@ManyToOne
-	@JoinColumn(name = "bedId",referencedColumnName = "bedId")
+	@JoinColumn(name = "bed_id",referencedColumnName = "bed_id")
 	private BedEntity bedId;
 	@Column(name = "no_of_days")
-	private int noOfDays;
+	private long noOfDays;
 	@Column(name = "start_date")
 	private Date startDate;
 	@Column(name = "end_date")
 	private Date endDate;
 	@Column(name = "status")
 	private String status;
-
+    @Column(name="patient_number")
+    private String patientNumber;
 	public BedAllocation() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public BedAllocation(int id, int patientId, BedEntity bedId, int noOfDays, Date startDate, Date endDate,
-			String status) {
+	public BedAllocation(int id, int patientId, BedEntity bedId, long noOfDays, Date startDate, Date endDate,
+			String status, String patientNumber) {
 		super();
 		this.id = id;
 		this.patientId = patientId;
@@ -49,7 +49,9 @@ public class BedAllocation {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
+		this.patientNumber = patientNumber;
 	}
+
 
 	public int getId() {
 		return id;
@@ -75,11 +77,11 @@ public class BedAllocation {
 		this.bedId = bedId;
 	}
 
-	public int getNoOfDays() {
+	public long getNoOfDays() {
 		return noOfDays;
 	}
 
-	public void setNoOfDays(int noOfDays) {
+	public void setNoOfDays(long noOfDays) {
 		this.noOfDays = noOfDays;
 	}
 
@@ -107,10 +109,20 @@ public class BedAllocation {
 		this.status = status;
 	}
 
+	public String getPatientNumber() {
+		return patientNumber;
+	}
+
+	public void setPatientNumber(String patientNumber) {
+		this.patientNumber = patientNumber;
+	}
+
 	@Override
 	public String toString() {
 		return "BedAllocation [id=" + id + ", patientId=" + patientId + ", bedId=" + bedId + ", noOfDays=" + noOfDays
-				+ ", startDate=" + startDate + ", endDate=" + endDate + ", status=" + status + "]";
+				+ ", startDate=" + startDate + ", endDate=" + endDate + ", status=" + status + ", patientNumber="
+				+ patientNumber + "]";
 	}
 
+	
 }

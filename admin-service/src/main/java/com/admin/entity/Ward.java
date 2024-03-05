@@ -17,9 +17,9 @@ public class Ward {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "wardId")
+	@Column(name = "ward_id")
 	private long id;
-	@Column(name = "wardName")
+	@Column(name = "ward_name")
 	private String name;
 	@Column(name = "capacity")
 	private int capacity;

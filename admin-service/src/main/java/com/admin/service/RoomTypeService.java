@@ -10,7 +10,7 @@ public interface RoomTypeService {
 	List<RoomTypeBean> getAll();
 
 	RoomTypeBean getById(long id);
-	RoomType update(long id);
+	RoomType update(RoomTypeBean room);
 
 	public void delete(long id);
 	void updateStatus(RoomType roomEntity);

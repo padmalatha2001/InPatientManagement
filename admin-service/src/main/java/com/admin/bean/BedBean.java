@@ -1,22 +1,16 @@
 package com.admin.bean;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 public class BedBean {
 
-	 private long id;
-	 private int bedNo;
-	 private String status;
-	 private RoomBean roomId;
+	private long id;
+	private int bedNo;
+	private String status;
+	private RoomBean roomId;
+
 	public BedBean() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 	public BedBean(long id, int bedNo, String status, RoomBean roomId) {
 		super();
@@ -26,21 +20,22 @@ public class BedBean {
 		this.roomId = roomId;
 	}
 
-
-
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	public RoomBean getRoomId() {
 		return roomId;
 	}
@@ -48,8 +43,6 @@ public class BedBean {
 	public void setRoomId(RoomBean roomId) {
 		this.roomId = roomId;
 	}
-
-
 
 	public int getBedNo() {
 		return bedNo;
@@ -59,15 +52,9 @@ public class BedBean {
 		this.bedNo = bedNo;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "BedBean [id=" + id + ", bedNo=" + bedNo + ", status=" + status + ", roomId=" + roomId + "]";
 	}
 
-	
-	
-	
-	
 }

@@ -17,11 +17,10 @@ public class PatientBillingConfig {
 			}
 		};
 	}
+
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
 
-
 }
-

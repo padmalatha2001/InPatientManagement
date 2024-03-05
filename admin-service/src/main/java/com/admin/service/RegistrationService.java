@@ -10,17 +10,28 @@ import com.admin.bean.RegistrationBean;
 import com.admin.entity.RegistrationForm;
 
 public interface RegistrationService {
-      RegistrationBean save(RegistrationBean registration);
-      RegistrationBean getById(int id);
-      List<RegistrationBean> getAll();
-      void delete(int id);
-      void update(RegistrationBean registration);
-      //boolean getDetails(String email);
+	RegistrationBean save(RegistrationBean registration);
+
+	RegistrationBean getById(int id);
+
+	List<RegistrationBean> getAll();
+
+	void delete(int id);
+
+	void update(RegistrationBean registration);
+
+	// boolean getDetails(String email);
 	RegistrationForm validateLogin(LoginBean loginBean);
-	 RegistrationForm forgetPassword(String email);
-    void sendOtpEmail(String toEmail, String otp);
+
+	RegistrationForm forgetPassword(String email);
+
+	void sendOtpEmail(String toEmail, String otp);
+
 	String generateOtp();
-		void saveOtp(String email, String otp, Timestamp expirationTime);
+
+	void saveOtp(String email, String otp, Timestamp expirationTime);
+
 	boolean verifyOtp(String email, String enteredOtp);
+
 	void updatePassword(String email, String password);
 }

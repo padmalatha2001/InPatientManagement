@@ -16,72 +16,91 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.admin.bean.BedAllocationBean;
 import com.admin.bean.BedBean;
-
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.BedService;
+
 @Controller
 @RequestMapping("/bed")
 public class BedEntityController {
+
 	@Autowired
 	BedService bedService;
-	private static Logger log = LoggerFactory
-			.getLogger(BedAllocationController.class.getSimpleName());
-	
+	private static Logger log = LoggerFactory.getLogger(BedAllocationController.class.getSimpleName());
+
 	@PostMapping("/save")
 	public ResponseEntity<BedBean> save(@RequestBody BedBean bedBean) {
 		log.info("Saving Bed");
-		   BedBean bed1 = bedService.save(bedBean);
-		   ResponseEntity<BedBean> responseEntity = new ResponseEntity<>(bed1, HttpStatus.CREATED);
-		   log.info("Saving Bed is done");
-		   return responseEntity;
-		
-			
+		try {
+			BedBean bedDetails = bedService.save(bedBean);
+			ResponseEntity<BedBean> responseEntity = new ResponseEntity<>(bedDetails, HttpStatus.CREATED);
+			log.info("Bed saved successfully");
+			return responseEntity;
+		} catch (Exception e) {
+			log.error("Error occurred while saving bed", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
+
 	@GetMapping("/getById/{bedId}")
 	public ResponseEntity<BedBean> getById(@PathVariable Long bedId) {
-		 log.info("Getting Bed Details by Id");
-		 
-		  BedBean bed = bedService.getById(bedId);
-		
-		 log.info("Getting Bed Details by Id is done");
-		 return new ResponseEntity<BedBean>(bed, HttpStatus.OK);
-		 
-		 
+		log.info("Getting Bed Details by Id");
+		try {
+			BedBean bed = bedService.getById(bedId);
+
+			log.info("Retrieving bed details by Id is done");
+			return new ResponseEntity<BedBean>(bed, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving bed", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
-	
+
 	@GetMapping("/getAll")
 	public ResponseEntity<List<BedBean>> getAll() {
-		log.info("Getting  All Bed Details");
-		
-		    List<BedBean> list = bedService.getAll();
-		    ResponseEntity<List<BedBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-		    log.info("Getting  All Bed Details is done");
-		    return responseEntity;
-		
+		log.info("Retrieving  all bed details");
+		try {
+			List<BedBean> list = bedService.getAll();
+			ResponseEntity<List<BedBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
+			log.info("Retrieved  all bed details successfully");
+			return responseEntity;
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving all beds details", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
-	@GetMapping(path ="/getByRoomId/{id}")
-	public ResponseEntity<List<BedBean>> getAllByWard(@PathVariable Long id){
-		List<BedBean> list= bedService.findByBedIdRoomEntityId(id);
-		return new ResponseEntity<List<BedBean>>(list,HttpStatus.OK);
+
+	@GetMapping(path = "/getByRoomId/{id}")
+	public ResponseEntity<List<BedBean>> getAllByWard(@PathVariable Long id) {
+		log.info("Retrieving bed details by roomId");
+		try {
+			List<BedBean> list = bedService.findByBedIdRoomEntityId(id);
+			log.info("Retrieving bed details by roomId successfully");
+			return new ResponseEntity<List<BedBean>>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving bed", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping("/update/{bedId}")
-	public ResponseEntity<String> put(@PathVariable Long bedId,@RequestBody BedBean bed) {
+	public ResponseEntity<String> put(@PathVariable Long bedId, @RequestBody BedBean bed) {
 
-		log.info("Updating BedStaus");
+		log.info("Updating BedStatus");
 		try {
-			     bedService.update(bedId,bed);
-			     ResponseEntity<String> responseEntity = new ResponseEntity<>("Bed Status updated Successfully", HttpStatus.OK);
-					log.info("Updating Bed is done");
-					return responseEntity;
-			}
-			 catch (RecordNotFoundException e) {
-			log.error("error handled");
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+			bedService.update(bedId, bed);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Bed Status updated Successfully",
+					HttpStatus.OK);
+			log.info("Updated bed successfully");
+			return responseEntity;
+		} catch (RecordNotFoundException e) {
+			log.error("Bed update failed: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		} catch (Exception e) {
+			log.error("Error occurred while updating bed", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"Error occurred while updating bed\"}");
 		}
 	}
 
@@ -90,15 +109,18 @@ public class BedEntityController {
 		log.info("Deleting BedAllocation By Id");
 		try {
 			bedService.getById(bedId);
-		    bedService.delete(bedId);
-		  ResponseEntity responseEntity = new ResponseEntity<>("Deleted Successfully",HttpStatus.OK);
-		  log.info("Deleting Bed By Id is done");
-		return responseEntity;
-		}catch(RecordNotFoundException e) {
-			  log.error("error handled");
-			  return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		  }
+			bedService.delete(bedId);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
+			log.info("Deleted Bed successfully");
+			return responseEntity;
+		} catch (RecordNotFoundException e) {
+			log.error("Bed deleting failed: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		} catch (Exception e) {
+			log.error("Error occurred while deleting bed", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"Error occurred while deleting bed\"}");
+		}
 	}
-	
 
 }

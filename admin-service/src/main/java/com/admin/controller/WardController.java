@@ -2,9 +2,10 @@ package com.admin.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.bean.WardBean;
 import com.admin.entity.Ward;
-import com.admin.exception.ControllerExceptionHandler;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.WardService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -77,6 +76,7 @@ public class WardController {
 	
 	  @GetMapping("/getByDepartmentId/{id}")
 	    public List<Ward> getWardsByDepartmentId(@PathVariable Long id) {
+		  log.info("Get the ward details sucessfully");
 	        return wardService.findByDepartmentId(id);
 	    }
 	
@@ -97,18 +97,17 @@ public class WardController {
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity delete(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		log.info("Start WardController:delete()");
 		try {
-		   //	WardBean ward=wardService.getById(id);
 			wardService.delete(id);
 			log.info("deleted successfully");
-			return new ResponseEntity<String>( HttpStatus.OK);
+			return new ResponseEntity<>( HttpStatus.OK);
 			
 		} catch (RecordNotFoundException e) {
 			log.error("exception handled");
 
-			return new ResponseEntity( HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
 		}
 
 	}
@@ -117,7 +116,9 @@ public class WardController {
 	@PutMapping("/updateStatus")
 	public void put(@RequestBody Ward ward)
 	{
+		log.info("Updating the status of ward");
 		wardService.updateStatus(ward);
+		log.info("Update ward status sucessfully");
 	}
 
 

@@ -1,7 +1,6 @@
 package com.admin.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.bean.BedAllocationBean;
 import com.admin.bean.PatientBean;
+import com.admin.dto.BedAllocationDto;
+import com.admin.entity.BedAllocation;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.service.BedAllocationService;
 
@@ -28,96 +29,124 @@ public class BedAllocationController {
 
 	@Autowired
 	BedAllocationService bedAllocationService;
-	private static Logger log = LoggerFactory
-			.getLogger(BedAllocationController.class.getSimpleName());
-	
+	private static Logger log = LoggerFactory.getLogger(BedAllocationController.class.getSimpleName());
+
 	@PostMapping("/save")
 	public ResponseEntity<BedAllocationBean> save(@RequestBody BedAllocationBean bedAllocationBean) {
 		log.info("Saving BedAllocation");
 		try {
-		   BedAllocationBean bedAllocation1 = bedAllocationService.save(bedAllocationBean);
-		   ResponseEntity<BedAllocationBean> responseEntity = new ResponseEntity<>(bedAllocation1, HttpStatus.CREATED);
-		   log.info("Saving BedAllocation is done");
-		   return responseEntity;
-		}catch(Exception e) {
-			log.error("error handled");
-			return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+			BedAllocationBean bedAllocation1 = bedAllocationService.save(bedAllocationBean);
+			ResponseEntity<BedAllocationBean> responseEntity = new ResponseEntity<>(bedAllocation1, HttpStatus.CREATED);
+			log.info("Saved BedAllocation details successfully");
+			return responseEntity;
+		} catch (Exception e) {
+			log.error("Error occurred while saving bedAllocation", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		
-		
+
 	}
 
 	@GetMapping("/getPatientById/{id}")
-	 public ResponseEntity<PatientBean>details(@PathVariable (value ="id")Integer patientId)
-	   {   log.info("Getting Patient Details by Id");
-			  System.out.println("controller");
-		      PatientBean patientBillingBean= bedAllocationService.getDetails(patientId);
-		      log.info("Getting Patient Details by Id is done");
-		      return new ResponseEntity<PatientBean>(patientBillingBean,HttpStatus.OK) ;
-		  
-	    }
+	public ResponseEntity<PatientBean> details(@PathVariable(value = "id") Integer patientId) {
+		log.info("Retrieving Patient Details by patient id");
+		try {
+			PatientBean patientBillingBean = bedAllocationService.getDetails(patientId);
+			log.info("Retrieved patient details by patient Id successfully");
+			return new ResponseEntity<PatientBean>(patientBillingBean, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving patient details by patient id", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@GetMapping("/getById/{id}")
 	public ResponseEntity<BedAllocationBean> getById(@PathVariable int id) {
-		 log.info("Getting BedAllocation Details by Id");
-		  BedAllocationBean bedAllocation = bedAllocationService.getById(id);
-		 log.info("Getting BedAllocation Details by Id is done");
-		 return new ResponseEntity<BedAllocationBean>(bedAllocation, HttpStatus.OK);
-		   
-		 
+		log.info("Retrieving BedAllocation Details by BedAllocation Id");
+		try {
+			BedAllocationBean bedAllocation = bedAllocationService.getById(id);
+			log.info("Retrieved bedAllocation details by Id successfully");
+			return new ResponseEntity<BedAllocationBean>(bedAllocation, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving bedAllocation details by bedAllocation id", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping("/getAll")
 	public ResponseEntity<List<BedAllocationBean>> getAll() {
-		log.info("Getting  All BedAllocation Details");
-		
-		    List<BedAllocationBean> list = bedAllocationService.getAll();
-		    ResponseEntity<List<BedAllocationBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-		    log.info("Getting  All BedAllocation Details is done");
-		    return responseEntity;
-		
+		log.info("Retrieving  All BedAllocation Details");
+		try {
+			List<BedAllocationBean> list = bedAllocationService.getAll();
+			ResponseEntity<List<BedAllocationBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
+			log.info("Getting  All BedAllocation Details is done");
+			return responseEntity;
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving all bedAllocation details", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
-	
-	
+
+	@GetMapping("/getByPatientNumber/{no}")
+	public ResponseEntity<BedAllocation> getByPatientNumber(@PathVariable String no) {
+		log.info("Retrieving  BedAllocation by using patient number");
+		try {
+			BedAllocation bedAllocation = bedAllocationService.getDetailsForUpdating(no);
+			log.info("Retrieved BedAllocation by using patient number successfully");
+			return new ResponseEntity<BedAllocation>(bedAllocation, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving bedAllocation details by patient number", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@DeleteMapping("/deleteById/{id}")
 	public ResponseEntity<String> deleteById(@PathVariable int id) {
 		log.info("Deleting BedAllocation By Id");
 		try {
 			bedAllocationService.getById(id);
-		  bedAllocationService.delete(id);
-		  ResponseEntity responseEntity = new ResponseEntity<>("Deleted Successfully",HttpStatus.OK);
-		  log.info("Deleting BedAllocation By Id is done");
-		return responseEntity;
-		}catch(RecordNotFoundException e) {
-			  log.error("error handled");
-			  return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		  }
+			bedAllocationService.delete(id);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
+			log.info("Deleting BedAllocation By Id is done");
+			return responseEntity;
+		} catch (RecordNotFoundException e) {
+			log.error("BedAllocation deletion failed: " + e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			log.error("Error occurred while deleting BedAllocation", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
-	@PutMapping("/updateById/{id}")
-	public ResponseEntity<String> put(@RequestBody BedAllocationBean bedAllocationBean,@PathVariable int id) throws Exception {
+	@PutMapping("/update")
+	public ResponseEntity<String> put(@RequestBody BedAllocationBean bedAllocationBean) throws Exception {
 
 		log.info("Updating BedAllocation");
 		try {
-		   BedAllocationBean bedAllocation1 = bedAllocationService.getById(id);
-		   if (bedAllocation1 != null) {
-			
-			bedAllocation1.setId(bedAllocationBean.getId());
-			bedAllocation1.setStartDate(bedAllocationBean.getStartDate());
-			bedAllocation1.setEndDate(bedAllocationBean.getEndDate());
-			bedAllocation1.setStatus(bedAllocationBean.getStatus());
-			bedAllocation1.setBedId(bedAllocationBean.getBedId());
-			bedAllocation1.setNoOfDays(bedAllocationBean.getNoOfDays());
-			bedAllocation1.setPatientId(bedAllocationBean.getPatientId());
-			bedAllocationService.save(bedAllocation1);
-		 }
-		  ResponseEntity<String> responseEntity = new ResponseEntity<>("Updated successfully", HttpStatus.OK);
-		  log.info("Updating BedAllocation is done");
-		  return responseEntity;
-		}catch(RecordNotFoundException e) {
-			  log.error("error handled");
-			  return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		  }
+			bedAllocationService.update(bedAllocationBean);
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Updated successfully", HttpStatus.OK);
+			log.info("Updating BedAllocation is done");
+			return responseEntity;
+		} catch (RecordNotFoundException e) {
+			log.error("BedAllocation update failed: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		} catch (Exception e) {
+			log.error("Error occurred while updating bedAllocation", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"Error occurred while updating bedAllocation\"}");
+		}
+	}
+
+	@GetMapping("/bed")
+	public ResponseEntity<List<BedAllocationDto>> getDetails() {
+		log.info("get the BedAllocation details");
+		try {
+			List<BedAllocationDto> bedDetails = bedAllocationService.getBedDetails();
+			log.info("getting the BedAllocation details done");
+			return new ResponseEntity<List<BedAllocationDto>>(bedDetails, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("error handled");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 }

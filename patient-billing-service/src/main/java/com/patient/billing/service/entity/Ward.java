@@ -1,7 +1,5 @@
 package com.patient.billing.service.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,16 +16,16 @@ public class Ward {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "wardId")
+	@Column(name = "ward_id")
 	private long id;
-	@Column(name = "wardName")
+	@Column(name = "ward_name")
 	private String name;
 	@Column(name = "capacity")
 	private int capacity;
 	@Column(name = "availability")
 	private int availability;
 	@ManyToOne
-	@JoinColumn(name = "departmentId",referencedColumnName = "dept_id")
+	@JoinColumn(name = "department_id",referencedColumnName = "dept_id")
 	private Department departmentId;
 
 	public long getId() {

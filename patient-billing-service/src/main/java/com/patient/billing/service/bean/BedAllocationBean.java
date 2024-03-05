@@ -4,12 +4,6 @@ package com.patient.billing.service.bean;
 
 import java.sql.Date;
 
-
-
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 public class BedAllocationBean {
 
 	private int id;

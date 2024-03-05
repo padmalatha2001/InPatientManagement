@@ -15,20 +15,17 @@ import com.admin.entity.RoomEntity;
 import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
+import com.admin.exception.RoomAlreadyExistsException;
+import com.admin.exception.WardCapacityExceededException;
 import com.admin.repository.RoomRepository;
-import com.admin.repository.WardRepository;
 import com.admin.service.RoomService;
-
-import jakarta.persistence.EntityManager;
 
 @Service
 public class RoomServiceImplementation implements RoomService {
 
 	@Autowired
 	RoomRepository roomRepository;
-	@Autowired
-	private WardRepository wardRepository;
-
+	
 	@Override
 	public void save(RoomBean roomBean) {
 //		RoomEntity roomEntity=new RoomEntity();
@@ -37,6 +34,7 @@ public class RoomServiceImplementation implements RoomService {
 		RoomEntity roomEntity1=roomRepository.getByRoomNoAndWardId_Id(roomBean.getRoomNo(), roomBean.getWardId().getId());
         if(roomEntity1==null) {
 		roomBean.setStatus("Active");
+		roomBean.setAvailability(roomBean.getRoomSharing());
 		WardBean ward = roomBean.getWardId();
 		Integer totalRoomSharing = roomRepository.sumRoomSharingByWard(ward.getId());
 		if (totalRoomSharing == null) {
@@ -47,9 +45,12 @@ public class RoomServiceImplementation implements RoomService {
 			beanToEntity(roomEntity, roomBean);
 			roomRepository.save(roomEntity);
 		} else {
-			throw new RecordNotFoundException("Room capacity exceeded for ward");
+			throw new WardCapacityExceededException("Room capacity exceeded for ward");
 		}
       }
+       else {
+    	   throw new RoomAlreadyExistsException("That room already exists");
+       }
 
 	}
 

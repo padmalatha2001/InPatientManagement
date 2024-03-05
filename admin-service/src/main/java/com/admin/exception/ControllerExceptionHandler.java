@@ -12,17 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class ControllerExceptionHandler {
-	Logger log=LoggerFactory.getLogger(ControllerExceptionHandler.class);
+	Logger log = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
-
-//	@ExceptionHandler(value= RecordNotFoundException.class)
-//	public ResponseEntity<String> handle(Exception ex)
-//	{
-//		System.out.println("handled");
-//		return new ResponseEntity<>(ex.getMessage(),HttpStatus.NOT_FOUND);
-//		
-//	}
-	
 	@ExceptionHandler(value = RecordNotFoundException.class)
 	public ResponseEntity<String> exception(RecordNotFoundException exception) {
 		log.error("ResourceNotFoundException-" + exception.getMessage(), exception);

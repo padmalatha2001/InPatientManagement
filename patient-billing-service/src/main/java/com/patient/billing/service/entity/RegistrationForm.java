@@ -16,11 +16,11 @@ public class RegistrationForm {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	@Column(name = "firstName")
+	@Column(name = "first_name")
 	private String firstName;
-	@Column(name = "lastName")
+	@Column(name = "last_name")
 	private String lastName;
-	@Column(name = "birthDay")
+	@Column(name = "date_of_birth")
 	private Date birthDay;
 	@Column(name = "email")
 	private String email;
@@ -30,7 +30,7 @@ public class RegistrationForm {
 	private String password;
 	@Column(name = "phoneNumber")
 	private long phoneNumber;
-	@Column(name = "serviceType")
+	@Column(name = "service_type")
 	private String serviceType;
 
 	public RegistrationForm() {

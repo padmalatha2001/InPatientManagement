@@ -1,53 +1,65 @@
 package com.admin.service.implementation;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.admin.bean.BedAllocationBean;
 import com.admin.bean.BedBean;
-import com.admin.bean.DepartmentBean;
 import com.admin.bean.PatientBean;
 import com.admin.bean.RoomBean;
-import com.admin.bean.RoomTypeBean;
 import com.admin.bean.WardBean;
+import com.admin.dto.BedAllocationDto;
 import com.admin.entity.BedAllocation;
 import com.admin.entity.BedEntity;
-import com.admin.entity.Department;
 import com.admin.entity.RoomEntity;
-import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
+import com.admin.exception.PatientDoesNotExistsException;
 import com.admin.exception.RecordNotFoundException;
+import com.admin.exception.RoomAvailabilityException;
+import com.admin.exception.WardAvailabilityException;
 import com.admin.repository.BedAllocationRepository;
 import com.admin.repository.BedEntityRepository;
 import com.admin.repository.RoomRepository;
 import com.admin.repository.WardRepository;
 import com.admin.service.BedAllocationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class BedAllocationServiceImpl implements BedAllocationService {
 
 	@Autowired
+
 	BedAllocationRepository bedAllocationRepository;
 	@Autowired
-	private WardRepository wardRepository;
+	WardRepository wardRepository;
 	@Autowired
 	RoomRepository roomRepository;
 	@Autowired
-	BedEntityRepository bedEntityRepository;
+	BedEntityRepository bedRepository;
+
 	@Autowired
 	private RestTemplate restTemplate;
+	@Autowired
+	BedEntityRepository bedEntityRepository;
+	
+	private static Logger log = LoggerFactory.getLogger(BedAllocationServiceImpl.class.getSimpleName());
 
+	ObjectMapper objectMapper = new ObjectMapper();
 	@Override
 	public PatientBean getDetails(int id) {
 		String url = "http://localhost:8085/registration/" + id;
@@ -66,114 +78,59 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 			if (patientBean != null) {
 				return patientBean;
 			} else {
-
+                throw new PatientDoesNotExistsException("Patient does not exists with given id ");
 			}
 		} else {
-			System.out.println("exception occured");
+			log.error("Error Occured while getting patient Details by id ");
 			return null;
 		}
 
-		return null;
+		
 	}
 
 	public BedAllocationBean save(BedAllocationBean bedAllocationBean) {
-		// TODO Auto-generated method stub
-		WardBean ward = bedAllocationBean.getBedId().getRoomId().getWardId();
-		RoomBean room= bedAllocationBean.getBedId().getRoomId();
-		BedBean bed=bedAllocationBean.getBedId();
-		bed.setStatus("Booked");
-		BedEntity bedEntity =new BedEntity();
-		beanToEntity(bed,bedEntity);
-		bedEntityRepository.save(bedEntity);
-		if(room.getAvailability()>0) {
-			room.setAvailability(room.getAvailability()-1);
-			RoomEntity roomEntity=new RoomEntity();
-			beanToEntity(roomEntity,room);
-			roomRepository.save(roomEntity);
-		if (ward.getAvailability() > 0) {
-			ward.setAvailability(ward.getAvailability() - 1);
-			bedAllocationBean.setStatus("Active");
-			BedAllocation bedAllocation = new BedAllocation();
-			beanToEntity(bedAllocationBean, bedAllocation);
-			bedAllocationRepository.save(bedAllocation);
-			Ward wardEntity = new Ward();
-			beanToEntity(wardEntity, ward);
-			wardRepository.save(wardEntity);
-		} else {
-			throw new RuntimeException("No availability in the ward");
-		   }
-		}else {
-			throw new RuntimeException("No availability in the Room");
-		}
-		
 
+		// TODO Auto-generated method stub
+		BedAllocation bedallocate = bedAllocationRepository.getByPatientId(bedAllocationBean.getPatientId());
+		if (bedallocate == null) {
+			WardBean wardBean = bedAllocationBean.getBedId().getRoomId().getWardId();
+			RoomBean roomBean = bedAllocationBean.getBedId().getRoomId();
+			BedBean bedBean = bedAllocationBean.getBedId();
+			bedBean.setStatus("Booked");
+
+			BedEntity bedEntity = new BedEntity();
+			bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
+			bedEntityRepository.save(bedEntity);
+			if (roomBean.getAvailability() > 0) {
+				roomBean.setAvailability(roomBean.getAvailability() - 1);
+				RoomEntity roomEntity = new RoomEntity();
+				roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
+				roomRepository.save(roomEntity);
+				if (wardBean.getAvailability() > 0) {
+					wardBean.setAvailability(wardBean.getAvailability() - 1);
+					bedAllocationBean.setStatus("Active");
+					BedAllocation bedAllocation = new BedAllocation();
+					long days=ChronoUnit.DAYS.between(bedAllocationBean.getStartDate().toLocalDate(), bedAllocationBean.getEndDate().toLocalDate());
+			        bedAllocationBean.setNoOfDays(days);
+					beanToEntity(bedAllocationBean, bedAllocation);
+					bedAllocationRepository.save(bedAllocation);
+					Ward wardEntity = new Ward();
+					wardEntity = objectMapper.convertValue(wardBean, Ward.class);
+					wardRepository.save(wardEntity);
+				} else {
+					throw new WardAvailabilityException("No availability in the ward");
+				}
+			} else {
+				throw new RoomAvailabilityException("No availability in the Room");
+			}
+
+		}
 		return bedAllocationBean;
 	}
 
 	private void beanToEntity(BedAllocationBean bedAllocationBean, BedAllocation bedAllocation) {
 		// TODO Auto-generated method stub
-		bedAllocation.setId(bedAllocationBean.getId());
-
-		BedBean bedBean = bedAllocationBean.getBedId();
-		BedEntity bedEntity = new BedEntity();
-		beanToEntity(bedBean, bedEntity);
-		bedAllocation.setBedId(bedEntity);
-
-		bedAllocation.setPatientId(bedAllocationBean.getPatientId());
-		bedAllocation.setNoOfDays(bedAllocationBean.getNoOfDays());
-		bedAllocation.setStartDate(bedAllocationBean.getStartDate());
-		bedAllocation.setEndDate(bedAllocationBean.getEndDate());
-		bedAllocation.setStatus(bedAllocationBean.getStatus());
-	}
-
-	private void beanToEntity(BedBean bedBean, BedEntity bedEntity) {
-
-		RoomBean roomBean = bedBean.getRoomId();
-		RoomEntity roomEntity = new RoomEntity();
-		beanToEntity(roomEntity, roomBean);
-		bedEntity.setId(bedBean.getId());
-		bedEntity.setRoomId(roomEntity);
-		bedEntity.setBedNo(bedBean.getBedNo());
-		bedEntity.setStatus(bedBean.getStatus());
-	}
-
-	public void beanToEntity(RoomEntity roomEntity, RoomBean roomBean) {
-		roomEntity.setId(roomBean.getId());
-		roomEntity.setRoomNo(roomBean.getRoomNo());
-		RoomTypeBean roomTypeBean = roomBean.getRoomTypeId();
-		RoomType roomType = new RoomType();
-		beanToEntity(roomTypeBean, roomType);
-		roomEntity.setRoomTypeId(roomType);
-		roomEntity.setRoomPrice(roomBean.getRoomPrice());
-		roomEntity.setRoomSharing(roomBean.getRoomSharing());
-		roomEntity.setAvailability(roomBean.getAvailability());
-		WardBean wardBean = roomBean.getWardId();
-		Ward entity = new Ward();
-		beanToEntity(entity, wardBean);
-		roomEntity.setWardId(entity);
-	}
-
-	private void beanToEntity(RoomTypeBean roomTypeBean, RoomType roomType) {
-		// TODO Auto-generated method stub
-		roomType.setId(roomTypeBean.getId());
-		roomType.setName(roomTypeBean.getName());
-	}
-
-	private void beanToEntity(Ward ward, WardBean wardBean) {
-		ward.setId(wardBean.getId());
-		ward.setName(wardBean.getName());
-		ward.setCapacity(wardBean.getCapacity());
-		ward.setAvailability(wardBean.getAvailability());
-		DepartmentBean DepartmentBean = wardBean.getDepartmentId();
-		Department Department = new Department();
-		beanToEntity(DepartmentBean, Department);
-		ward.setDepartmentId(Department);
-
-	}
-
-	public void beanToEntity(DepartmentBean DepartmentBean, Department Department) {
-		Department.setId(DepartmentBean.getId());
-		Department.setName(DepartmentBean.getName());
+		 bedAllocation = objectMapper.convertValue(bedAllocationBean, BedAllocation.class);
 
 	}
 
@@ -189,17 +146,7 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 
 	private void entityToBean(BedAllocation bedAllocation, BedAllocationBean bedAllocationBean) {
 		// TODO Auto-generated method stub
-		bedAllocationBean.setId(bedAllocation.getId());
-		bedAllocationBean.setEndDate(bedAllocation.getEndDate());
-		bedAllocationBean.setNoOfDays(bedAllocation.getNoOfDays());
-		bedAllocationBean.setStartDate(bedAllocation.getStartDate());
-		bedAllocationBean.setPatientId(bedAllocation.getPatientId());
-		BedEntity bedEntity = bedAllocation.getBedId();
-		BedBean bedBean = new BedBean();
-		entityToBean(bedEntity, bedBean);
-		bedAllocationBean.setBedId(bedBean);
-
-		bedAllocationBean.setStatus(bedAllocation.getStatus());
+		 bedAllocationBean = objectMapper.convertValue(bedAllocation, BedAllocationBean.class);
 	}
 
 	@Override
@@ -215,17 +162,7 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 		// TODO Auto-generated method stub
 		for (BedAllocation bedAllocation : entitylist) {
 			BedAllocationBean bedAllocationBean = new BedAllocationBean();
-			bedAllocationBean.setId(bedAllocation.getId());
-			bedAllocationBean.setEndDate(bedAllocation.getEndDate());
-			BedEntity bedEntity = bedAllocation.getBedId();
-			BedBean bedBean = new BedBean();
-			entityToBean(bedEntity, bedBean);
-			bedAllocationBean.setBedId(bedBean);
-			bedAllocationBean.setNoOfDays(bedAllocation.getNoOfDays());
-			bedAllocationBean.setStartDate(bedAllocation.getStartDate());
-			bedAllocationBean.setPatientId(bedAllocation.getPatientId());
-
-			bedAllocationBean.setStatus(bedAllocation.getStatus());
+			 bedAllocationBean = objectMapper.convertValue(bedAllocation, BedAllocationBean.class);
 			beanList.add(bedAllocationBean);
 		}
 	}
@@ -248,67 +185,48 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 		bedAllocation.setPatientId(bedAllocationBean.getPatientId());
 		BedBean bedBean = bedAllocationBean.getBedId();
 		BedEntity bedEntity = new BedEntity();
-		beanToEntity(bedBean, bedEntity);
+		bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
 		bedAllocation.setBedId(bedEntity);
 		bedAllocation.setStatus(bedAllocationBean.getStatus());
 		bedAllocationRepository.save(bedAllocation);
 
 	}
 
-	private void entityToBean(BedEntity bedEntity, BedBean bedBean) {
-		// TODO Auto-generated method stub
-		bedBean.setId(bedEntity.getId());
-		bedBean.setBedNo(bedEntity.getBedNo());
-		RoomEntity roomEntity = bedEntity.getRoomId();
-		RoomBean roomBean = new RoomBean();
-		entityToBean(roomEntity, roomBean);
-		bedBean.setRoomId(roomBean);
-		bedBean.setStatus(bedEntity.getStatus());
+	@Override
+	public List<BedAllocationDto> getBedDetails() {
+
+		List<BedAllocationDto> bedDetails = bedAllocationRepository.getBedAllocationDetails();
+
+		return bedDetails;
 	}
 
-	public void entityToBean(RoomEntity roomEntity, RoomBean roomBean) {
+	@Scheduled(fixedRate = 60000) // 5 minutes in milliseconds
+	public void getDetails() {
+		try {
+			System.out.println("scheduled start");
+			List<BedAllocation> bedDetails = bedAllocationRepository.findBedAllocationsWithEndDateBeforeCurrentDate();
+			for (BedAllocation list : bedDetails) {
+				BedEntity entity = list.getBedId();
+				if (entity.getStatus().equalsIgnoreCase("booked")) {
+					entity.setStatus("Empty");
+					bedRepository.save(entity);
+					RoomEntity room = entity.getRoomId();
+					room.setAvailability(room.getAvailability() + 1);
+					roomRepository.save(room);
 
-		roomBean.setId(roomEntity.getId());
+					Ward ward = entity.getRoomId().getWardId();
+					ward.setAvailability(ward.getAvailability() + 1);
+					wardRepository.save(ward);
+				}
 
-		RoomType roomType = roomEntity.getRoomTypeId();
-		RoomTypeBean roomTypeBean = new RoomTypeBean();
-		entityToBean(roomType, roomTypeBean);
-		roomBean.setRoomTypeId(roomTypeBean);
-
-		roomBean.setRoomNo(roomEntity.getRoomNo());
-		roomBean.setRoomPrice(roomEntity.getRoomPrice());
-		roomBean.setRoomSharing(roomEntity.getRoomSharing());
-		roomBean.setAvailability(roomEntity.getAvailability());
-
-		Ward entity = roomEntity.getWardId();
-		WardBean wardBean = new WardBean();
-		entityToBean(wardBean, entity);
-		roomBean.setWardId(wardBean);
-
+			}
+			System.out.println("scheduled end");
+		} catch (Exception e) {
+			
+		   log.error("Error cleaning up expired OTPs: " + e.getMessage(), e);
+		}
 	}
 
-	private void entityToBean(RoomType roomType, RoomTypeBean roomTypeBean) {
-		// TODO Auto-generated method stub
-		roomTypeBean.setId(roomType.getId());
-		roomTypeBean.setName(roomType.getName());
-	}
-
-	private void entityToBean(WardBean wardBean, Ward ward) {
-		wardBean.setId(ward.getId());
-		wardBean.setName(ward.getName());
-		wardBean.setCapacity(ward.getCapacity());
-		wardBean.setAvailability(ward.getAvailability());
-		DepartmentBean DepartmentBean = new DepartmentBean();
-		Department Department = ward.getDepartmentId();
-		entityToBean(Department, DepartmentBean);
-		wardBean.setDepartmentId(DepartmentBean);
-
-	}
-
-	public void entityToBean(Department Department, DepartmentBean DepartmentBean) {
-		DepartmentBean.setId(Department.getId());
-		DepartmentBean.setName(Department.getName());
-	}
 
 	public List<Map<String, Object>> getAllBedAllocationsWithPatientNames() {
 		List<BedAllocation> bedAllocations = bedAllocationRepository.findAll();
@@ -337,4 +255,9 @@ public class BedAllocationServiceImpl implements BedAllocationService {
 		return mappedData;
 	}
 
+	public BedAllocation getDetailsForUpdating(String patientNo) {
+		// TODO Auto-generated method stub
+
+		return bedAllocationRepository.getDetailsForUpdating(patientNo);
+	}
 }

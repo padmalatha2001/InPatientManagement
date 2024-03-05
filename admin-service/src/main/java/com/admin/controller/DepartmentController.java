@@ -38,49 +38,60 @@ public class DepartmentController {
 			log.info("Saving Department entity is done");
 			return responseEntity;
 		} catch (Exception e) {
-			log.error("error handled");
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			log.error("Error occurred while saving department", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@GetMapping("/getById/{id}")
 	public ResponseEntity<DepartmentBean> getById(@PathVariable long id) {
-		log.info("Fetching Department by Id");
-		
+		log.info("Retrieving Department by Id");
+		try {
 			DepartmentBean departmentBean = departmentService.getById(id);
-//			ResponseEntity<DepartmentBean> responseEntity = new ResponseEntity<>(departmentBean, HttpStatus.OK);
-			log.info("Fetching Department by Id is done");
+			log.info("Retrived department by id is successfully");
 			return ResponseEntity.status(HttpStatus.OK).body(departmentBean);
-		
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving department", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 
 	@GetMapping("/getAll")
 	public ResponseEntity<List<DepartmentBean>> getAll() {
-		log.info("Fetching All Department details");
-	
+		log.info("Retrieving All Departments");
+		try {
 			List<DepartmentBean> list = departmentService.getAll();
 			ResponseEntity<List<DepartmentBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
 			log.info("Fetching All Department details is done");
 			return responseEntity;
-		
+		} catch (Exception e) {
+			log.error("Error occurred while retrieving all departments", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity deleteById(@PathVariable long id) {
+	public ResponseEntity<String> deleteById(@PathVariable long id) {
 		log.info("Deleting Department by ID");
 		try {
 			departmentService.delete(id);
 			ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
-			log.info("Deleting Department by ID is done");
+			log.info("Deleted Department by ID successfully");
 			return responseEntity;
 		} catch (RecordNotFoundException e) {
-			log.error("error handled");
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+			log.error("Department deleting failed: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		} catch (Exception e) {
+			log.error("Error occurred while deleting department", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"Error occurred while updating room\"}");
 		}
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<DepartmentBean> put(@RequestBody Department department,@PathVariable long id) throws Exception {
+	public ResponseEntity<String> put(@RequestBody Department department, @PathVariable long id) throws Exception {
 
 		log.info("Updating Department");
 		try {
@@ -89,18 +100,25 @@ public class DepartmentController {
 				department1.setName(department.getName());
 				departmentService.save(department1);
 			}
-			ResponseEntity<DepartmentBean> responseEntity = new ResponseEntity<>(department1, HttpStatus.OK);
-			log.info("Updating Department is done");
+			ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated successfully",
+					HttpStatus.OK);
+			log.info("Updating department is done");
 			return responseEntity;
 		} catch (RecordNotFoundException e) {
-			log.error("error handled");
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			log.error("Department updating failed: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
+		} catch (Exception e) {
+			log.error("Error occurred while deleting department", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("{\"error\": \"Error occurred while updating room\"}");
 		}
 	}
-	
+
 	@PutMapping("/updateStatus")
-	public void put(@RequestBody Department department)
-	{
+	public void put(@RequestBody Department department) {
+		log.info("Update the  department status ");
+
 		departmentService.updateStatus(department);
+		log.info("Updating department status is done");
 	}
 }

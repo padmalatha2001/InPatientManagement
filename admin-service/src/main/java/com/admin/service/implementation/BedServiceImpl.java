@@ -16,9 +16,12 @@ import com.admin.entity.Department;
 import com.admin.entity.RoomEntity;
 import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
+import com.admin.exception.BedAlreadyExistsException;
 import com.admin.exception.RecordNotFoundException;
+import com.admin.exception.RoomCapacityExceededException;
 import com.admin.repository.BedEntityRepository;
 import com.admin.service.BedService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class BedServiceImpl implements BedService {
@@ -26,24 +29,28 @@ public class BedServiceImpl implements BedService {
 	@Autowired
 	BedEntityRepository bedEntityRepository;
 
+	ObjectMapper objectMapper=new ObjectMapper();
 	@Override
 	public BedBean save(BedBean bedBean) {
 		// TODO Auto-generated method stub
-		BedEntity bedEntity1=bedEntityRepository.getByBedNoAndRoomId_Id(bedBean.getBedNo(), bedBean.getRoomId().getId());
-		if(bedEntity1==null)
-		{RoomBean room = bedBean.getRoomId();
-		Integer totalBeds = bedEntityRepository.sumBedsByRoom(room.getId());
-		if (totalBeds == null) {
-			totalBeds = 0;
-		}
-		if (totalBeds + 1 <= room.getRoomSharing()) {
-			BedEntity bedEntity = new BedEntity();
-			bedBean.setStatus("Empty");
-			beanToEntity(bedBean, bedEntity);
-			bedEntityRepository.save(bedEntity);
-		} else {
-			throw new RecordNotFoundException("Room bed capacity exceeded");
-		}
+		BedEntity bedEntity1 = bedEntityRepository.getByBedNoAndRoomId_Id(bedBean.getBedNo(),
+				bedBean.getRoomId().getId());
+		if (bedEntity1 == null) {
+			RoomBean room = bedBean.getRoomId();
+			Integer totalBeds = bedEntityRepository.sumBedsByRoom(room.getId());
+			if (totalBeds == null) {
+				totalBeds = 0;
+			}
+			if (totalBeds + 1 <= room.getRoomSharing()) {
+				BedEntity bedEntity = new BedEntity();
+				bedBean.setStatus("Empty");
+				beanToEntity(bedBean, bedEntity);
+				bedEntityRepository.save(bedEntity);
+			} else {
+				throw new RoomCapacityExceededException("Room bed capacity exceeded");
+			}
+		}else {
+			throw new BedAlreadyExistsException("Already bed exists with this bedNo");
 		}
 		return bedBean;
 	}

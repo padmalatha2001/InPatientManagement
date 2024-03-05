@@ -1,12 +1,5 @@
 package com.patient.billing.service.bean;
 
-
-
-
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 public class BedBean {
 
 	private long id;

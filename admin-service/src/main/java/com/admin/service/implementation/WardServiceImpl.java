@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tomcat.util.http.ConcurrentDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +12,7 @@ import com.admin.bean.WardBean;
 import com.admin.entity.Department;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
+import com.admin.exception.WardAlreadyExistsException;
 import com.admin.repository.WardRepository;
 import com.admin.service.WardService;
 
@@ -28,8 +28,12 @@ public class WardServiceImpl implements WardService {
 		{
 	      Ward ward = new Ward();
 	      wardBean.setStatus("Active");
+	      wardBean.setAvailability(wardBean.getCapacity());
 	      beanToEntity(ward, wardBean);
           wardRepository.save(ward);
+		}
+		else {
+			throw new WardAlreadyExistsException("That ward already exists");
 		}
         return wardBean;
 
