@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.admin.bean.LoginBean;
 import com.admin.bean.RegistrationBean;
 import com.admin.controller.RegistrationController;
+import com.admin.entity.BedAllocation;
 import com.admin.entity.OTPEntity;
 import com.admin.entity.RegistrationForm;
 import com.admin.exception.EmailAlreadyExistsException;
@@ -31,6 +32,7 @@ import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.OtpRepository;
 import com.admin.repository.RegistrationRepository;
 import com.admin.service.RegistrationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
@@ -39,6 +41,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	RegistrationRepository registrationRepository;
 	@Autowired
 	OtpRepository otpRepository;
+	ObjectMapper objectMapper = new ObjectMapper();
 	private static Logger log = LoggerFactory.getLogger(RegistrationController.class.getSimpleName());
 
 	@Override
@@ -60,17 +63,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private void beanToEntity(RegistrationBean registrationBean, RegistrationForm registrationEntity) {
-
-		registrationEntity.setId(registrationBean.getId());
-		registrationEntity.setFirstName(registrationBean.getFirstName());
-		registrationEntity.setLastName(registrationBean.getLastName());
-		registrationEntity.setEmail(registrationBean.getEmail());
-		registrationEntity.setGender(registrationBean.getGender());
-		registrationEntity.setDateOfBirth(registrationBean.getDateOfBirth());
-		registrationEntity.setPassword(registrationBean.getPassword());
-		registrationEntity.setServiceType(registrationBean.getServiceType());
-		registrationEntity.setPhoneNumber(registrationBean.getPhoneNumber());
-
+		registrationEntity = objectMapper.convertValue(registrationBean, RegistrationForm.class);
 	}
 
 	@Override
@@ -83,17 +76,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private void entityToBean(RegistrationForm registrationEntity, RegistrationBean registrationBean) {
-		registrationBean.setId(registrationEntity.getId());
-		registrationBean.setFirstName(registrationEntity.getFirstName());
-		registrationBean.setLastName(registrationEntity.getLastName());
-		registrationBean.setEmail(registrationEntity.getEmail());
-		registrationBean.setGender(registrationEntity.getGender());
-		registrationBean.setDateOfBirth(registrationEntity.getDateOfBirth());
-		registrationBean.setPassword(registrationEntity.getPassword());
-		registrationBean.setPhoneNumber(registrationEntity.getPhoneNumber());
-		registrationBean.setServiceType(registrationEntity.getServiceType());
-		System.out.println(registrationBean.getPhoneNumber());
-
+		registrationBean = objectMapper.convertValue(registrationEntity, RegistrationBean.class);
 	}
 
 	@Override

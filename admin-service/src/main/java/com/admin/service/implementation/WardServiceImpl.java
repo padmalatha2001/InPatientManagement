@@ -9,18 +9,20 @@ import org.springframework.stereotype.Service;
 
 import com.admin.bean.DepartmentBean;
 import com.admin.bean.WardBean;
+import com.admin.constants.CommonConstants;
 import com.admin.entity.Department;
+import com.admin.entity.RoomType;
 import com.admin.entity.Ward;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.exception.WardAlreadyExistsException;
 import com.admin.repository.WardRepository;
 import com.admin.service.WardService;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class WardServiceImpl implements WardService {
 	@Autowired
 	private WardRepository wardRepository;
-
+	ObjectMapper objectMapper = new ObjectMapper();
 	@Override
 	public WardBean save(WardBean wardBean) {
 	   Ward ward1=	wardRepository.getByNameAndDepartmentId_Name(wardBean.getName(),wardBean.getDepartmentId().getName());
@@ -40,29 +42,11 @@ public class WardServiceImpl implements WardService {
 	}
 
 	private void beanToEntity(Ward ward, WardBean wardBean) {
-		ward.setId(wardBean.getId());
-		ward.setName(wardBean.getName());
-		ward.setCapacity(wardBean.getCapacity());
-		ward.setAvailability(wardBean.getAvailability());
-		ward.setStatus(wardBean.getStatus());
-		DepartmentBean DepartmentBean = wardBean.getDepartmentId();
-		Department Department = new Department();
-		beanToEntity(DepartmentBean, Department);
-		ward.setDepartmentId(Department);
-
+		ward = objectMapper.convertValue(wardBean, Ward.class);
 	}
 
 	private void entityToBean(WardBean wardBean, Ward ward) {
-		wardBean.setId(ward.getId());
-		wardBean.setName(ward.getName());
-		wardBean.setCapacity(ward.getCapacity());
-		wardBean.setAvailability(ward.getAvailability());
-		wardBean.setStatus(ward.getStatus());
-		DepartmentBean DepartmentBean = new DepartmentBean();
-		Department Department = ward.getDepartmentId();
-		entityToBean(Department, DepartmentBean);
-		wardBean.setDepartmentId(DepartmentBean);
-
+		wardBean = objectMapper.convertValue(ward, WardBean.class);
 	}
 
 	public WardBean getById(Long id) {
@@ -95,15 +79,7 @@ public class WardServiceImpl implements WardService {
 	private void entityToBean(List<Ward> entityList, List<WardBean> beanList) {
 		for (Ward ward : entityList) {
 			WardBean wardBean = new WardBean();
-			wardBean.setId(ward.getId());
-			wardBean.setName(ward.getName());
-			wardBean.setCapacity(ward.getCapacity());
-			wardBean.setAvailability(ward.getAvailability());
-			wardBean.setStatus(ward.getStatus());
-			DepartmentBean DepartmentBean = new DepartmentBean();
-			Department Department = ward.getDepartmentId();
-			entityToBean(Department, DepartmentBean);
-			wardBean.setDepartmentId(DepartmentBean);
+		     entityToBean(wardBean,ward);
 			beanList.add(wardBean);
 		}
 
@@ -133,20 +109,6 @@ public class WardServiceImpl implements WardService {
 
 	}
 
-	public void beanToEntity(DepartmentBean departmentBean,Department department)
-	{
-		department.setId(departmentBean.getId());
-		department.setName(departmentBean.getStatus());
-		department.setName(departmentBean.getName());
-		
-	}
-
-	public void entityToBean(Department department,DepartmentBean departmentBean)
-	{
-		departmentBean.setId(department.getId());
-		departmentBean.setStatus(department.getStatus());
-		departmentBean.setName(department.getName());
-	}
 	@Override
 	public List<Ward> findByDepartmentId(Long departmentId) {
 		// TODO Auto-generated method stub
@@ -156,8 +118,13 @@ public class WardServiceImpl implements WardService {
 	@Override
 	public void updateStatus(Ward ward) {
 		
-		ward.setStatus("InActive");
+		if (ward.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
+			ward.setStatus(CommonConstants.InActive);
+		} else {
+			ward.setStatus(CommonConstants.Active);
+		}
 		wardRepository.save(ward);
+
 			
 	}
 

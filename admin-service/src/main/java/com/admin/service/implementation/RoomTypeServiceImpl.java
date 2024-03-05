@@ -6,17 +6,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.admin.bean.RoomBean;
 import com.admin.bean.RoomTypeBean;
+import com.admin.constants.CommonConstants;
 import com.admin.entity.RoomType;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.RoomTypeRepository;
 import com.admin.service.RoomTypeService;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class RoomTypeServiceImpl implements RoomTypeService{
 
 	@Autowired
 	RoomTypeRepository roomTypeRepository;
+	ObjectMapper objectMapper = new ObjectMapper();
 	@Override
 	public RoomTypeBean save(RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
@@ -36,9 +39,7 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 
 	private void beanToEntity(RoomTypeBean roomTypeBean, RoomType roomType) {
 		// TODO Auto-generated method stub
-		roomType.setId(roomTypeBean.getId());
-		roomType.setStatus(roomTypeBean.getStatus());
-		roomType.setName(roomTypeBean.getName());
+		roomType = objectMapper.convertValue(roomTypeBean, RoomType.class);
 	}
 
 	@Override
@@ -74,9 +75,7 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 
 	private void entityToBean(RoomType roomType, RoomTypeBean roomTypeBean) {
 		// TODO Auto-generated method stub
-		roomTypeBean.setId(roomType.getId());
-		roomTypeBean.setStatus(roomType.getStatus());
-		roomTypeBean.setName(roomType.getName());
+	   roomTypeBean = objectMapper.convertValue(roomType, RoomTypeBean.class);
 	}
 
 	@Override
@@ -94,10 +93,15 @@ public class RoomTypeServiceImpl implements RoomTypeService{
 		return null;
 	}
 	@Override
-	public void updateStatus(RoomType roomEntity) {
+	public void updateStatus(RoomType roomTypeEntity) {
 		
-		roomEntity.setStatus("InActive");
-		roomTypeRepository.save(roomEntity);
+		if (roomTypeEntity.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
+			roomTypeEntity.setStatus(CommonConstants.InActive);
+		} else {
+		    roomTypeEntity.setStatus(CommonConstants.Active);
+		}
+		roomTypeRepository.save(roomTypeEntity);
+
 			
 	}
 

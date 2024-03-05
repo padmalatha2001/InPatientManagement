@@ -8,18 +8,20 @@ import org.springframework.stereotype.Service;
 
 import com.admin.bean.DepartmentBean;
 import com.admin.constants.CommonConstants;
+import com.admin.entity.BedEntity;
 import com.admin.entity.Department;
 import com.admin.exception.DepartmentAlreadyExistsException;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.repository.DepartmentRepository;
 import com.admin.service.DepartmentService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
 	@Autowired
 	DepartmentRepository departmentRepository;
-
+	ObjectMapper objectMapper=new ObjectMapper();
 	@Override
 	public DepartmentBean save(DepartmentBean departmentBean) {
 
@@ -67,25 +69,19 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	public void beanToEntity(DepartmentBean departmentBean, Department department) {
-		department.setId(departmentBean.getId());
-		department.setName(departmentBean.getStatus());
-		department.setName(departmentBean.getName());
-
+		
+		department = objectMapper.convertValue(departmentBean, Department.class);
 	}
 
 	public void entityToBean(Department department, DepartmentBean departmentBean) {
-		departmentBean.setId(department.getId());
-		departmentBean.setStatus(department.getStatus());
-		departmentBean.setName(department.getName());
+		departmentBean = objectMapper.convertValue(department, DepartmentBean.class);
 	}
 
 	public void entityToBean(List<Department> list, List<DepartmentBean> beanList) {
 
 		for (Department department : list) {
 			DepartmentBean departmentBean = new DepartmentBean();
-			departmentBean.setId(department.getId());
-			departmentBean.setStatus(department.getStatus());
-			departmentBean.setName(department.getName());
+			departmentBean = objectMapper.convertValue(department, DepartmentBean.class);
 			beanList.add(departmentBean);
 		}
 

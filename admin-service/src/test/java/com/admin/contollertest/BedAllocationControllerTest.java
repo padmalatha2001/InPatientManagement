@@ -86,7 +86,7 @@ public class BedAllocationControllerTest {
     public void testPut() throws Exception {
         when(bedAllocationService.getById(1)).thenReturn(bedAllocationBean);
 
-        ResponseEntity<String> response = bedAllocationController.put(bedAllocationBean, 1);
+        ResponseEntity<String> response = bedAllocationController.put(bedAllocationBean);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Updated successfully", response.getBody());

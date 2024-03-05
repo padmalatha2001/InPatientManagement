@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.admin.repository.RoomRepository"/>
+    <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.CrossOrigin"/>
+    <fullyQualifiedTypeName name="com.admin.entity.OTPEntity"/>
+    <fullyQualifiedTypeName name="java.lang.Override"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PutMapping"/>
+    <fullyQualifiedTypeName name="com.admin.entity.RegistrationForm"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestBody"/>
+    <fullyQualifiedTypeName name="org.springframework.http.ResponseEntity"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.patient.billing.service.entity.BedEntity"/>
+    <fullyQualifiedTypeName name="jakarta.persistence.Column"/>
+    <fullyQualifiedTypeName name="com.admin.exception.RecordNotFoundException"/>
+    <fullyQualifiedTypeName name="com.admin.bean.BedAllocationBean"/>
+    <fullyQualifiedTypeName name="com.admin.dto.BedAllocationDto"/>
+    <fullyQualifiedTypeName name="com.admin.service.BedService"/>
+    <fullyQualifiedTypeName name="com.admin.service.BedAllocationService"/>
+    <fullyQualifiedTypeName name="com.admin.exception.EmailNotFoundException"/>
+    <fullyQualifiedTypeName name="com.patient.billing.service.dto.BedAllocationDto"/>
+    <fullyQualifiedTypeName name="java.util.Optional"/>
+    <fullyQualifiedTypeName name="org.springframework.http.HttpStatus"/>
+    <fullyQualifiedTypeName name="com.patient.billing.service.exception.BillingDetailsNotFoundException"/>
+    <fullyQualifiedTypeName name="com.patient.billing.service.exception.PatientNumberNotFoundException"/>
+    <fullyQualifiedTypeName name="java.lang.RuntimeException"/>
+    <fullyQualifiedTypeName name="com.patient.billing.service.exception.BedAllocationNotFoundException"/>
+    <fullyQualifiedTypeName name="com.patient.exception.PatientIdNotFoundException"/>
+    <fullyQualifiedTypeName name="org.aspectj.lang.annotation.Before"/>
+    <fullyQualifiedTypeName name="com.admin.entity.RoomEntity"/>
+    <fullyQualifiedTypeName name="org.junit.jupiter.api.extension.ExtendWith"/>
+    <fullyQualifiedTypeName name="org.mockito.junit.jupiter.MockitoExtension"/>
+    <fullyQualifiedTypeName name="org.junit.jupiter.api.BeforeEach"/>
+    <fullyQualifiedTypeName name="java.lang.constant.Constable"/>
+    <fullyQualifiedTypeName name="com.admin.constants.CommonConstants"/>
+</qualifiedTypeNameHistroy>

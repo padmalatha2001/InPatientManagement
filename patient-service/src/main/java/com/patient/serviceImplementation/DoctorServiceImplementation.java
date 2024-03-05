@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patient.bean.DoctorBean;
+import com.patient.constants.CommonConstants;
 import com.patient.entity.DoctorEntity;
 import com.patient.exception.PatientIdNotFoundException;
 import com.patient.repository.DoctorRepository;
@@ -14,6 +16,7 @@ import com.patient.service.DoctorService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
 @Service
 public class DoctorServiceImplementation implements DoctorService{
 	
@@ -21,7 +24,7 @@ public class DoctorServiceImplementation implements DoctorService{
 	DoctorRepository doctorRepository;
 	@PersistenceContext
     private EntityManager entityManager;
-
+    ObjectMapper objectMapper=new ObjectMapper();
 	@Override
 	public DoctorBean save(DoctorBean doctorBean) {
 		// TODO Auto-generated method stub
@@ -34,10 +37,7 @@ public class DoctorServiceImplementation implements DoctorService{
 
 	private void BeanToEntity(DoctorBean doctorBean, DoctorEntity doctorEntity) {
 		// TODO Auto-generated method stub
-		doctorEntity.setId(doctorBean.getId());
-		doctorEntity.setName(doctorBean.getName());
-		doctorEntity.setDepartmentId(doctorBean.getDepartmentId());
-		doctorEntity.setStatus(doctorBean.getStatus());
+		doctorEntity = objectMapper.convertValue(doctorBean, DoctorEntity.class);
 	}
 
 	@Override
@@ -54,9 +54,7 @@ public class DoctorServiceImplementation implements DoctorService{
 
 	private void entityToBean(DoctorEntity doctorEntity, DoctorBean doctorBean) {
 		// TODO Auto-generated method stub
-		doctorBean.setDepartmentId(doctorEntity.getDepartmentId());
-		doctorBean.setId(doctorEntity.getId());
-		doctorBean.setName(doctorEntity.getName());
+		doctorBean = objectMapper.convertValue(doctorEntity, DoctorBean.class);
 	}
 
 	@Override
@@ -71,13 +69,10 @@ public class DoctorServiceImplementation implements DoctorService{
 	private void entityToBean(List<DoctorEntity> doctorEntity, List<DoctorBean> doctorBean) {
 		// TODO Auto-generated method stub
 		for(DoctorEntity doctorEntity1:doctorEntity)
-		{
-			DoctorBean doctorbean=new DoctorBean();
-			doctorbean.setId(doctorEntity1.getId());
-			doctorbean.setName(doctorEntity1.getName());
-			doctorbean.setDepartmentId(doctorEntity1.getDepartmentId());
-			doctorbean.setStatus(doctorEntity1.getStatus());
-			doctorBean.add(doctorbean);
+		{  
+			DoctorBean doctorBean1=new DoctorBean();
+			entityToBean(doctorEntity1, doctorBean1);
+			doctorBean.add(doctorBean1);
 		}
 	}
 
@@ -104,19 +99,20 @@ public class DoctorServiceImplementation implements DoctorService{
 	@Override
 	public void updateStatus(DoctorEntity doctor) {
 		// TODO Auto-generated method stub
-		doctor.setStatus("InActive");
+		if (doctor.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
+			doctor.setStatus(CommonConstants.InActive);
+		} else {
+			doctor.setStatus(CommonConstants.Active);
+		}
 		doctorRepository.save(doctor);
+
 	}
+	
 
 	@Override
 	public List<Object[]> getAllWithDept() {
 		// TODO Auto-generated method stub
-		String sqlQuery ="SELECT d.doctor_name,d.status,dp.department_name FROM doctor d\r\n"
-				+ "JOIN department dp ON d.department_id = dp.dept_id";
-		 List<Object[]> resultList = entityManager.createNativeQuery(sqlQuery)
-	                .getResultList();
-		 
-		 return resultList;
+		 return doctorRepository.getAllWithDept();
 	}
 
 }

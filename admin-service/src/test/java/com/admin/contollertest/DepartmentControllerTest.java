@@ -95,7 +95,7 @@ public class DepartmentControllerTest {
     public void testPut()  {
         when(departmentService.getById(1L)).thenReturn(departmentBean);
 
-        ResponseEntity<DepartmentBean> response;
+        ResponseEntity<String> response;
 		try {
 			response = departmentController.put(new Department(), 1L);
 
