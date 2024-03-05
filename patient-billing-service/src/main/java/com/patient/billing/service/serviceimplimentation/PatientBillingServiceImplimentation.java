@@ -17,6 +17,7 @@ import com.patient.billing.service.entity.BedEntity;
 import com.patient.billing.service.entity.PatientBillingEntity;
 import com.patient.billing.service.entity.RoomEntity;
 import com.patient.billing.service.exception.BedAllocationNotFoundException;
+import com.patient.billing.service.exception.BillingDetailsAlreadyExistException;
 import com.patient.billing.service.exception.BillingDetailsNotFoundException;
 import com.patient.billing.service.exception.PatientNumberNotFoundException;
 import com.patient.billing.service.repository.PatientBillingRepository;
@@ -26,29 +27,30 @@ import com.patient.billing.service.service.PatientBillingService;
 public class PatientBillingServiceImplimentation implements PatientBillingService {
 	@Autowired
 	private PatientBillingRepository patientBillingRepository;
-	
+
 	private static Logger log = LoggerFactory.getLogger(PatientBillingController.class.getSimpleName());
 
 	private static int PAIDAMOUNT = 1000;
 
 	@Override
-	public void save(BedAllocationDto billing) {
+	public void savebillingDetails(BedAllocationDto billing) {
+		
 
-		PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
-		log.info("saving the billing details");
-		beanToEntity(patientBillingEntity, billing);
-
-		patientBillingRepository.save(patientBillingEntity);
-		log.info("billing details saved sucessfully");
+			PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
+			log.info("saving the billing details");
+			beanToEntity(patientBillingEntity, billing);
+         
+			patientBillingRepository.save(patientBillingEntity);
+			log.info("billing details saved sucessfully");
+		
 
 	}
 
 	private void beanToEntity(PatientBillingEntity patientBillingEntity, BedAllocationDto bedAllocation) {
 		patientBillingEntity.setBillingDate(LocalDate.now());
 		patientBillingEntity.setBedAllocationId(bedAllocation.getId());
-		
 
-		int days = bedAllocation.getNoOfDays();
+		long days = bedAllocation.getNoOfDays();
 		BedEntity BedBean = bedAllocation.getBedId();
 		RoomEntity room = BedBean.getRoomId();
 		double roomPrice = room.getRoomPrice();
@@ -70,7 +72,6 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	public void entityToBean(PatientBillingEntity patientBillingEntity, PatientBillingBean patientBillingBean) {
 
-
 		patientBillingBean.setBillId(patientBillingEntity.getBillId());
 		patientBillingBean.setBedAllocationId(patientBillingEntity.getBedAllocationId());
 		patientBillingBean.setBillingDate(patientBillingEntity.getBillingDate());
@@ -83,33 +84,43 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	}
 
 	@Override
-	public Optional<List<PatientBillingDTO>> getAllDetails() {
+	public Optional<List<PatientBillingDTO>> getAllBillingDetails() {
+		try {
 
-		Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository.getBillingResults();
-		log.info("getting the billing details");
-		if (billingDetails.isPresent()) {
-			log.info("getting the billing details sucessfully");
-			return billingDetails;
-		} else {
-			log.info("billing details not found");
-			throw new BillingDetailsNotFoundException();
+			Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository.getBillingDetails();
+			log.info("getting the billing details");
+			if (billingDetails.isPresent()) {
+				log.info("getting the billing details sucessfully");
+				return billingDetails;
+			} else {
+				log.info("billing details not found");
+				throw new BillingDetailsNotFoundException();
 
+			}
+		} catch (BillingDetailsNotFoundException billingDetails) {
+			log.error("billing details not found");
+			throw billingDetails;
 		}
 
 	}
 
 	@Override
-	public Optional<List<PatientBillingDTO>> filterByDateRange(LocalDate startDate, LocalDate endDate) {
-		Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository.findByBillingDateBetween(startDate,
-				endDate);
-		log.info("getting the billing details based on start date and end date");
-		if (billingDetails.isPresent()) {
-			log.info("get billing details based on start date and end date sucessfully");
-			return billingDetails;
+	public Optional<List<PatientBillingDTO>> filterBillingDetailsByDateRange(LocalDate startDate, LocalDate endDate) {
+		try {
+			Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository
+					.getBillingDetailsBetweenTheDates(startDate, endDate);
+			log.info("getting the billing details based on start date and end date");
+			if (billingDetails.isPresent()) {
+				log.info("get billing details based on start date and end date sucessfully");
+				return billingDetails;
 
-		} else {
-			log.info("billing details not found with these dates");
-			throw new BillingDetailsNotFoundException("billing details are not found in this dates");
+			} else {
+				log.info("billing details not found with these dates");
+				throw new BillingDetailsNotFoundException("billing details are not found in this dates");
+			}
+		} catch (BillingDetailsNotFoundException billingDetails) {
+			log.error("billing details not found with these dates");
+			throw billingDetails;
 		}
 	}
 
@@ -124,20 +135,26 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 	}
 
 	@Override
-	public Optional<BedAllocationDto> getByPatientNo(String number) {
-		if (number != null) {
-			log.info("getting the details by using patient number");
-			Optional<BedAllocationDto> details = patientBillingRepository.findPatientDataByPatientNumber(number);
-			if (details.isPresent()) {
-				log.info("get the details by using patient number is done");
-				return details;
+	public Optional<BedAllocationDto> getBedAllocationDetailsBasedOnPatientNumber(String patientNumber) {
+		try {
+			if (patientNumber != null) {
+				log.info("getting the details by using patient number");
+				Optional<BedAllocationDto> bedAllocationdetails = patientBillingRepository
+						.findPatientDetailsByPatientNumber(patientNumber);
+				if (bedAllocationdetails.isPresent()) {
+					log.info("get the details by using patient number is done");
+					return bedAllocationdetails;
+				} else {
+					log.info("there is no details with patient number");
+					throw new BedAllocationNotFoundException("Bed is not allocated for this patient number");
+				}
 			} else {
-				log.info("there is no details with patient number");
-				throw new BedAllocationNotFoundException("Bed is not allocated for this patient number");
+				log.info("patient number not found");
+				throw new PatientNumberNotFoundException("Patient number is not found");
 			}
-		} else {
-			log.info("patient number not found");
-			throw new PatientNumberNotFoundException("Patient number is not found");
+		} catch (PatientNumberNotFoundException | BedAllocationNotFoundException exception) {
+			log.error("patient number not found");
+			throw exception;
 		}
 	}
 
