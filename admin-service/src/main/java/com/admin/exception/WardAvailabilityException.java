@@ -4,14 +4,8 @@ public class WardAvailabilityException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public WardAvailabilityException() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	public WardAvailabilityException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 }

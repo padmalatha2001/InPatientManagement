@@ -22,52 +22,45 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Autowired
 	DepartmentRepository departmentRepository;
-	ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	private static Logger log = LoggerFactory.getLogger(DepartmentServiceImpl.class.getSimpleName());
 
 	@Override
 	public DepartmentBean save(DepartmentBean departmentBean) {
 
-		// TODO Auto-generated method stub
-		try {
-			log.info("Saving the department");
-			Department department = new Department();
+				log.info("Saving the department");
+
 			Department dept = departmentRepository.getByName(departmentBean.getName());
+
 			if (dept == null) {
-				beanToEntity(departmentBean, department);
-				department.setStatus(CommonConstants.Active);
-				departmentRepository.save(department);
+
+				departmentBean.setStatus(CommonConstants.ACTIVE);
+				departmentRepository.save(objectMapper.convertValue(departmentBean, Department.class));
 				return departmentBean;
 			} else {
 				throw new DepartmentAlreadyExistsException("Department already exists");
 			}
-		} catch (Exception exception) {
-			log.error("Error occured while saving department", exception);
-			throw exception;
 		}
 
-	}
+	
 
 	@Override
 	public DepartmentBean getById(long id) {
-		// TODO Auto-generated method stub
-		try {
+
+	
 			log.info("Retrieving department by id");
 			Department department = departmentRepository.findById(id)
 					.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
-			DepartmentBean departmentBean = new DepartmentBean();
-			entityToBean(department, departmentBean);
-			return departmentBean;
-		} catch (Exception exception) {
-			log.error("Error occured while fetching department by id", exception);
-			throw exception;
-		}
+			return objectMapper.convertValue(department, DepartmentBean.class);
+
+		
 	}
 
 	@Override
 	public List<DepartmentBean> getAll() {
-		// TODO Auto-generated method stub
+
 		try {
 			log.info("Retrieving all departments");
 			List<Department> list = departmentRepository.findAll();
@@ -83,22 +76,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public void delete(long id) {
-		// TODO Auto-generated method stub
+
 		try {
 			log.info("Deleting department by id");
 			departmentRepository.findById(id)
 					.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
 			departmentRepository.deleteById(id);
-		} catch (Exception exception) {
+		} catch (RecordNotFoundException exception) {
 			log.error("Error occured while deleting department by id", exception);
 			throw exception;
 		}
 
-	}
-
-	public void beanToEntity(DepartmentBean departmentBean, Department department) {
-
-		department = objectMapper.convertValue(departmentBean, Department.class);
 	}
 
 	public void entityToBean(Department department, DepartmentBean departmentBean) {
@@ -117,10 +105,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public void updateStatus(Department department) {
-		if (department.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
-			department.setStatus(CommonConstants.InActive);
+		if (department.getStatus().equalsIgnoreCase(CommonConstants.ACTIVE)) {
+			department.setStatus(CommonConstants.INACTIVE);
 		} else {
-			department.setStatus(CommonConstants.Active);
+			department.setStatus(CommonConstants.ACTIVE);
 		}
 		departmentRepository.save(department);
 

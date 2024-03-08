@@ -22,8 +22,10 @@ public interface BedAllocationRepository extends JpaRepository<BedAllocation, In
 	List<BedAllocation> findBedAllocationsWithEndDateBeforeCurrentDate();
 
 	public BedAllocation getByPatientId(int id);
-
+	
 	@Query("select new BedAllocation(b.id,b.patientId,b.bedId,b.noOfDays,b.startDate,b.endDate,b.status)"
 			+ "from BedAllocation b join PatientEntity p on b.patientId=p.patientId where p.patientNumber=:patientNo")
 	public BedAllocation getDetailsForUpdating(String patientNo);
+
+	BedAllocation getByPatientNumber(String patientNumber);
 }

@@ -1,6 +1,5 @@
 package com.admin.contollertest;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,7 +32,7 @@ public class WardControllerTest {
 	private WardBean wardBean;
 
 	@BeforeEach
-	public void setUp() { 
+	public void setUp() {
 		wardBean = new WardBean();
 		wardBean.setId(1L);
 		wardBean.setName("Ward 1");
@@ -41,9 +40,9 @@ public class WardControllerTest {
 
 	@Test
     public void testSave() {
-        when(wardService.save(any(WardBean.class))).thenReturn(wardBean);
+        when(wardService.saveWard(any(WardBean.class))).thenReturn(wardBean);
 
-        ResponseEntity<WardBean> response = wardController.save(wardBean);
+        ResponseEntity<WardBean> response = wardController.saveWard(wardBean);
 
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -52,10 +51,10 @@ public class WardControllerTest {
 
 	@Test
     public void testGet() {
-    when(wardService.getById(1L)).thenReturn(wardBean);
+    when(wardService.getByWardId(1L)).thenReturn(wardBean);
 
 
-        ResponseEntity<WardBean> response = wardController.get(1L);
+        ResponseEntity<WardBean> response = wardController.getWardById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(wardBean, response.getBody());
@@ -66,9 +65,9 @@ public class WardControllerTest {
 		List<WardBean> wardBeans = new ArrayList<>();
 		wardBeans.add(wardBean);
 
-		when(wardService.getAll()).thenReturn(wardBeans);
+		when(wardService.getAllWards()).thenReturn(wardBeans);
 
-		ResponseEntity<List<WardBean>> response = wardController.getAll();
+		ResponseEntity<List<WardBean>> response = wardController.getAllWards();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(wardBeans, response.getBody());

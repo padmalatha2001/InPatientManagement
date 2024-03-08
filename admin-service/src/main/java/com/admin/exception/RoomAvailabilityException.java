@@ -4,14 +4,9 @@ public class RoomAvailabilityException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public RoomAvailabilityException() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	public RoomAvailabilityException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }

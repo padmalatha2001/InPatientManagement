@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.patient.billing.service.bean.PatientBillingBean;
+import com.patient.billing.service.constants.CommonConstants;
 import com.patient.billing.service.controller.PatientBillingController;
 import com.patient.billing.service.dto.BedAllocationDto;
 import com.patient.billing.service.dto.PatientBillingDTO;
@@ -17,7 +18,6 @@ import com.patient.billing.service.entity.BedEntity;
 import com.patient.billing.service.entity.PatientBillingEntity;
 import com.patient.billing.service.entity.RoomEntity;
 import com.patient.billing.service.exception.BedAllocationNotFoundException;
-import com.patient.billing.service.exception.BillingDetailsAlreadyExistException;
 import com.patient.billing.service.exception.BillingDetailsNotFoundException;
 import com.patient.billing.service.exception.PatientNumberNotFoundException;
 import com.patient.billing.service.repository.PatientBillingRepository;
@@ -30,19 +30,15 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	private static Logger log = LoggerFactory.getLogger(PatientBillingController.class.getSimpleName());
 
-	private static int PAIDAMOUNT = 1000;
-
 	@Override
 	public void savebillingDetails(BedAllocationDto billing) {
-		
 
-			PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
-			log.info("saving the billing details");
-			beanToEntity(patientBillingEntity, billing);
-         
-			patientBillingRepository.save(patientBillingEntity);
-			log.info("billing details saved sucessfully");
-		
+		PatientBillingEntity patientBillingEntity = new PatientBillingEntity();
+		log.info("saving the billing details");
+		beanToEntity(patientBillingEntity, billing);
+
+		patientBillingRepository.save(patientBillingEntity);
+		log.info("billing details saved sucessfully");
 
 	}
 
@@ -56,16 +52,16 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 		double roomPrice = room.getRoomPrice();
 
 		double totalAmount = roomPrice * days;
-		patientBillingEntity.setRecordStatus("Active");
-		patientBillingEntity.setPaidAmount(PAIDAMOUNT);
+		patientBillingEntity.setRecordStatus(CommonConstants.ACTIVE);
+		patientBillingEntity.setPaidAmount(CommonConstants.PAIDAMOUNT);
 		patientBillingEntity.setTotalAmount(totalAmount);
-		double remainingAmount = totalAmount - PAIDAMOUNT;
+		double remainingAmount = totalAmount - CommonConstants.PAIDAMOUNT;
 		patientBillingEntity.setRemainingAmount(remainingAmount);
-		if (remainingAmount + PAIDAMOUNT == totalAmount) {
+		if (remainingAmount + CommonConstants.PAIDAMOUNT == totalAmount) {
 
-			patientBillingEntity.setPaymentStatus("completed");
+			patientBillingEntity.setPaymentStatus(CommonConstants.COMPLETED);
 		} else {
-			patientBillingEntity.setPaymentStatus("completed");
+			patientBillingEntity.setPaymentStatus(CommonConstants.PENDING);
 		}
 
 	}
@@ -85,43 +81,35 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	@Override
 	public Optional<List<PatientBillingDTO>> getAllBillingDetails() {
-		try {
 
-			Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository.getBillingDetails();
-			log.info("getting the billing details");
-			if (billingDetails.isPresent()) {
-				log.info("getting the billing details sucessfully");
-				return billingDetails;
-			} else {
-				log.info("billing details not found");
-				throw new BillingDetailsNotFoundException();
+		Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository.getBillingDetails();
+		log.info("getting the billing details");
+		if (billingDetails.isPresent()) {
+			log.info("getting the billing details sucessfully");
+			return billingDetails;
+		} else {
+			log.info("billing details not found");
+			throw new BillingDetailsNotFoundException();
 
-			}
-		} catch (BillingDetailsNotFoundException billingDetails) {
-			log.error("billing details not found");
-			throw billingDetails;
 		}
 
 	}
 
 	@Override
 	public Optional<List<PatientBillingDTO>> filterBillingDetailsByDateRange(LocalDate startDate, LocalDate endDate) {
-		try {
-			Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository
-					.getBillingDetailsBetweenTheDates(startDate, endDate);
-			log.info("getting the billing details based on start date and end date");
-			if (billingDetails.isPresent()) {
-				log.info("get billing details based on start date and end date sucessfully");
-				return billingDetails;
 
-			} else {
-				log.info("billing details not found with these dates");
-				throw new BillingDetailsNotFoundException("billing details are not found in this dates");
-			}
-		} catch (BillingDetailsNotFoundException billingDetails) {
-			log.error("billing details not found with these dates");
-			throw billingDetails;
+		Optional<List<PatientBillingDTO>> billingDetails = patientBillingRepository
+				.getBillingDetailsBetweenTheDates(startDate, endDate);
+		log.info("getting the billing details based on start date and end date");
+		if (billingDetails.isPresent()) {
+			log.info("get billing details based on start date and end date sucessfully");
+			return billingDetails;
+
+		} else {
+			log.info("billing details not found with these dates");
+			throw new BillingDetailsNotFoundException("billing details are not found in this dates");
 		}
+
 	}
 
 	@Override
@@ -136,26 +124,22 @@ public class PatientBillingServiceImplimentation implements PatientBillingServic
 
 	@Override
 	public Optional<BedAllocationDto> getBedAllocationDetailsBasedOnPatientNumber(String patientNumber) {
-		try {
-			if (patientNumber != null) {
-				log.info("getting the details by using patient number");
-				Optional<BedAllocationDto> bedAllocationdetails = patientBillingRepository
-						.findPatientDetailsByPatientNumber(patientNumber);
-				if (bedAllocationdetails.isPresent()) {
-					log.info("get the details by using patient number is done");
-					return bedAllocationdetails;
-				} else {
-					log.info("there is no details with patient number");
-					throw new BedAllocationNotFoundException("Bed is not allocated for this patient number");
-				}
+		if (patientNumber != null) {
+			log.info("getting the details by using patient number");
+			Optional<BedAllocationDto> bedAllocationdetails = patientBillingRepository
+					.findPatientDetailsByPatientNumber(patientNumber);
+			if (bedAllocationdetails.isPresent()) {
+				log.info("get the details by using patient number is done");
+				return bedAllocationdetails;
 			} else {
-				log.info("patient number not found");
-				throw new PatientNumberNotFoundException("Patient number is not found");
+				log.info("there is no details with patient number");
+				throw new BedAllocationNotFoundException("Bed is not allocated for this patient number");
 			}
-		} catch (PatientNumberNotFoundException | BedAllocationNotFoundException exception) {
-			log.error("patient number not found");
-			throw exception;
+		} else {
+			log.info("patient number not found");
+			throw new PatientNumberNotFoundException("Patient number is not found");
 		}
+
 	}
 
 }

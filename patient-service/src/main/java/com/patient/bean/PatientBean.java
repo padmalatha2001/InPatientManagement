@@ -9,7 +9,7 @@ public class PatientBean {
 	private long patientContactNo;
 	private long patientAlternteContactNo;
 	private String patientNumber;
-	private DoctorBean doctorBean;
+	private DoctorBean doctor;
 
 	public String getPatientNumber() {
 		return patientNumber;
@@ -20,7 +20,7 @@ public class PatientBean {
 	}
 
 	public PatientBean(int patientId, String firstName, String lastName, String patientGender, int patientAge,
-			long patientContactNo, long patientAlternteContactNo, String patientNumber, DoctorBean doctorBean) {
+			long patientContactNo, long patientAlternteContactNo, String patientNumber, DoctorBean doctor) {
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -30,7 +30,7 @@ public class PatientBean {
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
 		this.patientNumber = patientNumber;
-		this.doctorBean = doctorBean;
+		this.doctor = doctor;
 	}
 
 	public PatientBean() {
@@ -38,7 +38,7 @@ public class PatientBean {
 	}
 
 	public PatientBean(int patientId, String firstName, String lastName, String patientGender, int patientAge,
-			long patientContactNo, long patientAlternteContactNo, DoctorBean doctorBean) {
+			long patientContactNo, long patientAlternteContactNo, DoctorBean doctor) {
 		super();
 		this.patientId = patientId;
 		this.firstName = firstName;
@@ -47,7 +47,7 @@ public class PatientBean {
 		this.patientAge = patientAge;
 		this.patientContactNo = patientContactNo;
 		this.patientAlternteContactNo = patientAlternteContactNo;
-		this.doctorBean = doctorBean;
+		this.doctor = doctor;
 	}
 
 	public int getPatientId() {
@@ -106,20 +106,20 @@ public class PatientBean {
 		this.patientAlternteContactNo = patientAlternteContactNo;
 	}
 
-	public DoctorBean getDoctorBean() {
-		return doctorBean;
+	public DoctorBean getDoctor() {
+		return doctor;
 	}
 
-	public void setDoctorBean(DoctorBean doctorBean) {
-		this.doctorBean = doctorBean;
+	public void setDoctorBean(DoctorBean doctor) {
+		this.doctor = doctor;
 	}
 
 	@Override
 	public String toString() {
 		return "PatientBean [patientId=" + patientId + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", patientGender=" + patientGender + ", patientAge=" + patientAge + ", patientContactNo="
-				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + ", doctorBean="
-				+ doctorBean + "]";
+				+ patientContactNo + ", patientAlternteContactNo=" + patientAlternteContactNo + ", doctorBean=" + doctor
+				+ "]";
 	}
 
 }

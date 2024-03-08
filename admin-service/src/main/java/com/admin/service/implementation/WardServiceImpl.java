@@ -12,6 +12,7 @@ import com.admin.bean.WardBean;
 import com.admin.constants.CommonConstants;
 import com.admin.entity.Department;
 import com.admin.entity.Ward;
+import com.admin.exception.DepartmentNotFoundException;
 import com.admin.exception.RecordNotFoundException;
 import com.admin.exception.WardAlreadyExistsException;
 import com.admin.repository.WardRepository;
@@ -22,60 +23,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WardServiceImpl implements WardService {
 	@Autowired
 	private WardRepository wardRepository;
-	ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper objectMapper;
 	private static Logger log = LoggerFactory.getLogger(BedAllocationServiceImpl.class.getSimpleName());
 
 	@Override
-	public WardBean save(WardBean wardBean) {
-		try {
-			Ward ward1 = wardRepository.getByNameAndDepartmentId_Name(wardBean.getName(),
-					wardBean.getDepartmentId().getName());
-			if (ward1 == null) {
-				Ward ward = new Ward();
-				wardBean.setStatus(CommonConstants.Active);
-				wardBean.setAvailability(wardBean.getCapacity());
-				beanToEntity(ward, wardBean);
-				wardRepository.save(ward);
-			} else {
-				throw new WardAlreadyExistsException("That ward already exists");
-			}
-			return wardBean;
-		} catch (WardAlreadyExistsException exception) {
-			log.error("Ward already exists", exception);
-			throw exception;
-		} catch (Exception exception) {
-			log.error("An unexpected error occurred while saving ward", exception);
-			throw exception;
+	public WardBean saveWard(WardBean wardBean) {
+		log.info("saving the wards");
+
+		Ward wardEntity = wardRepository.getByNameAndDepartmentId_Name(wardBean.getName(),
+				wardBean.getDepartmentId().getName());
+		if (wardEntity == null) {
+			Ward ward = objectMapper.convertValue(wardBean, Ward.class);
+			wardBean.setStatus(CommonConstants.ACTIVE);
+			wardBean.setAvailability(wardBean.getCapacity());
+			wardRepository.save(ward);
+			log.info("saving the wards sucessfully");
+		} else {
+			log.info("ward is akready exists");
+			throw new WardAlreadyExistsException("That ward already exists");
 		}
+		return wardBean;
+
 	}
 
-	private void beanToEntity(Ward ward, WardBean wardBean) {
-		ward = objectMapper.convertValue(wardBean, Ward.class);
-	}
+	public WardBean getByWardId(Long id) {
+		log.info("getting the ward by id");
+		Ward ward = wardRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+		WardBean wardBean = objectMapper.convertValue(ward, WardBean.class);
+		log.info("getting the ward by id is done");
+		return wardBean;
 
-	private void entityToBean(WardBean wardBean, Ward ward) {
-		wardBean = objectMapper.convertValue(ward, WardBean.class);
-	}
-
-	public WardBean getById(Long id) {
-		try {
-			WardBean wardBean = new WardBean();
-			Ward ward = wardRepository.findById(id)
-					.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
-			entityToBean(wardBean, ward);
-			return wardBean;
-		} catch (RecordNotFoundException exception) {
-			log.error("Record not found for id: " + id, exception);
-			throw exception;
-		} catch (Exception exception) {
-			log.error("error fetching ward by id: " + id, exception);
-			throw exception;
-		}
 	}
 
 	@Override
 	public void delete(Long id) {
 		try {
+			log.info("deleting the wards");
 			wardRepository.deleteById(id);
 		} catch (Exception exception) {
 			log.error("error deleting ward with id: " + id, exception);
@@ -85,11 +70,13 @@ public class WardServiceImpl implements WardService {
 	}
 
 	@Override
-	public List<WardBean> getAll() {
+	public List<WardBean> getAllWards() {
 		try {
+			log.info(" getting all the wards");
 			List<Ward> entityList = wardRepository.findAll();
 			List<WardBean> beanList = new ArrayList<>();
 			entityToBean(entityList, beanList);
+			log.info(" getting all the wards successfully");
 			return beanList;
 		} catch (Exception exception) {
 			log.info(" error  fetching all wards", exception);
@@ -99,16 +86,16 @@ public class WardServiceImpl implements WardService {
 
 	private void entityToBean(List<Ward> entityList, List<WardBean> beanList) {
 		for (Ward ward : entityList) {
-			WardBean wardBean = new WardBean();
-			entityToBean(wardBean, ward);
+			WardBean wardBean = objectMapper.convertValue(ward, WardBean.class);
 			beanList.add(wardBean);
 		}
 
 	}
 
 	@Override
-	public void update(WardBean wardBean) {
+	public void updateWard(WardBean wardBean) {
 		try {
+			log.info("update  the ward by id");
 			Optional<Ward> optional = wardRepository.findById(wardBean.getId());
 			if (optional.isPresent()) {
 				Ward ward = optional.get();
@@ -121,8 +108,10 @@ public class WardServiceImpl implements WardService {
 
 				ward.setDepartmentId(Department);
 				wardRepository.save(ward);
+				log.info("update the ward by id is done");
 
 			} else {
+				log.info("record is not found with this id");
 				throw new RecordNotFoundException("not found in details");
 			}
 
@@ -135,25 +124,27 @@ public class WardServiceImpl implements WardService {
 
 	@Override
 	public List<Ward> findByDepartmentId(Long departmentId) {
-		// TODO Auto-generated method stub
-		try {
+
+		if (departmentId != null) {
 			log.info("Fetchind wards by deparment id");
 			return wardRepository.findByDepartmentId_Id(departmentId);
-		} catch (Exception exception) {
-			log.info("error while fetching wards by department id", exception);
-			throw exception;
+		} else {
+			log.info("department  id not found");
+			throw new DepartmentNotFoundException("departmentId not found");
 		}
 	}
 
 	@Override
 	public void updateStatus(Ward ward) {
+		log.info("updating the ward status");
+		if (ward.getStatus().equalsIgnoreCase(CommonConstants.ACTIVE)) {
+			ward.setStatus(CommonConstants.INACTIVE);
 
-		if (ward.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
-			ward.setStatus(CommonConstants.InActive);
 		} else {
-			ward.setStatus(CommonConstants.Active);
+			ward.setStatus(CommonConstants.ACTIVE);
 		}
 		wardRepository.save(ward);
+		log.info("updating the ward status is done");
 
 	}
 

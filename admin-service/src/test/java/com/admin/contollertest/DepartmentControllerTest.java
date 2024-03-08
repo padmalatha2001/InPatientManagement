@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.admin.bean.DepartmentBean;
 import com.admin.controller.DepartmentController;
-import com.admin.entity.Department;
 import com.admin.service.DepartmentService;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,18 +37,15 @@ public class DepartmentControllerTest {
 	@BeforeEach
 	public void setUp() {
 		departmentBean = new DepartmentBean();
-		departmentBean.setId(1L);
+		departmentBean.setId(1);
 		departmentBean.setName("cardiology");
-		// Initialize other properties if needed
 	}
 
 	@Test
     public void testSave() {
         when(departmentService.save(departmentBean)).thenReturn(departmentBean);
 
-        ResponseEntity<DepartmentBean> response = departmentController.save(departmentBean);
-
-        // Assert the response
+        ResponseEntity<DepartmentBean> response = departmentController.saveDepartment(departmentBean);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(departmentBean, response.getBody());
 
@@ -61,7 +57,7 @@ public class DepartmentControllerTest {
     public void testGetById() {
         when(departmentService.getById(1L)).thenReturn(departmentBean);
 
-        ResponseEntity<DepartmentBean> response = departmentController.getById(1L);
+        ResponseEntity<DepartmentBean> response = departmentController.getDepartmentById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(departmentBean, response.getBody());
@@ -73,7 +69,7 @@ public class DepartmentControllerTest {
 		departmentList.add(departmentBean);
 		when(departmentService.getAll()).thenReturn(departmentList);
 
-		ResponseEntity<List<DepartmentBean>> response = departmentController.getAll();
+		ResponseEntity<List<DepartmentBean>> response = departmentController.getAllDepartments();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(departmentList, response.getBody());
@@ -83,26 +79,10 @@ public class DepartmentControllerTest {
 	public void testDeleteById() {
 		doNothing().when(departmentService).delete(1L);
 
-		ResponseEntity<?> response = departmentController.deleteById(1L);
+		ResponseEntity<?> response = departmentController.deleteDepartmentById(1L);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(null, response.getBody());
 	}
-
-	@Test
-    public void testPut()  {
-        when(departmentService.getById(1L)).thenReturn(departmentBean);
-
-        ResponseEntity<String> response;
-		try {
-			response = departmentController.put(new Department(), 1L);
-
-	        assertEquals(HttpStatus.OK, response.getStatusCode());
-	        assertEquals(departmentBean, response.getBody());
-		} catch (Exception e) {
-			System.out.println("handled"); 
-		}
-
-    }
 
 }

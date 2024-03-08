@@ -50,11 +50,6 @@ public class BedAllocationBean {
 	public long getNoOfDays() {
 		return noOfDays;
 	}
-
-	public void setNoOfDays(int noOfDays) {
-		this.noOfDays = noOfDays;
-	}
-
 	public BedBean getBedId() {
 		return bedId;
 	}

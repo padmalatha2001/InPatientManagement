@@ -37,14 +37,13 @@ public class BedAllocationControllerTest {
 		bedAllocationBean = new BedAllocationBean();
 		bedAllocationBean.setId(1);
 		bedAllocationBean.setNoOfDays(3);
-		// Initialize other properties if needed
 	}
 
 	@Test
     public void testSave() {
         when(bedAllocationService.save(any(BedAllocationBean.class))).thenReturn(bedAllocationBean);
 
-        ResponseEntity<BedAllocationBean> response = bedAllocationController.save(bedAllocationBean);
+        ResponseEntity<BedAllocationBean> response = bedAllocationController.saveBedAllocationDetails(bedAllocationBean);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(bedAllocationBean, response.getBody());
@@ -54,7 +53,7 @@ public class BedAllocationControllerTest {
     public void testGetById() {
         when(bedAllocationService.getById(1)).thenReturn(bedAllocationBean);
 
-        ResponseEntity<BedAllocationBean> response = bedAllocationController.getById(1);
+        ResponseEntity<BedAllocationBean> response = bedAllocationController.getBedAllocationDetailsById(1);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(bedAllocationBean, response.getBody());
@@ -66,7 +65,7 @@ public class BedAllocationControllerTest {
 		bedAllocationList.add(bedAllocationBean);
 		when(bedAllocationService.getAll()).thenReturn(bedAllocationList);
 
-		ResponseEntity<List<BedAllocationBean>> response = bedAllocationController.getAll();
+		ResponseEntity<List<BedAllocationBean>> response = bedAllocationController.getAllBedAllocationDetails();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(bedAllocationList, response.getBody());
@@ -82,13 +81,4 @@ public class BedAllocationControllerTest {
 		assertEquals("Deleted Successfully", response.getBody());
 	}
 
-	@Test
-    public void testPut() throws Exception {
-        when(bedAllocationService.getById(1)).thenReturn(bedAllocationBean);
-
-        ResponseEntity<String> response = bedAllocationController.put(bedAllocationBean);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Updated successfully", response.getBody());
-    }
 }

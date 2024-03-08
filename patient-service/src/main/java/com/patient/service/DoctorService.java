@@ -7,17 +7,17 @@ import com.patient.entity.DoctorEntity;
 
 public interface DoctorService {
 
-	DoctorBean save(DoctorBean doctorBean);
+	DoctorBean saveDoctorDetails(DoctorBean doctorBean);
 
-	DoctorBean getById(long id);
+	DoctorBean getDoctorById(long id);
 
-	List<DoctorBean> getAll();
+	List<DoctorBean> getAllDoctorDetails();
 
 	List<Object[]> getAllWithDept();
 
 	void delete(Long id);
 
-	void update(DoctorBean doctorbean);
+	void updateDoctorDetails(DoctorBean doctorbean);
 
 	void updateStatus(DoctorEntity doctor);
 }

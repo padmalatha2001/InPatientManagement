@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patient.bean.PatientBean;
 import com.patient.entity.PatientEntity;
+import com.patient.exception.DoctorNameNotFoundException;
+import com.patient.exception.PatientDetailsNotFoundException;
 import com.patient.exception.PatientIdNotFoundException;
 import com.patient.repository.PatientRepository;
 import com.patient.service.PatientService;
@@ -32,12 +34,12 @@ public class PatientServiceImplementation implements PatientService {
 	private static Logger log = LoggerFactory.getLogger(PatientServiceImplementation.class.getSimpleName());
 
 	@Override
-	public PatientBean save(PatientBean patientBean) {
+	public PatientBean savePatientDetails(PatientBean patientBean) {
 
 		log.info("Saving the patient details");
 		try {
-			PatientEntity patientEntity = new PatientEntity();
-			BeanToEntity(patientEntity, patientBean);
+			PatientEntity patientEntity = objectMapper.convertValue(patientBean, PatientEntity.class);
+
 			String patientNumber = generatePatientNo();
 			patientEntity.setPatientNumber(patientNumber);
 			patientRepository.save(patientEntity);
@@ -51,17 +53,18 @@ public class PatientServiceImplementation implements PatientService {
 	}
 
 	@Override
-	public List<PatientBean> getAll() {
+	public List<PatientBean> getAllPatientDetails() {
 		log.info("Getting all patient details");
-		try {
-			List<PatientBean> patientBeanList = new ArrayList<>();
-			List<PatientEntity> patientEntityList = patientRepository.findAll();
+		List<PatientBean> patientBeanList = new ArrayList<>();
+		List<PatientEntity> patientEntityList = patientRepository.findAll();
+		if (patientEntityList != null) {
 			entityToBean(patientEntityList, patientBeanList);
 			log.info("Retrieved all patient details successfully");
 			return patientBeanList;
-		} catch (Exception e) {
-			log.error("Error occurred while retrieving all patient details: " + e.getMessage());
-			throw e;
+
+		} else {
+			log.info("patient details not found");
+			throw new PatientDetailsNotFoundException("patient details not found");
 		}
 	}
 
@@ -69,17 +72,13 @@ public class PatientServiceImplementation implements PatientService {
 	public Optional<PatientEntity> getPatientById(Integer id) {
 
 		log.info("Getting patient details by ID");
-		try {
-			Optional<PatientEntity> patientEntityOptional = patientRepository.findById(id);
-			if (!patientEntityOptional.isPresent()) {
-				log.error("Patient with ID " + id + " not found");
-				throw new PatientIdNotFoundException("Patient with ID " + id + " not found");
-			}
+		Optional<PatientEntity> patientEntityOptional = patientRepository.findById(id);
+		if (!patientEntityOptional.isPresent()) {
+			log.error("Patient with ID " + id + " not found");
+			throw new PatientIdNotFoundException("Patient with ID " + id + " not found");
+		} else {
 			log.info("Retrieved patient details by ID successfully");
 			return patientEntityOptional;
-		} catch (Exception e) {
-			log.error("Error occurred while retrieving patient details by ID: " + e.getMessage());
-			throw e;
 		}
 
 	}
@@ -105,8 +104,13 @@ public class PatientServiceImplementation implements PatientService {
 	}
 
 	public List<Object[]> getPatientDetailsByDoctor(String doctorName) {
-
-		return patientRepository.findPatientDetailsByDoctorName(doctorName);
+		if (doctorName != null) {
+			log.info("Getting doctor name");
+			return patientRepository.findPatientDetailsByDoctorName(doctorName);
+		} else {
+			log.info("doctor name not found");
+			throw new DoctorNameNotFoundException("doctor name not found");
+		}
 	}
 
 	public List<Object[]> getPatientDetailsByFullName(String fullName) {

@@ -8,9 +8,9 @@ import com.patient.entity.PatientEntity;
 
 public interface PatientService {
 
-	PatientBean save(PatientBean patientBean);
+	PatientBean savePatientDetails(PatientBean patientBean);
 
-	List<PatientBean> getAll();
+	List<PatientBean> getAllPatientDetails();
 
 	Optional<PatientEntity> getPatientById(Integer id);
 

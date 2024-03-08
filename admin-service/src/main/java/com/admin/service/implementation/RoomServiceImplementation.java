@@ -28,34 +28,30 @@ public class RoomServiceImplementation implements RoomService {
 	Logger log = LoggerFactory.getLogger(RoomServiceImplementation.class);
 
 	@Override
-	public void save(RoomBean roomBean) {
-		try {
-			log.info("Saving room");
-			RoomEntity roomEntity1 = roomRepository.getByRoomNoAndWardId_Id(roomBean.getRoomNo(),
-					roomBean.getWardId().getId());
-			if (roomEntity1 == null) {
-				roomBean.setStatus(CommonConstants.Active);
-				roomBean.setAvailability(roomBean.getRoomSharing());
-				WardBean ward = roomBean.getWardId();
-				Integer totalRoomSharing = roomRepository.sumRoomSharingByWard(ward.getId());
-				if (totalRoomSharing == null) {
-					totalRoomSharing = 0;
-				}
-				if (totalRoomSharing + roomBean.getRoomSharing() <= ward.getCapacity()) {
-					RoomEntity roomEntity = new RoomEntity();
-					beanToEntity(roomEntity, roomBean);
-					roomRepository.save(roomEntity);
-					log.info("Room saved successfully");
-				} else {
-					throw new WardCapacityExceededException("Room capacity exceeded for ward");
-				}
-			} else {
-				throw new RoomAlreadyExistsException("That room already exists");
+	public void savingRoom(RoomBean roomBean) {
+
+		log.info("Saving room");
+		RoomEntity roomEntity1 = roomRepository.getByRoomNoAndWardId_Id(roomBean.getRoomNo(),
+				roomBean.getWardId().getId());
+		if (roomEntity1 == null) {
+			roomBean.setStatus(CommonConstants.ACTIVE);
+			roomBean.setAvailability(roomBean.getRoomSharing());
+			WardBean ward = roomBean.getWardId();
+			Integer totalRoomSharing = roomRepository.sumRoomSharingByWard(ward.getId());
+			if (totalRoomSharing == null) {
+				totalRoomSharing = 0;
 			}
-		} catch (Exception exception) {
-			log.info("Error occured while saving roomType", exception);
-			throw exception;
+			if (totalRoomSharing + roomBean.getRoomSharing() <= ward.getCapacity()) {
+				RoomEntity roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
+				roomRepository.save(roomEntity);
+				log.info("Room saved successfully");
+			} else {
+				throw new WardCapacityExceededException("Room capacity exceeded for ward");
+			}
+		} else {
+			throw new RoomAlreadyExistsException("That room already exists");
 		}
+
 	}
 
 	@Override
@@ -74,32 +70,22 @@ public class RoomServiceImplementation implements RoomService {
 
 	@Override
 	public RoomBean getById(long id) {
-		try {
-			log.info("Fetching room by id");
-			RoomBean roomBean = new RoomBean();
-			RoomEntity roomEntity = roomRepository.findById(id)
-					.orElseThrow(() -> new RecordNotFoundException("record not found"));
-			entityToBean(roomEntity, roomBean);
-			return roomBean;
-		} catch (Exception exception) {
-			log.info("Error occured while fetching room", exception);
-			throw exception;
-		}
+
+		log.info("Fetching room by id");
+
+		RoomEntity roomEntity = roomRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("record not found"));
+		return objectMapper.convertValue(roomEntity, RoomBean.class);
+
 	}
 
 	@Override
 	public RoomBean update(long id) {
-		try {
-			log.info("updating room");
-			RoomEntity room = roomRepository.findById(id)
-					.orElseThrow(() -> new RecordNotFoundException("record not found"));
-			RoomBean roomBean = new RoomBean();
-			entityToBean(room, roomBean);
-			return roomBean;
-		} catch (Exception exception) {
-			log.info("Error occured while updating room", exception);
-			throw exception;
-		}
+
+		log.info("updating room");
+		RoomEntity roomEntity = roomRepository.findById(id)
+				.orElseThrow(() -> new RecordNotFoundException("record not found"));
+		return objectMapper.convertValue(roomEntity, RoomBean.class);
 
 	}
 
@@ -114,10 +100,6 @@ public class RoomServiceImplementation implements RoomService {
 		}
 	}
 
-	public void beanToEntity(RoomEntity roomEntity, RoomBean roomBean) {
-		roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
-	}
-
 	public void entityToBean(List<RoomEntity> listEntity, List<RoomBean> listbean) {
 
 		for (RoomEntity roomEntity : listEntity) {
@@ -127,15 +109,9 @@ public class RoomServiceImplementation implements RoomService {
 		}
 	}
 
-	public void entityToBean(RoomEntity roomEntity, RoomBean roomBean) {
-
-		roomBean = objectMapper.convertValue(roomEntity, RoomBean.class);
-
-	}
-
 	@Override
 	public List<RoomEntity> findByWardId(Long wardId) {
-		// TODO Auto-generated method stub
+
 		try {
 			log.info("fetching rooms by wardId");
 			return roomRepository.findByWardId_Id(wardId);
@@ -147,10 +123,10 @@ public class RoomServiceImplementation implements RoomService {
 
 	@Override
 	public void updateStatus(RoomEntity roomEntity) {
-		if (roomEntity.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
-			roomEntity.setStatus(CommonConstants.InActive);
+		if (roomEntity.getStatus().equalsIgnoreCase(CommonConstants.ACTIVE)) {
+			roomEntity.setStatus(CommonConstants.INACTIVE);
 		} else {
-			roomEntity.setStatus(CommonConstants.Active);
+			roomEntity.setStatus(CommonConstants.ACTIVE);
 		}
 		roomRepository.save(roomEntity);
 

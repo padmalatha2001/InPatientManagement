@@ -46,7 +46,7 @@ public class RoomTypeControllerTest {
         
         when(roomTypeService.save(any(RoomTypeBean.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        ResponseEntity<RoomTypeBean> response = roomTypeController.save(roomTypeBean);
+        ResponseEntity<RoomTypeBean> response = roomTypeController.saveRoomTypeDetails(roomTypeBean);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(roomTypeBean, response.getBody());
@@ -58,7 +58,7 @@ public class RoomTypeControllerTest {
 		roomTypeList.add(roomTypeBean);
 		when(roomTypeService.getAll()).thenReturn(roomTypeList);
 
-		ResponseEntity<List<RoomTypeBean>> response = roomTypeController.getAll();
+		ResponseEntity<List<RoomTypeBean>> response = roomTypeController.getAllRoomTypes();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(roomTypeList, response.getBody());
@@ -68,7 +68,7 @@ public class RoomTypeControllerTest {
     public void testGetById() {
         when(roomTypeService.getById(1L)).thenReturn(roomTypeBean);
 
-        ResponseEntity<RoomTypeBean> response = roomTypeController.getById(1L);
+        ResponseEntity<RoomTypeBean> response = roomTypeController.getRoomTypeById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(roomTypeBean, response.getBody());

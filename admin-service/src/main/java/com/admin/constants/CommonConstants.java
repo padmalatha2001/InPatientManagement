@@ -2,8 +2,10 @@ package com.admin.constants;
 
 public class CommonConstants {
 
-	public static final String InActive = "InActive";
-	public static final String Active = "Active";
-	public static final String Booked = "Booked";
-	public static final String Empty = "Empty";
+	public static final String INACTIVE = "InActive";
+	public static final String ACTIVE = "Active";
+	public static final String BOOKED = "Booked";
+	public static final String EMPTY = "Empty";
+	public static final String SUBJECT = "Your Otp";
+	public static final String TEXT = "Your Otp is";
 }

@@ -6,7 +6,7 @@ import com.admin.bean.RoomBean;
 import com.admin.entity.RoomEntity;
 
 public interface RoomService {
-	void save(RoomBean roomTypeBean);
+	void savingRoom(RoomBean roomTypeBean);
 
 	List<RoomBean> getAll();
 

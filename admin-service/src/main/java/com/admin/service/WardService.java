@@ -7,18 +7,18 @@ import com.admin.entity.Ward;
 
 public interface WardService {
 
-	WardBean getById(Long id);
+	WardBean getByWardId(Long id);
 
 	void delete(Long id);
 
-	List<WardBean> getAll();
-
 	List<Ward> findByDepartmentId(Long departmentId);
 
-	void update(WardBean wardBean);
-
-	WardBean save(WardBean wardBean);
+	WardBean saveWard(WardBean wardBean);
 
 	void updateStatus(Ward ward);
+
+	List<WardBean> getAllWards();
+
+	void updateWard(WardBean wardBean);
 
 }

@@ -1,7 +1,6 @@
 package com.admin.contollertest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -42,9 +41,9 @@ public class RoomControllerTest {
 
 	@Test
 	public void testSave() {
-		doNothing().when(roomService).save(any(RoomBean.class));
+		doNothing().when(roomService).savingRoom(roomBean);
 
-		ResponseEntity<RoomBean> response = roomController.save(roomBean);
+		ResponseEntity<RoomBean> response = roomController.savingRoom(roomBean);
 
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		assertEquals(roomBean, response.getBody());
@@ -56,7 +55,7 @@ public class RoomControllerTest {
 		roomList.add(roomBean);
 		when(roomService.getAll()).thenReturn(roomList);
 
-		ResponseEntity<List<RoomBean>> response = roomController.getAll();
+		ResponseEntity<List<RoomBean>> response = roomController.getAllRooms();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(roomList, response.getBody());
@@ -78,32 +77,10 @@ public class RoomControllerTest {
     public void testGetById() {
         when(roomService.getById(1L)).thenReturn(roomBean);
 
-        ResponseEntity<RoomBean> response = roomController.getById(1L);
+        ResponseEntity<RoomBean> response = roomController.getRoomById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(roomBean, response.getBody());
     }
 
-//	@Test
-//	public void testDelete() {
-//		doNothing().when(roomService).delete(1L);
-//
-//		ResponseEntity<String> response = roomController.delete(1L);
-//
-//		assertEquals(HttpStatus.OK, response.getStatusCode());
-//		assertEquals(null, response.getBody());
-//	}
-
-//	@Test
-//    public void testPut() throws Exception {
-//        when(roomService.getById(1L)).thenReturn(roomBean);
-//        doNothing().when(roomService).save(any(RoomBean.class));
-//
-//        ResponseEntity<RoomBean> response = roomController.put(roomBean);
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(roomBean, response.getBody());
-//    }
-
-	// Additional test methods for other endpoints if needed
 }

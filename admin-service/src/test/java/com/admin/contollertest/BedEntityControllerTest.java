@@ -35,14 +35,14 @@ public class BedEntityControllerTest {
 	public void setUp() {
 		bedBean = new BedBean();
 		bedBean.setId(1L);
-		// Initialize other properties if needed
+
 	}
 
 	@Test
     public void testSave() {
         when(bedService.save(any(BedBean.class))).thenReturn(bedBean);
 
-        ResponseEntity<BedBean> response = bedEntityController.save(bedBean);
+        ResponseEntity<BedBean> response = bedEntityController.saveBed(bedBean);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(bedBean, response.getBody());
@@ -52,7 +52,7 @@ public class BedEntityControllerTest {
     public void testGetById() {
         when(bedService.getById(1L)).thenReturn(bedBean);
 
-        ResponseEntity<BedBean> response = bedEntityController.getById(1L);
+        ResponseEntity<BedBean> response = bedEntityController.getBedDetailsById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(bedBean, response.getBody());
@@ -64,7 +64,7 @@ public class BedEntityControllerTest {
 		bedList.add(bedBean);
 		when(bedService.getAll()).thenReturn(bedList);
 
-		ResponseEntity<List<BedBean>> response = bedEntityController.getAll();
+		ResponseEntity<List<BedBean>> response = bedEntityController.getAllBedDetails();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(bedList, response.getBody());

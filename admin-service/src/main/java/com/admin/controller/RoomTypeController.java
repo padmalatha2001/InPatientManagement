@@ -30,7 +30,8 @@ public class RoomTypeController {
 	RoomTypeService roomTypeService;
 
 	@PostMapping(path = "/save")
-	public ResponseEntity<RoomTypeBean> save(@RequestBody RoomTypeBean roomTypeBean) {
+	public ResponseEntity<RoomTypeBean> saveRoomTypeDetails(@RequestBody RoomTypeBean roomTypeBean) {
+
 		logger.info("Saving the roomtype details ");
 		roomTypeService.save(roomTypeBean);
 		ResponseEntity<RoomTypeBean> entity = new ResponseEntity<>(roomTypeBean, HttpStatus.CREATED);
@@ -40,23 +41,27 @@ public class RoomTypeController {
 	}
 
 	@GetMapping(path = "/getAll")
-	public ResponseEntity<List<RoomTypeBean>> getAll() {
+	public ResponseEntity<List<RoomTypeBean>> getAllRoomTypes() {
+
 		logger.info("Getting the roomtype details");
 		List<RoomTypeBean> list = roomTypeService.getAll();
 		logger.info("Get the roomType details successfully");
 		return new ResponseEntity<List<RoomTypeBean>>(list, HttpStatus.OK);
+
 	}
 
 	@GetMapping(path = "/getById/{id}")
-	public ResponseEntity<RoomTypeBean> getById(@PathVariable Long id) {
+	public ResponseEntity<RoomTypeBean> getRoomTypeById(@PathVariable Long id) {
+
 		logger.info("Getting the roomtype details by using id");
 		RoomTypeBean roombyid = roomTypeService.getById(id);
 		logger.info("get the roomtype details by using id successfully");
 		return new ResponseEntity<RoomTypeBean>(roombyid, HttpStatus.OK);
+
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity<Void> deleteRoomType(@PathVariable long id) {
+	public ResponseEntity<Void> deleteRoomTypeById(@PathVariable long id) {
 		logger.info("deleting the roomtype by using id");
 		roomTypeService.delete(id);
 		logger.info("deleting the roomtype by using id is done");
@@ -65,18 +70,22 @@ public class RoomTypeController {
 
 	@PutMapping("/update")
 	public ResponseEntity<Void> updateStatus(@RequestBody RoomTypeBean roomType) {
+
 		logger.info("Updating the roomtype details");
-		roomTypeService.update(roomType);
+		roomTypeService.updateRoomType(roomType);
 		logger.info("updated the roomtype details sucessfully");
 		return ResponseEntity.ok().build();
+
 	}
 
 	@PutMapping(path = "/status")
 	public ResponseEntity<Void> put(@RequestBody RoomType roomType) {
+
 		logger.info("Updating the status of roomtype");
 		roomTypeService.updateStatus(roomType);
 		logger.info("Updated the status of roomtype sucessfully ");
 		return new ResponseEntity<>(HttpStatus.OK);
+
 	}
 
 }

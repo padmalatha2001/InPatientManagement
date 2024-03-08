@@ -38,7 +38,7 @@ public class RegistrationControllerTest {
     public void testSave() {
         when(registrationService.saveRegistration(registrationBean)).thenReturn(registrationBean);
 
-        ResponseEntity<RegistrationBean> response = registrationController.save(registrationBean);
+        ResponseEntity<RegistrationBean> response = registrationController.saveRegistrationDetails(registrationBean);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(registrationBean, response.getBody());

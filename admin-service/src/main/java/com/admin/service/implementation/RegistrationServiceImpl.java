@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 
 import com.admin.bean.LoginBean;
 import com.admin.bean.RegistrationBean;
+import com.admin.constants.CommonConstants;
 import com.admin.entity.OTPEntity;
 import com.admin.entity.RegistrationForm;
 import com.admin.exception.EmailAlreadyExistsException;
 import com.admin.exception.EmailNotFoundException;
 import com.admin.exception.InvalidOtpException;
 import com.admin.exception.PasswordMismatchException;
-import com.admin.exception.RegistrationException;
 import com.admin.repository.OtpRepository;
 import com.admin.repository.RegistrationRepository;
 import com.admin.service.RegistrationService;
@@ -38,65 +38,50 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Autowired
 	OtpRepository otpRepository;
 	private static Logger log = LoggerFactory.getLogger(RegistrationServiceImpl.class.getSimpleName());
-	ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public RegistrationBean saveRegistration(RegistrationBean registrationBean) {
-		try {
-			log.info("Saving the registration details");
 
-			if (registrationRepository.existsByEmail(registrationBean.getEmail())) {
-				log.info("Email ID already exists: {}", registrationBean.getEmail());
-				throw new EmailAlreadyExistsException("The Email ID already exists");
-			} else {
-				RegistrationForm registrationEntity = new RegistrationForm();
-				beanToEntity(registrationBean, registrationEntity);
-				registrationRepository.save(registrationEntity);
-				log.info("Registration details saved successfully");
-				return registrationBean;
-			}
-		} catch (EmailAlreadyExistsException exception) {
-			log.error("Email already exists: ", registrationBean.getEmail(), exception);
-			throw exception; // Re-throwing the exception for centralized handling
-		} catch (Exception exception) {
-			log.error("An error occurred while saving registration details", exception);
-			throw new RegistrationException("Failed to save registration details");
+		log.info("Saving the registration details");
+
+		if (registrationRepository.existsByEmail(registrationBean.getEmail())) {
+			log.info("Email ID already exists: {}", registrationBean.getEmail());
+			throw new EmailAlreadyExistsException("The Email ID already exists");
+		} else {
+			RegistrationForm registrationEntity = objectMapper.convertValue(registrationBean, RegistrationForm.class);
+
+			registrationRepository.save(registrationEntity);
+			log.info("Registration details saved successfully");
+			return registrationBean;
 		}
-	}
 
-	private void beanToEntity(RegistrationBean registrationBean, RegistrationForm registrationEntity) {
-
-		registrationEntity = objectMapper.convertValue(registrationBean, RegistrationForm.class);
 	}
 
 	@Override
 	public RegistrationForm validateLogin(LoginBean loginBean) {
 		RegistrationForm user = registrationRepository.findByEmail(loginBean.getEmail());
 		log.info("login by using email and password");
-		try {
-			;
-			if (user != null) {
-				log.info("email is valid");
 
-				if (user.getPassword().equals(loginBean.getPassword())) {
-					log.info("login sucessfull");
-					return user;
-				} else {
-					try {
-						log.info("login failed");
-						throw new PasswordMismatchException("Password is wrong");
-					} catch (PasswordMismatchException exception) {
-						System.out.println(exception.getMessage());
-					}
-				}
+		if (user != null) {
+			log.info("email is valid");
+
+			if (user.getPassword().equals(loginBean.getPassword())) {
+				log.info("login sucessfull");
+				return user;
 			} else {
-				throw new EmailNotFoundException("Email not found");
+				try {
+					log.info("login failed");
+					throw new PasswordMismatchException("Password is wrong");
+				} catch (PasswordMismatchException exception) {
+					log.error("password is mismatch");
+				}
 			}
-			return null;
-		} catch (EmailNotFoundException exception) {
+		} else {
 			throw new EmailNotFoundException("Email not found");
 		}
-
+		return user;
 	}
 
 	@Autowired
@@ -113,34 +98,31 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public void sendOtpEmail(String toEmail, String otp) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(toEmail);
-		message.setSubject("Your OTP");
-		message.setText("Your OTP is: " + otp);
+		message.setSubject(CommonConstants.SUBJECT);
+		message.setText(CommonConstants.TEXT + otp);
 
 		javaMailSender.send(message);
 	}
 
 	public RegistrationForm forgetPassword(String email) {
-		try {
-			log.info("Checking if email is present or not");
-			RegistrationForm user = registrationRepository.findByEmail(email);
 
-			if (user != null) {
-				log.info("Email is valid");
-				String otp = generateOtp();
+		log.info("Checking if email is present or not");
+		RegistrationForm user = registrationRepository.findByEmail(email);
 
-				Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(5)));
+		if (user != null) {
+			log.info("Email is valid");
+			String otp = generateOtp();
 
-				sendOtpEmail(email, otp);
-				saveOtp(email, otp, expirationTime);
-				return user;
-			} else {
-				log.info("Email is not valid");
-				throw new EmailNotFoundException("Email not found");
-			}
-		} catch (EmailNotFoundException exception) {
-			log.error("Email not found: ", email, exception);
-			throw exception;
+			Timestamp expirationTime = Timestamp.from(Instant.now().plus(Duration.ofMinutes(5)));
+
+			sendOtpEmail(email, otp);
+			saveOtp(email, otp, expirationTime);
+			return user;
+		} else {
+			log.info("Email is not valid");
+			throw new EmailNotFoundException("Email not found");
 		}
+
 	}
 
 	@Override
@@ -181,26 +163,25 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 	}
 
-	@Override
-
-	public Optional<RegistrationForm> updatePassword(String email, String password) {
+	public RegistrationForm updatePassword(String email, String password) {
 		RegistrationForm result = registrationRepository.findByEmail(email);
 		if (result != null) {
 
 			result.setPassword(password);
 			registrationRepository.save(result);
-
+			return result;
 		}
-		return null;
+
+		else {
+			throw new EmailNotFoundException("Given email is not found");
+		}
 	}
 
-	@Scheduled(fixedRate = 600000) // 5 minutes in milliseconds
+	@Scheduled(fixedRate = 300000)
 	public void cleanupExpiredOtps() {
 		try {
-			System.out.println("scheduled start");
 
 			otpRepository.deleteExpiredOtps();
-			System.out.println("scheduled end");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}

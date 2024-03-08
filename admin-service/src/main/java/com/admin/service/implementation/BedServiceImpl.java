@@ -26,70 +26,50 @@ public class BedServiceImpl implements BedService {
 	@Autowired
 	BedEntityRepository bedEntityRepository;
 
-	ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper objectMapper;
 	private static Logger log = LoggerFactory.getLogger(BedServiceImpl.class.getSimpleName());
 
 	@Override
 	public BedBean save(BedBean bedBean) {
-		// TODO Auto-generated method stub
-		try {
-			log.info("Saving bed");
-			BedEntity bedEntity1 = bedEntityRepository.getByBedNoAndRoomId_Id(bedBean.getBedNo(),
-					bedBean.getRoomId().getId());
-			if (bedEntity1 == null) {
-				RoomBean room = bedBean.getRoomId();
-				Integer totalBeds = bedEntityRepository.sumBedsByRoom(room.getId());
-				if (totalBeds == null) {
-					totalBeds = 0;
-				}
-				if (totalBeds + 1 <= room.getRoomSharing()) {
-					BedEntity bedEntity = new BedEntity();
-					bedBean.setStatus(CommonConstants.Empty);
-					beanToEntity(bedBean, bedEntity);
-					bedEntityRepository.save(bedEntity);
-				} else {
-					throw new RoomCapacityExceededException("Room bed capacity exceeded");
-				}
-			} else {
-				throw new BedAlreadyExistsException("Already bed exists with this bedNo");
+
+		log.info("Saving bed");
+		BedEntity bedEntity1 = bedEntityRepository.getByBedNoAndRoomId_Id(bedBean.getBedNo(),
+				bedBean.getRoomId().getId());
+		if (bedEntity1 == null) {
+			RoomBean room = bedBean.getRoomId();
+			Integer totalBeds = bedEntityRepository.sumBedsByRoom(room.getId());
+			if (totalBeds == null) {
+				totalBeds = 0;
 			}
-			return bedBean;
-		} catch (Exception exception) {
-			log.error("Error occured while saving Bed", exception);
-			throw exception;
+			if (totalBeds + 1 <= room.getRoomSharing()) {
+				BedEntity bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
+				bedBean.setStatus(CommonConstants.EMPTY);
+				bedEntityRepository.save(bedEntity);
+			} else {
+				throw new RoomCapacityExceededException("Room bed capacity exceeded");
+			}
+		} else {
+			throw new BedAlreadyExistsException("Already bed exists with this bedNo");
 		}
-	}
+		return bedBean;
 
-	private void beanToEntity(BedBean bedBean, BedEntity bedEntity) {
-
-		bedEntity = objectMapper.convertValue(bedBean, BedEntity.class);
 	}
 
 	@Override
 	public BedBean getById(long bedId) {
-		// TODO Auto-generated method stub
-		try {
-			log.info("Fetching bed by id");
-			BedEntity bedEntity = bedEntityRepository.findById(bedId)
-					.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
-			BedBean bedBean = new BedBean();
-			entityToBean(bedEntity, bedBean);
-			return bedBean;
-		} catch (Exception exception) {
-			log.error("Error occured while retrieving bed by id", exception);
-			throw exception;
-		}
 
-	}
+		log.info("Fetching bed by id");
+		BedEntity bedEntity = bedEntityRepository.findById(bedId)
+				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+		BedBean bedBean = objectMapper.convertValue(bedEntity, BedBean.class);
+		return bedBean;
 
-	private void entityToBean(BedEntity bedEntity, BedBean bedBean) {
-		// TODO Auto-generated method stub
-		bedBean = objectMapper.convertValue(bedEntity, BedBean.class);
 	}
 
 	@Override
 	public List<BedBean> getAll() {
-		// TODO Auto-generated method stub
+
 		try {
 			log.info("Retrieving all beds");
 			List<BedEntity> entityList = bedEntityRepository.findAll();
@@ -103,17 +83,16 @@ public class BedServiceImpl implements BedService {
 	}
 
 	private void entityToBean(List<BedEntity> entityList, List<BedBean> beanList) {
-		// TODO Auto-generated method stub
+
 		for (BedEntity bedEntity : entityList) {
-			BedBean bedBean = new BedBean();
-			entityToBean(bedEntity, bedBean);
+			BedBean bedBean = objectMapper.convertValue(bedEntity, BedBean.class);
 			beanList.add(bedBean);
 		}
 	}
 
 	@Override
 	public void delete(long id) {
-		// TODO Auto-generated method stub
+
 		try {
 			log.info("Deleting bed by id");
 			bedEntityRepository.deleteById(id);
@@ -125,29 +104,26 @@ public class BedServiceImpl implements BedService {
 
 	@Override
 	public void update(long bedId, BedBean updatedBed) {
-		// TODO Auto-generated method stub
-		try {
-			log.info("Upadating bed ");
-			BedEntity bedEntity = bedEntityRepository.findById(bedId)
-					.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
-			if (bedEntity != null) {
-				bedEntity.setBedNo(updatedBed.getBedNo());
-				RoomBean roomBean = updatedBed.getRoomId();
-				RoomEntity roomEntity = new RoomEntity();
-				roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
-				bedEntity.setRoomId(roomEntity);
-				bedEntity.setStatus(updatedBed.getStatus());
-				bedEntityRepository.save(bedEntity);
-			}
-		} catch (Exception exception) {
-			log.error("Error occured while updating bed", exception);
-			throw exception;
+
+		log.info("Upadating bed ");
+		BedEntity bedEntity = bedEntityRepository.findById(bedId)
+				.orElseThrow(() -> new RecordNotFoundException("No Record Found with given id"));
+		if (bedEntity != null) {
+			bedEntity.setBedNo(updatedBed.getBedNo());
+			RoomBean roomBean = updatedBed.getRoomId();
+			RoomEntity roomEntity = new RoomEntity();
+			roomEntity = objectMapper.convertValue(roomBean, RoomEntity.class);
+			bedEntity.setRoomId(roomEntity);
+			bedEntity.setStatus(updatedBed.getStatus());
+			bedEntityRepository.save(bedEntity);
+		} else {
+			throw new RecordNotFoundException("recod not found");
 		}
 	}
 
 	@Override
 	public List<BedBean> findByBedIdRoomEntityId(Long roomEntityId) {
-		// TODO Auto-generated method stub
+
 		try {
 			log.info("Retrieving bed by roomId");
 			List<BedEntity> entityList = bedEntityRepository.findByRoomId_Id(roomEntityId);

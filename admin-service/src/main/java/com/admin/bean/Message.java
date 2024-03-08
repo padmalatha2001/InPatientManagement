@@ -6,7 +6,7 @@ public class Message {
 
 	public Message() {
 		super();
-		// TODO Auto-generated constructor stub
+	
 	}
 
 	public Message(String content) {

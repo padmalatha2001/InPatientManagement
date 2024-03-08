@@ -12,9 +12,9 @@ public interface RoomTypeService {
 
 	RoomTypeBean getById(long id);
 
-	RoomType update(RoomTypeBean room);
-
 	public void delete(long id);
 
 	void updateStatus(RoomType roomEntity);
+
+	RoomType updateRoomType(RoomTypeBean roomTypeBean);
 }

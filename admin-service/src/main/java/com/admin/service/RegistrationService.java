@@ -1,7 +1,6 @@
 package com.admin.service;
 
 import java.sql.Timestamp;
-import java.util.Optional;
 
 import com.admin.bean.LoginBean;
 import com.admin.bean.RegistrationBean;
@@ -21,7 +20,7 @@ public interface RegistrationService {
 
 	boolean verifyOtp(String email, String enteredOtp);
 
-	Optional<RegistrationForm> updatePassword(String email, String password);
+	RegistrationForm updatePassword(String email, String password);
 
 	RegistrationBean saveRegistration(RegistrationBean registrationBean);
 }

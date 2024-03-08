@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.patient.bean.DoctorBean;
 import com.patient.constants.CommonConstants;
 import com.patient.entity.DoctorEntity;
+import com.patient.exception.DoctorDetailsNotFoundException;
 import com.patient.exception.DoctorIdNotFoundException;
 import com.patient.repository.DoctorRepository;
 import com.patient.service.DoctorService;
@@ -30,55 +31,38 @@ public class DoctorServiceImplementation implements DoctorService {
 	private static Logger log = LoggerFactory.getLogger(DoctorServiceImplementation.class.getSimpleName());
 
 	@Override
-	public DoctorBean save(DoctorBean doctorBean) {
-		// TODO Auto-generated method stub
-		DoctorEntity doctorEntity = new DoctorEntity();
+	public DoctorBean saveDoctorDetails(DoctorBean doctorBean) {
+
 		doctorBean.setStatus("Active");
-		BeanToEntity(doctorBean, doctorEntity);
+		DoctorEntity doctorEntity = objectMapper.convertValue(doctorBean, DoctorEntity.class);
 		doctorRepository.save(doctorEntity);
 		return doctorBean;
 	}
 
-	private void BeanToEntity(DoctorBean doctorBean, DoctorEntity doctorEntity) {
-		// TODO Auto-generated method stub
-		doctorEntity = objectMapper.convertValue(doctorBean, DoctorEntity.class);
+	@Override
+	public DoctorBean getDoctorById(long id) {
+
+		log.info("Get by Doctor Id");
+		DoctorEntity doctorEntity = doctorRepository.findById(id)
+				.orElseThrow(() -> new DoctorIdNotFoundException("Record not found with given id"));
+		DoctorBean doctorBean = objectMapper.convertValue(doctorEntity, DoctorBean.class);
+		return doctorBean;
+
 	}
 
 	@Override
-	public DoctorBean getById(long id) {
-		// TODO Auto-generated method stub
-
-		try {
-			log.info("Get by Doctor Id");
-			DoctorEntity doctorEntity = doctorRepository.findById(id)
-					.orElseThrow(() -> new DoctorIdNotFoundException("Record not found with given id"));
-			DoctorBean doctorBean = new DoctorBean();
-			entityToBean(doctorEntity, doctorBean);
-
-			return doctorBean;
-		} catch (DoctorIdNotFoundException e) {
-			log.error("Doctor ID not found: " + e.getMessage());
-			throw e;
-		} catch (Exception exception) {
-			log.error("An error occurred while getting doctor by ID: " + exception.getMessage());
-			throw exception;
-		}
-	}
-
-	private void entityToBean(DoctorEntity doctorEntity, DoctorBean doctorBean) {
-		// TODO Auto-generated method stub
-		doctorBean = objectMapper.convertValue(doctorEntity, DoctorBean.class);
-	}
-
-	@Override
-	public List<DoctorBean> getAll() {
+	public List<DoctorBean> getAllDoctorDetails() {
 		log.info("Getting all Doctor details");
 		try {
 			List<DoctorBean> doctorBean = new ArrayList<>();
 			List<DoctorEntity> doctorEntity = doctorRepository.findAll();
-			entityToBean(doctorEntity, doctorBean);
-			log.info("Getting all Doctor details");
-			return doctorBean;
+			if (doctorEntity != null) {
+				entityToBean(doctorEntity, doctorBean);
+				log.info("Getting all Doctor details");
+				return doctorBean;
+			} else {
+				throw new DoctorDetailsNotFoundException("Doctor details not found");
+			}
 		} catch (Exception e) {
 			log.error("An error occurred while getting all doctors: " + e.getMessage());
 			throw e;
@@ -86,17 +70,16 @@ public class DoctorServiceImplementation implements DoctorService {
 	}
 
 	private void entityToBean(List<DoctorEntity> doctorEntity, List<DoctorBean> doctorBean) {
-		// TODO Auto-generated method stub
+
 		for (DoctorEntity doctorEntity1 : doctorEntity) {
-			DoctorBean doctorBean1 = new DoctorBean();
-			entityToBean(doctorEntity1, doctorBean1);
+			DoctorBean doctorBean1 = objectMapper.convertValue(doctorEntity1, DoctorBean.class);
 			doctorBean.add(doctorBean1);
 		}
 	}
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
+
 		log.info("Deleting Doctor ");
 		try {
 			doctorRepository.deleteById(id);
@@ -108,10 +91,10 @@ public class DoctorServiceImplementation implements DoctorService {
 	}
 
 	@Override
-	public void update(DoctorBean doctorbean) {
-		// TODO Auto-generated method stub
-		log.info("Updating doctor Bean");
-		try {
+	public void updateDoctorDetails(DoctorBean doctorbean) {
+		if (doctorbean != null) {
+			log.info("Updating doctor Bean");
+
 			DoctorEntity doctorEntity = doctorRepository.getReferenceById(doctorbean.getId());
 
 			DoctorBean doctorBean = new DoctorBean();
@@ -120,15 +103,14 @@ public class DoctorServiceImplementation implements DoctorService {
 			doctorEntity.setDepartmentId(doctorBean.getDepartmentId());
 			doctorRepository.save(doctorEntity);
 			log.info("Updating Doctor Bean completed");
-		} catch (Exception e) {
-			log.error("An error occurred while updating doctor: " + e.getMessage());
-			throw e;
+		} else {
+			throw new DoctorDetailsNotFoundException("Doctor details not found ");
 		}
 	}
 
 	@Override
 	public void updateStatus(DoctorEntity doctor) {
-		// TODO Auto-generated method stub
+
 		if (doctor.getStatus().equalsIgnoreCase(CommonConstants.Active)) {
 			doctor.setStatus(CommonConstants.InActive);
 		} else {
@@ -140,7 +122,7 @@ public class DoctorServiceImplementation implements DoctorService {
 
 	@Override
 	public List<Object[]> getAllWithDept() {
-		// TODO Auto-generated method stub
+
 		return doctorRepository.getAllWithDept();
 	}
 

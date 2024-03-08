@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.bean.DepartmentBean;
 import com.admin.entity.Department;
-import com.admin.exception.RecordNotFoundException;
 import com.admin.service.DepartmentService;
 
 @RestController
@@ -30,94 +29,64 @@ public class DepartmentController {
 	private static Logger log = LoggerFactory.getLogger(DepartmentController.class.getSimpleName());
 
 	@PostMapping("/save")
-	public ResponseEntity<DepartmentBean> save(@RequestBody DepartmentBean department) {
+	public ResponseEntity<DepartmentBean> saveDepartment(@RequestBody DepartmentBean department) {
 		log.info("Saving Department entity");
-		try {
-			departmentService.save(department);
-			ResponseEntity<DepartmentBean> responseEntity = new ResponseEntity<>(department, HttpStatus.CREATED);
-			log.info("Saving Department entity is done");
-			return responseEntity;
-		} catch (Exception e) {
-			log.error("Error occurred while saving department", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		departmentService.save(department);
+		ResponseEntity<DepartmentBean> responseEntity = new ResponseEntity<>(department, HttpStatus.CREATED);
+		log.info("Saving Department entity is done");
+		return responseEntity;
+
 	}
 
 	@GetMapping("/getById/{id}")
-	public ResponseEntity<DepartmentBean> getById(@PathVariable long id) {
+	public ResponseEntity<DepartmentBean> getDepartmentById(@PathVariable long id) {
 		log.info("Retrieving Department by Id");
-		try {
-			DepartmentBean departmentBean = departmentService.getById(id);
-			log.info("Retrived department by id is successfully");
-			return ResponseEntity.status(HttpStatus.OK).body(departmentBean);
-		} catch (Exception e) {
-			log.error("Error occurred while retrieving department", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		DepartmentBean departmentBean = departmentService.getById(id);
+		log.info("Retrived department by id is successfully");
+		return ResponseEntity.status(HttpStatus.OK).body(departmentBean);
 
 	}
 
 	@GetMapping("/getAll")
-	public ResponseEntity<List<DepartmentBean>> getAll() {
+	public ResponseEntity<List<DepartmentBean>> getAllDepartments() {
 		log.info("Retrieving All Departments");
-		try {
-			List<DepartmentBean> list = departmentService.getAll();
-			ResponseEntity<List<DepartmentBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
-			log.info("Fetching All Department details is done");
-			return responseEntity;
-		} catch (Exception e) {
-			log.error("Error occurred while retrieving all departments", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		List<DepartmentBean> list = departmentService.getAll();
+		ResponseEntity<List<DepartmentBean>> responseEntity = new ResponseEntity<>(list, HttpStatus.OK);
+		log.info("Fetching All Department details is done");
+		return responseEntity;
 
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public ResponseEntity<String> deleteById(@PathVariable long id) {
+	public ResponseEntity<String> deleteDepartmentById(@PathVariable long id) {
 		log.info("Deleting Department by ID");
-		try {
-			departmentService.delete(id);
-			ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
-			log.info("Deleted Department by ID successfully");
-			return responseEntity;
-		} catch (RecordNotFoundException e) {
-			log.error("Department deleting failed: " + e.getMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
-		} catch (Exception e) {
-			log.error("Error occurred while deleting department", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("{\"error\": \"Error occurred while updating room\"}");
-		}
+		departmentService.delete(id);
+		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
+		log.info("Deleted Department by ID successfully");
+		return responseEntity;
+
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<String> put(@RequestBody Department department, @PathVariable long id) throws Exception {
+	public ResponseEntity<String> updateDepartmentDetails(@RequestBody Department department, @PathVariable long id)
+			throws Exception {
 
 		log.info("Updating Department");
-		try {
-			DepartmentBean department1 = departmentService.getById(id);
-			if (department1 != null) {
-				department1.setName(department.getName());
-				departmentService.save(department1);
-			}
-			ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated successfully",
-					HttpStatus.OK);
-			log.info("Updating department is done");
-			return responseEntity;
-		} catch (RecordNotFoundException e) {
-			log.error("Department updating failed: " + e.getMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
-		} catch (Exception e) {
-			log.error("Error occurred while deleting department", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("{\"error\": \"Error occurred while updating room\"}");
+
+		DepartmentBean department1 = departmentService.getById(id);
+		if (department1 != null) {
+			department1.setName(department.getName());
+			departmentService.save(department1);
 		}
+		ResponseEntity<String> responseEntity = new ResponseEntity<>("Department updated successfully", HttpStatus.OK);
+		log.info("Updating department is done");
+		return responseEntity;
+
 	}
 
 	@PutMapping("/updateStatus")
-	public void put(@RequestBody Department department) {
+	public void updateStatus(@RequestBody Department department) {
 		log.info("Update the  department status ");
-
 		departmentService.updateStatus(department);
 		log.info("Updating department status is done");
 	}
